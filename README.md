@@ -2,9 +2,19 @@ This library provides utilities and features for parsing, updating, and writing 
 This project is very much an early-prototype and work-in-progress, there are definitely scenarios and edge cases that have
 not been fully worked through and tested.
 
-A Laravel `Config::` wrapper/integration is not yet available.
-
 ## Basic Usage
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Config;
+
+// Change the default locale to 'fr' and save to disk:
+Config::write('app.locale', 'fr');
+
+```
+
+## Intermediate Usage
 
 Given the following input configuration file:
 
@@ -65,6 +75,7 @@ And yes, it did add the `new-key` value as the default value for the `env` call 
 * Handles adding new deeply nested keys,
 * Allows for appending configuration files to an existing configuration array,
 * Allows for overwriting configuration files in an existing configuration array,
+* Simple `Config` facade extension
 
 ## Road Map
 
@@ -72,7 +83,6 @@ There will undoubtedly be changes required overtime, and if you find something n
 the input you are supplying and the expected results. Bonus points if you add a test case for it :)
 
 This package is not yet available through packagist until things are tested/validated a bit more, but will be eventually.
-A nice `Config` wrapper for use within Laravel projects will also come at some point.
 
 ## License
 
