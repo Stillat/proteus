@@ -80,7 +80,7 @@ class NewRootEntriesAreAddedTest extends TestCase
         $updater->open(__DIR__.'/configs/appendarray.php');
         $expected = file_get_contents(__DIR__ . '/expected/arrayreplacesarray.php');
 
-        // Using the assignment method should just append to the existing values.
+        // Using the assignment method with an array value should replace an existing array.
         $updater->update([
             'test' => ['new-value']
         ]);
