@@ -7,7 +7,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitor;
 use Stillat\WolfPack\Analyzers\ConfigAnalyzer;
-use Stillat\WolfPack\Support\Str;
+use Illuminate\Support\Str;
 
 /**
  * Class ConfigNodeVisitor

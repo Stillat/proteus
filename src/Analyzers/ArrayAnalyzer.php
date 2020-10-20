@@ -3,7 +3,7 @@
 namespace Stillat\WolfPack\Analyzers;
 
 use Exception;
-use Stillat\WolfPack\Support\Str;
+use Illuminate\Support\Str;
 
 /**
  * Class ArrayAnalyzer

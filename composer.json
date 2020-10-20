@@ -4,7 +4,10 @@
   "type": "library",
   "require": {
     "nikic/php-parser": "^4.10",
-    "ext-mbstring": "*"
+    "illuminate/support": "^6.0 || ^7.0 || ^8.0",
+    "ext-mbstring": "*",
+    "phpoption/phpoption": "^1.7",
+    "vlucas/phpdotenv": "^5.2"
   },
   "authors": [
     {
