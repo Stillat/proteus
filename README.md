@@ -71,7 +71,7 @@ And yes, it did add the `new-key` value as the default value for the `env` call 
 There will undoubtedly be changes required overtime, and if you find something not working, please open an issue with
 the input you are supplying and the expected results. Bonus points if you add a test case for it :)
 
-This package is not yet available through packagist until things are tested/validated a bit more, but will be once things are validated it a bit more.
+This package is not yet available through packagist until things are tested/validated a bit more, but will be eventually.
 A nice `Config` wrapper for use within Laravel projects will also come at some point.
 
 ## License
