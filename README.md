@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Config;
 // Change the default locale to 'fr' and save to disk:
 Config::write('app.locale', 'fr');
 
+// Add a new nested entry:
+Config::write('app.new.entry', 'new-value');
+
+// And then update that new entry:
+Config::write('app.new.entry', 'updated-value');
+
 ```
 
 ## Intermediate Usage
