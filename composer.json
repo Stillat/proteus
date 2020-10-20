@@ -1,0 +1,24 @@
+{
+  "name": "stillat/wolfpack",
+  "description": "Provides utilities for parsing and updating Laravel-style PHP configuration files.",
+  "type": "library",
+  "require": {
+    "nikic/php-parser": "^4.10",
+    "ext-mbstring": "*"
+  },
+  "authors": [
+    {
+      "name": "John Koster",
+      "email": "john@stillat.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Stillat\\WolfPack\\": "src"
+    }
+  },
+  "license": "MIT",
+  "require-dev": {
+    "phpunit/phpunit": "^8.5.8"
+  }
+}
