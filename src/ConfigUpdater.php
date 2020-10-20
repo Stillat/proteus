@@ -1,12 +1,12 @@
 <?php
 
-namespace Stillat\WolfPack;
+namespace Stillat\Proteus;
 
 use Exception;
-use Stillat\WolfPack\Analyzers\ArrayAnalyzer;
-use Stillat\WolfPack\Analyzers\ConfigAnalyzer;
-use Stillat\WolfPack\Document\Transformer;
-use Stillat\WolfPack\Writers\TypeWriter;
+use Stillat\Proteus\Analyzers\ArrayAnalyzer;
+use Stillat\Proteus\Analyzers\ConfigAnalyzer;
+use Stillat\Proteus\Document\Transformer;
+use Stillat\Proteus\Writers\TypeWriter;
 
 /**
  * Class ConfigUpdater
@@ -15,7 +15,7 @@ use Stillat\WolfPack\Writers\TypeWriter;
  *
  * This class is a wrapper around the ConfigAnalyzer and the ArrayAnalyzer.
  *
- * @package Stillat\WolfPack
+ * @package Stillat\Proteus
  * @since 1.0.0
  */
 class ConfigUpdater

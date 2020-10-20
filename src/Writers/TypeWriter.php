@@ -1,6 +1,6 @@
 <?php
 
-namespace Stillat\WolfPack\Writers;
+namespace Stillat\Proteus\Writers;
 
 use Exception;
 use PhpParser\Node\Expr\Array_;
@@ -8,15 +8,15 @@ use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\Cast\Double;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Scalar\String_;
-use Stillat\WolfPack\Analyzers\TypeAnalyzer;
-use Stillat\WolfPack\Analyzers\Types;
+use Stillat\Proteus\Analyzers\TypeAnalyzer;
+use Stillat\Proteus\Analyzers\Types;
 
 /**
  * Class TypeWriter
  *
  * Provides a wrapper around the various type writers to convert runtime values to mutable node values.
  *
- * @package Stillat\WolfPack\Writers
+ * @package Stillat\Proteus\Writers
  * @since 1.0.0
  */
 class TypeWriter

@@ -1,6 +1,6 @@
 <?php
 
-namespace Stillat\WolfPack\Analyzers;
+namespace Stillat\Proteus\Analyzers;
 
 use PhpParser\Lexer\Emulative;
 use PhpParser\Node;
@@ -10,17 +10,17 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
 use PhpParser\Parser\Php7;
-use Stillat\WolfPack\Document\Printer;
-use Stillat\WolfPack\Visitors\ConfigNodeVisitor;
-use Stillat\WolfPack\Visitors\CreateParentVisitor;
-use Stillat\WolfPack\Writers\StringWriter;
+use Stillat\Proteus\Document\Printer;
+use Stillat\Proteus\Visitors\ConfigNodeVisitor;
+use Stillat\Proteus\Visitors\CreateParentVisitor;
+use Stillat\Proteus\Writers\StringWriter;
 
 /**
  * Class ConfigAnalyzer
  *
  *
  *
- * @package Stillat\WolfPack\Analyzers
+ * @package Stillat\Proteus\Analyzers
  * @since 1.0.0
  */
 class ConfigAnalyzer

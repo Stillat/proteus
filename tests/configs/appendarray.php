@@ -1,6 +1,6 @@
 <?php
 
-use Stillat\WolfPack\ConfigUpdater;
+use Stillat\Proteus\ConfigUpdater;
 
 return [
 

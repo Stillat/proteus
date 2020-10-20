@@ -35,7 +35,7 @@ return [
 We could do something like the following:
 
 ```php
-use Stillat\WolfPack\ConfigUpdater;
+use Stillat\Proteus\ConfigUpdater;
 
 $updater = new ConfigUpdater();
 $updater->open('./path/to/config.php');

@@ -1,9 +1,9 @@
 <?php
 
-namespace Stillat\WolfPack;
+namespace Stillat\Proteus;
 
 use Illuminate\Support\ServiceProvider;
-use Stillat\WolfPack\Repository\ConfigRepository;
+use Stillat\Proteus\Repository\ConfigRepository;
 
 class WriterServiceProvider extends ServiceProvider
 {

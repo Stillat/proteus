@@ -1,16 +1,16 @@
 <?php
 
-namespace Stillat\WolfPack\Writers;
+namespace Stillat\Proteus\Writers;
 
 use PhpParser\Node\Scalar\String_;
-use Stillat\WolfPack\Contracts\ValueWriterContract;
+use Stillat\Proteus\Contracts\ValueWriterContract;
 
 /**
  * Class StringWriter
  *
  * Provides utilities for converting runtime string values into mutable node values.
  *
- * @package Stillat\WolfPack\Writers
+ * @package Stillat\Proteus\Writers
  * @since 1.0.0
  */
 class StringWriter implements ValueWriterContract

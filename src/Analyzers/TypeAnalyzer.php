@@ -1,6 +1,6 @@
 <?php
 
-namespace Stillat\WolfPack\Analyzers;
+namespace Stillat\Proteus\Analyzers;
 
 use Exception;
 
@@ -9,7 +9,7 @@ use Exception;
  *
  * Provides utilities to analyze runtime value's types.
  *
- * @package Stillat\WolfPack\Analyzers
+ * @package Stillat\Proteus\Analyzers
  * @since 1.0.0
  */
 class TypeAnalyzer

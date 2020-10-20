@@ -1,13 +1,13 @@
 <?php
 
-namespace Stillat\WolfPack\Document;
+namespace Stillat\Proteus\Document;
 
 /**
  * Class Transformer
  *
  * Transforms a temporary document structure into its final, consumable form.
  *
- * @package Stillat\WolfPack\Document
+ * @package Stillat\Proteus\Document
  * @since 1.0.0
  */
 class Transformer

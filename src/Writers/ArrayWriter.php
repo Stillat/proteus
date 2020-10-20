@@ -1,6 +1,6 @@
 <?php
 
-namespace Stillat\WolfPack\Writers;
+namespace Stillat\Proteus\Writers;
 
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -10,7 +10,7 @@ use PhpParser\Node\Expr\ArrayItem;
  *
  * Provides utilities for converting runtime arrays to a mutable node value.
  *
- * @package Stillat\WolfPack\Writers
+ * @package Stillat\Proteus\Writers
  * @since 1.0.0
  */
 class ArrayWriter

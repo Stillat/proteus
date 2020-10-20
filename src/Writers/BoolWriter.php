@@ -1,17 +1,17 @@
 <?php
 
-namespace Stillat\WolfPack\Writers;
+namespace Stillat\Proteus\Writers;
 
 use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Scalar\String_;
-use Stillat\WolfPack\Contracts\ValueWriterContract;
+use Stillat\Proteus\Contracts\ValueWriterContract;
 
 /**
  * Class BoolWriter
  *
  * Provides utilities for converting runtime boolean values to a mutable node value.
  *
- * @package Stillat\WolfPack\Writers
+ * @package Stillat\Proteus\Writers
  * @since 1.0.0
  */
 class BoolWriter implements ValueWriterContract

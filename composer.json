@@ -1,5 +1,5 @@
 {
-  "name": "stillat/wolfpack",
+  "name": "stillat/proteus",
   "description": "Provides utilities for parsing and updating Laravel-style PHP configuration files.",
   "type": "library",
   "require": {
@@ -19,7 +19,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Stillat\\WolfPack\\": "src"
+      "Stillat\\Proteus\\": "src"
     }
   },
   "license": "MIT",

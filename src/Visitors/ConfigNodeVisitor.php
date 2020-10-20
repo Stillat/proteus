@@ -1,12 +1,12 @@
 <?php
 
-namespace Stillat\WolfPack\Visitors;
+namespace Stillat\Proteus\Visitors;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitor;
-use Stillat\WolfPack\Analyzers\ConfigAnalyzer;
+use Stillat\Proteus\Analyzers\ConfigAnalyzer;
 use Illuminate\Support\Str;
 
 /**
@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
  *
  * Visits each AST node and sets information about the parent history.
  *
- * @package Stillat\WolfPack\Visitors
+ * @package Stillat\Proteus\Visitors
  * @since 1.0.0
  */
 class ConfigNodeVisitor implements NodeVisitor

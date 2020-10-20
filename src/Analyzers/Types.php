@@ -1,13 +1,13 @@
 <?php
 
-namespace Stillat\WolfPack\Analyzers;
+namespace Stillat\Proteus\Analyzers;
 
 /**
  * Class Types
  *
  * Provides a known mapping of runtime value types.
  *
- * @package Stillat\WolfPack\Analyzers
+ * @package Stillat\Proteus\Analyzers
  * @since 1.0.0
  */
 class Types

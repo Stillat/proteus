@@ -1,6 +1,6 @@
 <?php
 
-namespace Stillat\WolfPack\Visitors;
+namespace Stillat\Proteus\Visitors;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
@@ -10,7 +10,7 @@ use PhpParser\NodeVisitorAbstract;
  *
  * Visits each node and sets its parent relationship.
  *
- * @package Stillat\WolfPack\Visitors
+ * @package Stillat\Proteus\Visitors
  * @since 1.0.0
  */
 class CreateParentVisitor extends NodeVisitorAbstract

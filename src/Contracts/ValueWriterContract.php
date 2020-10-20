@@ -1,13 +1,13 @@
 <?php
 
-namespace Stillat\WolfPack\Contracts;
+namespace Stillat\Proteus\Contracts;
 
 /**
  * Interface ValueWriterContract
  *
  * Provides a consistent interface for converting runtime value types to mutable node types.
  *
- * @package Stillat\WolfPack\Contracts
+ * @package Stillat\Proteus\Contracts
  * @since 1.0.0
  */
 interface ValueWriterContract

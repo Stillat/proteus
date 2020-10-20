@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Stillat\WolfPack\ConfigUpdater;
+use Stillat\Proteus\ConfigUpdater;
 
 if (!function_exists('env')) {
     function env($key, $default= null) {}

@@ -1,6 +1,6 @@
 <?php
 
-namespace Stillat\WolfPack\Analyzers;
+namespace Stillat\Proteus\Analyzers;
 
 use Exception;
 use Illuminate\Support\Str;
@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
  *
  * Analyzes an existing configuration file by loaded it into memory and inspecting its values.
  *
- * @package Stillat\WolfPack\Analyzers
+ * @package Stillat\Proteus\Analyzers
  * @since 1.0.0
  */
 class ArrayAnalyzer

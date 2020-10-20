@@ -1,6 +1,6 @@
 <?php
 
-namespace Stillat\WolfPack\Document;
+namespace Stillat\Proteus\Document;
 
 use Exception;
 use PhpParser\Builder\Class_;
@@ -17,7 +17,7 @@ use PhpParser\PrettyPrinter\Standard;
  *
  * Provides utilities for converting an AST tree back to a PHP document.
  *
- * @package Stillat\WolfPack\Document
+ * @package Stillat\Proteus\Document
  * @since 1.0.0
  */
 class Printer extends Standard

@@ -1,13 +1,13 @@
 <?php
 
-namespace Stillat\WolfPack\Analyzers;
+namespace Stillat\Proteus\Analyzers;
 
 /**
  * Class MutationGraph
  *
  * Represents a collection of mutations to apply to a configuration document.
  *
- * @package Stillat\WolfPack\Analyzers
+ * @package Stillat\Proteus\Analyzers
  * @since 1.0.0
  */
 class MutationGraph

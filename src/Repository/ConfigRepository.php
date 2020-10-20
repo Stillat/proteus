@@ -1,11 +1,11 @@
 <?php
 
-namespace Stillat\WolfPack\Repository;
+namespace Stillat\Proteus\Repository;
 
 use SplFileInfo;
 use Illuminate\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
-use Stillat\WolfPack\ConfigUpdater;
+use Stillat\Proteus\ConfigUpdater;
 use Symfony\Component\Finder\Finder;
 
 class ConfigRepository extends Repository
