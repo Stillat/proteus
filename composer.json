@@ -4,7 +4,9 @@
   "type": "library",
   "require": {
     "nikic/php-parser": "^4.10",
+    "illuminate/config": "^6.0 || ^7.0 || ^8.0",
     "illuminate/support": "^6.0 || ^7.0 || ^8.0",
+    "symfony/finder": "^5.1",
     "ext-mbstring": "*",
     "phpoption/phpoption": "^1.7",
     "vlucas/phpdotenv": "^5.2"
