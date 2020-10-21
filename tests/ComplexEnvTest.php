@@ -22,7 +22,6 @@ class ComplexEnvTest extends TestCase
         $doc = $updater->getDocument();
 
         $this->assertEquals($expected, $doc);
-
     }
 
     public function testThatMultipleEnvCastsSucceed()
