@@ -344,11 +344,12 @@ class ArrayAnalyzer
             ];
         }
 
-        $structure = array_reverse($structure);
+       $structure = array_reverse($structure);
 
         $lastElement = 0;
 
         if (!is_array($value)) {
+            $structure = array_reverse($structure);
             $lastElement = array_pop($structure);
         }
 

@@ -13,8 +13,8 @@ return [
     |
     */
     'timezone' => 'UTC', 'test' => [
-        'type' => [
-            'nested' => 1,
+        'nested' => [
+            'type' => 1,
         ],
     ]
 
