@@ -348,6 +348,15 @@ class ConfigAnalyzer
                         return;
                     }
                 }
+            }  elseif ($currentNode->value instanceof Node\Expr\Cast\Int_) {
+                $stringCastNode = $currentNode->value;
+
+                if ($stringCastNode->expr instanceof FuncCall) {
+                    if ($this->isEnvCall($stringCastNode->expr)) {
+                        $this->replaceEnvCallDefault($currentNode->value->expr, $node);
+                        return;
+                    }
+                }
             } elseif ($currentNode->value instanceof FuncCall) {
 
                 if ($this->isEnvCall($currentNode->value)) {

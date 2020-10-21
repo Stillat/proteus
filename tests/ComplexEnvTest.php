@@ -32,6 +32,7 @@ class ComplexEnvTest extends TestCase
         $updater->update([
             'debug' => false,
             'string' => 'replace',
+            'int' => '20',
             'nested.test' => true,
             'test' => 40,
             'test2' => 60.3,
