@@ -31,6 +31,7 @@ class ComplexEnvTest extends TestCase
         $expected = file_get_contents(__DIR__ . '/expected/casts.php');
         $updater->update([
             'debug' => false,
+            'string' => 'replace',
             'nested.test' => true,
             'test' => 40,
             'test2' => 60.3,

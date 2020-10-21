@@ -3,7 +3,7 @@
 return [
 
     'debug' => (bool) env('APP_DEBUG', true),
-
+    'string' => (string) env('STRING_TEST', 'test'),
     'nested' => [
         'test' => (bool) env('TEST', false)
     ],
