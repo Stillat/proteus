@@ -5,6 +5,7 @@ return [
     'debug' => (bool) env('APP_DEBUG', true),
     'string' => (string) env('STRING_TEST', 'test'),
     'int' => (int) env('INT_TEST', '10'),
+    'bool' => (bool) env('BOOL_TEST', '1'),
     'nested' => [
         'test' => (bool) env('TEST', false)
     ],
