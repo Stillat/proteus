@@ -133,7 +133,7 @@ class ConfigAnalyzer
     private function wrapInArrayItem($key, $node)
     {
         if ($node instanceof Array_) {
-            $node = $this->checkForNestedUselessArrays($node);
+           $node = $this->checkForNestedUselessArrays($node);
         }
 
         $stringWriter = new StringWriter();
@@ -182,6 +182,8 @@ class ConfigAnalyzer
                         }
                     }
                 }
+            } else {
+                $newNodes[] = $item;
             }
         }
 

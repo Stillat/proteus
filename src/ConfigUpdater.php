@@ -118,7 +118,7 @@ class ConfigUpdater
                     $this->analyzer->replaceNodeValue($update, $constructedValue, true);
                 }
             } else {
-                // How may existing entires are at the desired level?
+                // How may existing entries are at the desired level?
                 $depthCount = $this->arrayAnalyzer->getDepthMatchCount($update);
                 $insertPoint = $this->arrayAnalyzer->getInsertionPoint($update);
                 $rootReplacement = $this->arrayAnalyzer->getAbsoluteRoot($update);
@@ -136,9 +136,11 @@ class ConfigUpdater
                         $this->analyzer->insertRootValue($update, $constructedValue);
                     }
                 } else {
+
                     if ($this->arrayAnalyzer->isCompound($update)) {
                         $components = $this->arrayAnalyzer->getCompoundWithoutRoot($update);
                         $compoundStruct = $this->arrayAnalyzer->getCompoundStructure($components, $changes[$update]);
+
 
                         $constructedValue = TypeWriter::write($compoundStruct);
 
