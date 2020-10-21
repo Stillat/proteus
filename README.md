@@ -7,16 +7,90 @@ not been fully worked through and tested.
 ```php
 <?php
 
-use Illuminate\Support\Facades\Config;
+Stillat\Proteus\Support\Facades\ConfigWriter;
 
 // Change the default locale to 'fr' and save to disk:
-Config::write('app.locale', 'fr');
+ConfigWriter::write('app.locale', 'fr');
 
 // Add a new nested entry:
-Config::write('app.new.entry', 'new-value');
+ConfigWriter::write('app.new.entry', 'new-value');
 
 // And then update that new entry:
-Config::write('app.new.entry', 'updated-value');
+ConfigWriter::write('app.new.entry', 'updated-value');
+
+```
+
+You may also perform many operations in a single step to reduce IO access; when writing many configuration items, only provide the configuration namespace you wish to update:
+
+
+```php
+<?php
+
+Stillat\Proteus\Support\Facades\ConfigWriter;
+
+
+ConfigWriter::writeMany('app', [
+    'locale' => 'fr',
+    'timezone' => 'Europe/Paris'
+]);
+
+
+```
+
+If you only want the document contents (without writing to disk), you may use the `preview` and `previewMany` counterparts:
+
+
+```php
+<?php
+
+Stillat\Proteus\Support\Facades\ConfigWriter;
+
+$document = ConfigWriter::preview('app.locale', 'fr');
+
+$document = ConfigWriter::previewMany('app', [
+    'locale' => 'fr',
+    'timezone' => 'Europe/Paris'
+]);
+
+
+```
+
+## Preventing Changes to Configuration Items
+
+You may use the `guard` method to prevent changes to specific configuration entries:
+
+```php
+<?php
+
+Stillat\Proteus\Support\Facades\ConfigWriter;
+
+ConfigWriter::guard('app.key');
+
+```
+
+If a change is detected for `app.key`, an instance of `GuardedConfigurationMutationException` will be thrown.
+
+You may also restrict changes on entire configuration namespaces:
+
+
+```php
+<?php
+
+Stillat\Proteus\Support\Facades\ConfigWriter;
+
+ConfigWriter::guard('app.*');
+
+```
+
+Or to just a sub-section of the configuration:
+
+
+```php
+<?php
+
+Stillat\Proteus\Support\Facades\ConfigWriter;
+
+ConfigWriter::guard('app.providers*');
 
 ```
 
