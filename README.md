@@ -4,6 +4,8 @@ not been fully worked through and tested.
 
 ## Basic Usage
 
+The `ConfigWriter` facade will automatically load and manage your existing Laravel configuration files, and dramatically simplifies the usage of the configuration writer:
+
 ```php
 <?php
 
@@ -20,7 +22,6 @@ ConfigWriter::write('app.new.entry', 'updated-value');
 
 ```
 
-You may also perform many operations in a single step to reduce IO access; when writing many configuration items, only provide the configuration namespace you wish to update:
 
 
 ```php
