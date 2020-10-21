@@ -33,6 +33,7 @@ class ComplexEnvTest extends TestCase
             'debug' => false,
             'string' => 'replace',
             'int' => '20',
+            'double' => '40.2',
             'bool' => '0',
             'nested.test' => true,
             'test' => 40,

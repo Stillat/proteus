@@ -133,7 +133,7 @@ class ConfigAnalyzer
     private function wrapInArrayItem($key, $node)
     {
         if ($node instanceof Array_) {
-           $node = $this->checkForNestedUselessArrays($node);
+            $node = $this->checkForNestedUselessArrays($node);
         }
 
         $stringWriter = new StringWriter();
@@ -348,11 +348,20 @@ class ConfigAnalyzer
                         return;
                     }
                 }
-            }  elseif ($currentNode->value instanceof Node\Expr\Cast\Int_) {
-                $stringCastNode = $currentNode->value;
+            } elseif ($currentNode->value instanceof Node\Expr\Cast\Int_) {
+                $intCastNode = $currentNode->value;
 
-                if ($stringCastNode->expr instanceof FuncCall) {
-                    if ($this->isEnvCall($stringCastNode->expr)) {
+                if ($intCastNode->expr instanceof FuncCall) {
+                    if ($this->isEnvCall($intCastNode->expr)) {
+                        $this->replaceEnvCallDefault($currentNode->value->expr, $node);
+                        return;
+                    }
+                }
+            } elseif ($currentNode->value instanceof Node\Expr\Cast\Double) {
+                $doubleCastNode = $currentNode->value;
+
+                if ($doubleCastNode->expr instanceof FuncCall) {
+                    if ($this->isEnvCall($doubleCastNode->expr)) {
                         $this->replaceEnvCallDefault($currentNode->value->expr, $node);
                         return;
                     }

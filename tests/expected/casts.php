@@ -6,6 +6,7 @@ return [
     'string' => (string) env('STRING_TEST', 'replace'),
     'int' => (int) env('INT_TEST', '20'),
     'bool' => (bool) env('BOOL_TEST', '0'),
+    'double' => (float) env('DOUBLE_TEST', '40.2'),
     'nested' => [
         'test' => (bool) env('TEST', true)
     ],
