@@ -72,4 +72,16 @@ class SimpleReplacementTest extends TestCase
         $this->assertEquals($expected, $doc);
     }
 
+    public function testThatCustomFunctionsAreRetained()
+    {
+        $updater = new ConfigUpdater();
+        $updater->open(__DIR__.'/configs/retain/func.php');
+        $expected = file_get_contents(__DIR__ . '/expected/retain/func.php');
+        $updater->update([]);
+
+        $doc = $updater->getDocument();
+
+        $this->assertEquals($expected, $doc);
+    }
+
 }
