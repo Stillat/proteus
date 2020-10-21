@@ -71,13 +71,17 @@ class ConfigUpdater
     public function update(array $changes)
     {
         $changesToMake = $this->arrayAnalyzer->getChanges($changes);
-
         foreach ($changesToMake->insertions as $insert) {
             $valuesToInsert = TypeWriter::write($changes[$insert]);
 
-
             if ($this->analyzer->hasNode($insert)) {
-                $this->analyzer->replaceNodeValue($insert, $valuesToInsert);
+                $completeReplace = false;
+
+                if (is_array($changes[$insert]) && count($changes[$insert]) === 0) {
+                    $completeReplace = true;
+                }
+
+                $this->analyzer->replaceNodeValue($insert, $valuesToInsert, $completeReplace);
             } else {
 
                 if ($this->arrayAnalyzer->isCompound($insert)) {
