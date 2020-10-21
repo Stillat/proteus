@@ -374,5 +374,4 @@ class ArrayAnalyzer
         return $parts[0];
     }
 
-
 }
