@@ -79,4 +79,21 @@ class ComplexNestedTest extends TestCase
         $this->assertEquals($expected, $doc);
     }
 
+    public function testThatComplexReplacementsAllowAddingNewElements()
+    {
+        $updater = new ConfigUpdater();
+        $updater->open(__DIR__ . '/configs/nested/004.php');
+        $expected = file_get_contents(__DIR__ . '/expected/nested/005.php');
+        $updater->update([
+            'nested.new.key' => [
+                'these.keys' => 'replacement value',
+                'this' => 'should be added'
+            ]
+        ]);
+
+        $doc = $updater->getDocument();
+
+        $this->assertEquals($expected, $doc);
+    }
+
 }
