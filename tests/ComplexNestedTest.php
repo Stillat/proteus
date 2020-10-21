@@ -9,7 +9,7 @@ class ComplexNestedTest extends TestCase
     public function testThatMixedTypeValuesAreAddedWhenNesting()
     {
         $updater = new ConfigUpdater();
-        $updater->open(__DIR__.'/configs/nested/001.php');
+        $updater->open(__DIR__ . '/configs/nested/001.php');
         $expected = file_get_contents(__DIR__ . '/expected/nested/001.php');
         $updater->update([
             'test.new' => [
@@ -26,6 +26,20 @@ class ComplexNestedTest extends TestCase
                     ]
                 ]
             ]
+        ]);
+
+        $doc = $updater->getDocument();
+
+        $this->assertEquals($expected, $doc);
+    }
+
+    public function testThatNonArrayValuesUseLastKeyElementForNewElement()
+    {
+        $updater = new ConfigUpdater();
+        $updater->open(__DIR__ . '/configs/nested/002.php');
+        $expected = file_get_contents(__DIR__ . '/expected/nested/002.php');
+        $updater->update([
+            'test.nested.type' => 1
         ]);
 
         $doc = $updater->getDocument();

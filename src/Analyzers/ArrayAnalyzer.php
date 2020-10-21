@@ -345,7 +345,12 @@ class ArrayAnalyzer
         }
 
         $structure = array_reverse($structure);
-        $lastElement = array_unshift($structure);
+
+        $lastElement = 0;
+
+        if (!is_array($value)) {
+            $lastElement = array_pop($structure);
+        }
 
         $last = [
             $lastElement => $value
@@ -356,7 +361,6 @@ class ArrayAnalyzer
                 $struct => $last
             ];
         }
-
 
         return $last;
     }
