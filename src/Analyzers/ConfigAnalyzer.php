@@ -279,16 +279,36 @@ class ConfigAnalyzer
         if ($currentNode instanceof ArrayItem) {
             if ($currentNode->value instanceof Array_ && $node instanceof Array_) {
 
+
                 if ($completeReplace === false) {
+
                     /** @var ArrayItem $mergeItem */
                     foreach ($node->items as $mergeItem) {
+                        $mergeItemKeyValue = $mergeItem->key->value;
+
                         if ($mergeItem->value instanceof Array_) {
                             foreach ($mergeItem->value->items as $subMergeItem) {
                                 $currentNode->value->items[] = $subMergeItem;
                             }
-
                         } else {
-                            $currentNode->value->items[] = $mergeItem;
+                            // Check if this array already has a value with the same key.
+
+                            $didReplace = false;
+                            foreach ($currentNode->value->items as $checkNode) {
+                                if ($checkNode instanceof ArrayItem) {
+                                    $checkNodeKeyValue = $checkNode->key->value;
+
+                                    if ($mergeItemKeyValue === $checkNodeKeyValue) {
+                                        $checkNode->value = $mergeItem->value;
+                                        $didReplace = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if ($didReplace === false) {
+                                $currentNode->value->items[] = $mergeItem;
+                            }
                         }
                     }
                 } else {

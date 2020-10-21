@@ -47,4 +47,36 @@ class ComplexNestedTest extends TestCase
         $this->assertEquals($expected, $doc);
     }
 
+    public function testThatDotNotationKeysAreNotExpandedWhenUsedInsideArrays()
+    {
+        $updater = new ConfigUpdater();
+        $updater->open(__DIR__ . '/configs/nested/003.php');
+        $expected = file_get_contents(__DIR__ . '/expected/nested/003.php');
+        $updater->update([
+            'nested.new.key' => [
+                'these.keys' => 'should not get expanded'
+            ]
+        ]);
+
+        $doc = $updater->getDocument();
+
+        $this->assertEquals($expected, $doc);
+    }
+
+    public function testThatComplexNestedKeysGetValuesReplaced()
+    {
+        $updater = new ConfigUpdater();
+        $updater->open(__DIR__ . '/configs/nested/004.php');
+        $expected = file_get_contents(__DIR__ . '/expected/nested/004.php');
+        $updater->update([
+            'nested.new.key' => [
+                'these.keys' => 'replacement value'
+            ]
+        ]);
+
+        $doc = $updater->getDocument();
+
+        $this->assertEquals($expected, $doc);
+    }
+
 }
