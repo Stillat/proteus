@@ -185,6 +185,26 @@ ConfigWriter::edit('app')-merge('providers', [
 
 The `merge` method will make sure there are no duplicates in the resulting configuration values.
 
+### Performing Multiple Actions
+
+You may perform multiple actions at once by chaining them. Chained actions are performed in the order they are specified.
+
+```php
+<?php
+
+use Stillat\Proteus\Support\Facades\ConfigWriter;
+
+ConfigWriter::edit('app')
+    ->set([
+        'locale' => 'fr',
+        'timezone' => 'Europe/Paris'  
+    ])->merge('providers', [
+        SomeProvider::class,
+        SomeOtherProvider::class
+    ])->set('fallback_locale', 'fr')->save();
+````
+
+
 ## Advanced Usage
 
 Given the following input configuration file:
