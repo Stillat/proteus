@@ -22,7 +22,7 @@ ConfigWriter::write('app.new.entry', 'updated-value');
 
 ```
 
-
+You may also write many configuration items at once:
 
 ```php
 <?php
@@ -97,6 +97,96 @@ ConfigWriter::guard('app.providers*');
 
 ## Intermediate Usage
 
+For more control to remove, replace, and even merge array values with existing configuration values, we can use the `edit` helper method. This helper method expects a configuration namespace, and returns access to a convenient wrapper to perform a variety of configuration changes.
+
+In the following example, we will start an edit instance for the `app` configuration namespace, modify a few values, and save the results to a `$document` variable:
+
+```php
+<?php
+
+use Stillat\Proteus\Support\Facades\ConfigWriter;
+
+$document = ConfigWriter::edit('app')
+    ->set('locale', 'fr')
+    ->set('timezone', 'Europe/Paris')
+    ->preview();
+```
+
+We can save ourselves some keystrokes by supplying an array to the `set` method:
+
+```php
+<?php
+
+use Stillat\Proteus\Support\Facades\ConfigWriter;
+
+$document = ConfigWriter::edit('app')
+    ->set([
+        'locale' => 'fr',
+        'timezone' => 'Europe/Paris'  
+    ])->preview();
+```
+
+To save the changes instead of assigning them to a value, we can call `save` instead of `preview`:
+
+```php
+<?php
+
+use Stillat\Proteus\Support\Facades\ConfigWriter;
+
+ConfigWriter::edit('app')
+    ->set([
+        'locale' => 'fr',
+        'timezone' => 'Europe/Paris'  
+    ])->save();
+```
+
+### Removing Existing Configuration Values
+
+You may use the `remove` method to remove an existing configuration item:
+
+```php
+<?php
+
+use Stillat\Proteus\Support\Facades\ConfigWriter;
+
+ConfigWriter::edit('app')-remove('locale')->save();
+```
+
+This method will also remove the configuration key from the configuration file, not just the value!
+
+### Replacing an Existing Configuration Value
+
+You may use the `replace` method to completely replace an existing configuration item:
+
+```php
+<?php
+
+use Stillat\Proteus\Support\Facades\ConfigWriter;
+
+ConfigWriter::edit('app')-replace('providers', [
+    // The new list of providers.
+])->save();
+```
+
+### Merging Array Configuration Items
+
+You may use the `merge` method to add new values to an existing configuration item. For example, the following would add the `SomeProvider` and `SomeOtherProvider` class providers to the list of application providers:
+
+```php
+<?php
+
+use Stillat\Proteus\Support\Facades\ConfigWriter;
+
+ConfigWriter::edit('app')-merge('providers', [
+    SomeProvider::class,
+    SomeOtherProvider::class
+])->save();
+```
+
+The `merge` method will make sure there are no duplicates in the resulting configuration values.
+
+## Advanced Usage
+
 Given the following input configuration file:
 
 ```php
@@ -107,7 +197,7 @@ return [
 ];
 ```
 
-We could do something like the following:
+We can manually create a configuration updater and apply our changes manually:
 
 ```php
 use Stillat\Proteus\ConfigUpdater;
@@ -156,7 +246,7 @@ And yes, it did add the `new-key` value as the default value for the `env` call 
 * Handles adding new deeply nested keys,
 * Allows for appending configuration files to an existing configuration array,
 * Allows for overwriting configuration files in an existing configuration array,
-* Simple `Config` facade extension
+* Simple `ConfigWriter` facade
 
 ## Road Map
 
