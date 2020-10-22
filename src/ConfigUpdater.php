@@ -73,6 +73,21 @@ class ConfigUpdater
     }
 
     /**
+     * Attempts to remove the key and its value from the configuration.
+     *
+     * @param string $key The key to remove.
+     * @return bool
+     */
+    public function remove($key)
+    {
+        if ($this->analyzer->hasNode($key)) {
+            return $this->analyzer->removeNode($key);
+        }
+
+        return false;
+    }
+
+    /**
      * Attempts to apply the requested changes to the existing configuration values.
      *
      * @param array $changes The changes to apply to the existing configuration.

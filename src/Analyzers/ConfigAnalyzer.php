@@ -273,6 +273,63 @@ class ConfigAnalyzer
     }
 
     /**
+     * Removes the key and its associated value from the configuration.
+     *
+     * @param string $key The key to remove.
+     * @return bool
+     */
+    public function removeNode($key)
+    {
+        $foundNode = false;
+
+        $currentNode = $this->nodeMapping[$key];
+
+        if ($currentNode instanceof ArrayItem) {
+            $parent = $this->getParentKey($key);
+
+            if ($this->hasNode($parent)) {
+                $parentNode = $this->nodeMapping[$parent];
+                $relativeKey = $this->getLastKeySegment($key);
+
+                if ($parentNode instanceof ArrayItem && $parentNode->value instanceof Array_) {
+                    $newItems = [];
+
+                    /** @var ArrayItem $valueItem */
+                    foreach ($parentNode->value->items as $valueItem) {
+                        $valueItemKey = $valueItem->key->value;
+
+                        if ($valueItemKey === null || $valueItemKey !== $relativeKey) {
+                            $newItems[] = $valueItem;
+                        } else {
+                            $foundNode = true;
+                        }
+                    }
+
+                    // Reassign the value items, without the node to remove.
+                    $parentNode->value->items = $newItems;
+                }
+            }
+        }
+
+        return $foundNode;
+    }
+
+    protected function getLastKeySegment($key)
+    {
+        $parts = explode('.', $key);
+
+        return array_pop($parts);
+    }
+
+    protected function getParentKey($key)
+    {
+        $parts = explode('.', $key);
+        array_pop($parts);
+
+        return implode('.', $parts);
+    }
+
+    /**
      * Attempts to replace a value at a known location with the provided node value.
      *
      * @param string $key The replacement location.
@@ -468,6 +525,7 @@ class ConfigAnalyzer
     {
         return $this->sourceNodes;
     }
+
 
     /**
      * Converts the mutated configuration back to a PHP document.
