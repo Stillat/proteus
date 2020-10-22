@@ -40,6 +40,7 @@ class InternalStateTest extends TestCase
             'mailers.array',
             'mailers.array.transport',
             'from',
+            'from.address',
             'from.name',
             'markdown',
             'markdown.theme',
