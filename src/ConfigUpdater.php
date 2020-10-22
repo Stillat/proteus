@@ -63,6 +63,16 @@ class ConfigUpdater
     }
 
     /**
+     * Returns access to the current ConfigAnalyzer state.
+     *
+     * @return ConfigAnalyzer
+     */
+    public function config()
+    {
+        return $this->analyzer;
+    }
+
+    /**
      * Attempts to apply the requested changes to the existing configuration values.
      *
      * @param array $changes The changes to apply to the existing configuration.

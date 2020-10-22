@@ -83,6 +83,13 @@ class ConfigAnalyzer
     private $nodeMapping = [];
 
     /**
+     * A list of all the original source nodes, before updates.
+     *
+     * @var array
+     */
+    private $sourceNodes = [];
+
+    /**
      * The root node, if any.
      *
      * @var null|Node
@@ -448,6 +455,18 @@ class ConfigAnalyzer
         $refTraverser->traverse($parentStatements);
         $this->newStmts = $parentStatements;
         $this->rootNode = $this->newStmts[0]->expr;
+
+        $this->sourceNodes = array_keys($this->nodeMapping);
+    }
+
+    /**
+     * Returns a list of all source node keys.
+     *
+     * @return array
+     */
+    public function getSourceNodeKeys()
+    {
+        return $this->sourceNodes;
     }
 
     /**
