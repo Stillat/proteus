@@ -22,4 +22,16 @@ class RemoveValuesTest extends TestCase
         $this->assertEquals($expected, $doc);
     }
 
+    public function testThatEntireArraysCanBeRemoved()
+    {
+        $updater = new ConfigUpdater();
+        $updater->open(__DIR__.'/configs/mail.php');
+        $expected = file_get_contents(__DIR__ . '/expected/remove/002.php');
+        $updater->remove('from');
+
+        $doc = $updater->getDocument();
+
+        $this->assertEquals($expected, $doc);
+    }
+
 }
