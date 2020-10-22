@@ -112,7 +112,7 @@ $document = ConfigWriter::edit('app')
     ->preview();
 ```
 
-We can save ourselves some keystrokes by supplying an array to the `set` method:
+We can save ourselves some keystrokes by supplying a key/value pair to the `set` method:
 
 ```php
 <?php
