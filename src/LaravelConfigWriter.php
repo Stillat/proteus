@@ -248,11 +248,11 @@ class LaravelConfigWriter implements ConfigWriterContract
         $this->checkChangesWithGuard($namespace, $changes);
 
         if (!file_exists($file)) {
-            throw new ConfigNotFoundException("Config file for '{$key}' could not be located.");
+            throw new ConfigNotFoundException("Config file for '{$namespace}' could not be located.");
         }
 
         if (!is_writable($file)) {
-            throw new ConfigNotWriteableException("Config file for '{$key}' is not writeable.");
+            throw new ConfigNotWriteableException("Config file for '{$namespace}' is not writeable.");
         }
 
         $configUpdater = new ConfigUpdater();
@@ -277,7 +277,7 @@ class LaravelConfigWriter implements ConfigWriterContract
         $configDetails = $this->getFile($configNamespace);
 
         if ($configDetails === null) {
-            throw new ConfigNotFoundException("Could not locate configuration for '{$key}'.");
+            throw new ConfigNotFoundException("Could not locate configuration for '{$configNamespace}'.");
         }
 
         $file = $configDetails[self::KEY_FILEPATH];
