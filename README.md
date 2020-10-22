@@ -152,7 +152,7 @@ use Stillat\Proteus\Support\Facades\ConfigWriter;
 ConfigWriter::edit('app')-remove('locale')->save();
 ```
 
-This method will also remove the configuration key from the configuration file, not just the value!
+This method will also remove the configuration key from the configuration file - not just the value!
 
 ### Replacing an Existing Configuration Value
 
