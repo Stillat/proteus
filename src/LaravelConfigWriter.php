@@ -2,6 +2,7 @@
 
 namespace Stillat\Proteus;
 
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\Str;
 use SplFileInfo;
 use Illuminate\Contracts\Foundation\Application;
@@ -55,9 +56,17 @@ class LaravelConfigWriter implements ConfigWriterContract
      */
     protected $guardedConfigEntries = [];
 
-    public function __construct(Application $app)
+    /**
+     * The Repository implementation instance.
+     *
+     * @var Repository|null
+     */
+    protected $configRepo = null;
+
+    public function __construct(Application $app, Repository $configRepo)
     {
         $this->app = $app;
+        $this->configRepo = $configRepo;
         $this->files = $this->getConfigurationFiles($this->app);
 
         // Produces a sorted mapping.
@@ -140,6 +149,17 @@ class LaravelConfigWriter implements ConfigWriterContract
     }
 
     /**
+     * Retrieves the value for the provided key.
+     * 
+     * @param string $key The configuration key.
+     * @return mixed
+     */
+    public function getConfigItem($key)
+    {
+        return $this->configRepo->get($key);
+    }
+
+    /**
      * Checks if a configuration file with the provided key exists.
      *
      * @param string $key The key to check.
@@ -176,7 +196,7 @@ class LaravelConfigWriter implements ConfigWriterContract
     {
         $document = $this->preview($key, $value);
         $details = $this->getFile($key);
-        $path = $document[self::KEY_FILEPATH];
+        $path = $details[self::KEY_FILEPATH];
 
         $result = file_put_contents($path, $document);
 
@@ -185,6 +205,17 @@ class LaravelConfigWriter implements ConfigWriterContract
         }
 
         return true;
+    }
+
+    /**
+     * Returns an update wrapper for the provided configuration namespace.
+     *
+     * @param string $namespace The configuration instance.
+     * @return ConfigUpdateWrapper
+     */
+    public function edit($namespace)
+    {
+        return new ConfigUpdateWrapper($this, $namespace);
     }
 
     /**
@@ -201,7 +232,7 @@ class LaravelConfigWriter implements ConfigWriterContract
     {
         $document = $this->previewMany($configNamespace, $values);
         $details = $this->getFile($configNamespace);
-        $path = $document[self::KEY_FILEPATH];
+        $path = $details[self::KEY_FILEPATH];
 
         $result = file_put_contents($path, $document);
 
@@ -223,8 +254,19 @@ class LaravelConfigWriter implements ConfigWriterContract
     {
         $allDotKeys = RecursiveKeyAnalyzer::getDotKeysRecursively($changes, $namespace);
 
+        $this->checkGuard($allDotKeys);
+    }
+
+    /**
+     * Checks the provided keys against any resricted configuration levels.
+     *
+     * @param string[] $keys The keys to check.
+     * @throws GuardedConfigurationMutationException
+     */
+    public function checkGuard($keys)
+    {
         foreach ($this->guardedConfigEntries as $guardedConfig) {
-            foreach ($allDotKeys as $keyToCheck) {
+            foreach ($keys as $keyToCheck) {
                 if (Str::is($guardedConfig, $keyToCheck)) {
                     throw new GuardedConfigurationMutationException("Cannot modify configuration value at '{$keyToCheck}'.");
                 }
@@ -248,11 +290,11 @@ class LaravelConfigWriter implements ConfigWriterContract
         $this->checkChangesWithGuard($namespace, $changes);
 
         if (!file_exists($file)) {
-            throw new ConfigNotFoundException("Config file for '{$namespace}' could not be located.");
+            throw new ConfigNotFoundException("Config file for '{$key}' could not be located.");
         }
 
         if (!is_writable($file)) {
-            throw new ConfigNotWriteableException("Config file for '{$namespace}' is not writeable.");
+            throw new ConfigNotWriteableException("Config file for '{$key}' is not writeable.");
         }
 
         $configUpdater = new ConfigUpdater();
@@ -277,12 +319,45 @@ class LaravelConfigWriter implements ConfigWriterContract
         $configDetails = $this->getFile($configNamespace);
 
         if ($configDetails === null) {
-            throw new ConfigNotFoundException("Could not locate configuration for '{$configNamespace}'.");
+            throw new ConfigNotFoundException("Could not locate configuration for '{$key}'.");
         }
 
         $file = $configDetails[self::KEY_FILEPATH];
 
         return $this->getChanges($file, $configNamespace, $values);
+    }
+
+    /**
+     * Creates and returns a ConfigUpdater instance for the requested namespace.
+     *
+     * @param string $namespace The configuration namespace.
+     * @return ConfigUpdater
+     * @throws ConfigNotFoundException
+     * @throws ConfigNotWriteableException
+     */
+    public function getUpdater($namespace)
+    {
+        $configDetails = $this->getFile($namespace);
+
+        if ($configDetails === null) {
+            throw new ConfigNotFoundException("Could not locate configuration for '{$key}'.");
+        }
+
+        $file = $configDetails[self::KEY_FILEPATH];
+
+
+        if (!file_exists($file)) {
+            throw new ConfigNotFoundException("Config file for '{$key}' could not be located.");
+        }
+
+        if (!is_writable($file)) {
+            throw new ConfigNotWriteableException("Config file for '{$key}' is not writeable.");
+        }
+
+        $configUpdater = new ConfigUpdater();
+        $configUpdater->open($file);
+
+        return $configUpdater;
     }
 
     /**

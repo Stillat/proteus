@@ -50,6 +50,32 @@ class ConfigUpdater
     }
 
     /**
+     * Attempts to remove the key and its value from the configuration.
+     *
+     * @param string $key The key to remove.
+     * @return bool
+     */
+    public function remove($key)
+    {
+        if ($this->analyzer->hasNode($key)) {
+            return $this->analyzer->removeNode($key);
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns access to the current ConfigAnalyzer state.
+     * Replaces a node's value with the provided new value.
+     *
+     * @return ConfigAnalyzer
+     */
+    public function config()
+    {
+        return $this->analyzer;
+    }
+
+    /**
      * Opens the provided file and parses the configuration values.
      *
      * @param string $filePath The file to open.
@@ -63,28 +89,17 @@ class ConfigUpdater
     }
 
     /**
-     * Returns access to the current ConfigAnalyzer state.
+     * Replaces a node's value with the provided new value.
      *
-     * @return ConfigAnalyzer
+     * @param string $key The key to update.
+     * @param mixed $value The value to replace.
+     * @throws Exception
      */
-    public function config()
-    {
-        return $this->analyzer;
-    }
-
-    /**
-     * Attempts to remove the key and its value from the configuration.
-     *
-     * @param string $key The key to remove.
-     * @return bool
-     */
-    public function remove($key)
+    public function replace($key, $value)
     {
         if ($this->analyzer->hasNode($key)) {
-            return $this->analyzer->removeNode($key);
+            $this->analyzer->replaceNode($key, TypeWriter::write($value));
         }
-
-        return false;
     }
 
     /**

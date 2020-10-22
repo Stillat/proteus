@@ -273,6 +273,21 @@ class ConfigAnalyzer
     }
 
     /**
+     * Replaces a node's value with the provided new value.
+     *
+     * @param string $key The key.
+     * @param mixed $newValue The value to insert.
+     */
+    public function replaceNode($key, $newValue)
+    {
+        $currentNode = $this->nodeMapping[$key];
+
+        if ($currentNode instanceof ArrayItem) {
+            $currentNode->value = $newValue;
+        }
+    }
+
+    /**
      * Removes the key and its associated value from the configuration.
      *
      * @param string $key The key to remove.
