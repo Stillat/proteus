@@ -132,7 +132,7 @@ class ArrayAnalyzer
      */
     public function isCompound($key)
     {
-        return count(explode('.', $key)) > 0;
+        return count(explode('.', $key)) > 1;
     }
 
     /**
