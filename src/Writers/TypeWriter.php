@@ -8,6 +8,7 @@ use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\Cast\Double;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Expr\FuncCall;
 use Stillat\Proteus\Analyzers\TypeAnalyzer;
 use Stillat\Proteus\Analyzers\Types;
 
@@ -31,6 +32,10 @@ class TypeWriter
      */
     public static function write($value)
     {
+        if ($value instanceof FuncCall) {
+            return $value;
+        }
+
         $type = TypeAnalyzer::typeOf($value);
 
         if ($type === Types::TYPE_ARRAY) {

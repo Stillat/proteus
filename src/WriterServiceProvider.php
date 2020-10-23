@@ -5,6 +5,7 @@ namespace Stillat\Proteus;
 use Illuminate\Support\ServiceProvider;
 use Stillat\Proteus\Contracts\ConfigWriterContract;
 use Stillat\Proteus\Repository\ConfigRepository;
+use Stillat\Proteus\Writers\FunctionWriter;
 
 /**
  * Class WriterServiceProvider
@@ -19,6 +20,9 @@ class WriterServiceProvider extends ServiceProvider
 
     public function register()
     {
+        $this->app->singleton(FunctionWriter::class, function () {
+            return new FunctionWriter();
+        });
         $this->app->singleton(ConfigWriterContract::class, LaravelConfigWriter::class);
     }
 

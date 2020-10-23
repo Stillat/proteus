@@ -8,6 +8,7 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Internal\PrintableNewAnonClassNode;
 use PhpParser\Node;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\PrettyPrinter\Standard;
@@ -26,6 +27,12 @@ class Printer extends Standard
     protected function pExpr_Array(Array_ $node)
     {
         return '[' . $this->pMaybeMultiline($node->items, true) . ']';
+    }
+
+
+    protected function pExpr_FuncCall(FuncCall $node) {
+        return $this->pCallLhs($node->name)
+            . '(' . $this->pCommaSeparated($node->args) . ')';
     }
 
     /**
