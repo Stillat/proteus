@@ -1,29 +1,31 @@
 {
   "name": "stillat/proteus",
   "description": "Provides utilities for parsing and updating Laravel-style PHP configuration files.",
+  "license": "MIT",
   "type": "library",
-  "require": {
-    "nikic/php-parser": "^4.10",
-    "illuminate/config": "^6.0 || ^7.0 || ^8.0",
-    "illuminate/support": "^6.0 || ^7.0 || ^8.0",
-    "symfony/finder": "^5.1",
-    "ext-mbstring": "*",
-    "phpoption/phpoption": "^1.7",
-    "vlucas/phpdotenv": "^5.2"
-  },
   "authors": [
     {
       "name": "John Koster",
       "email": "john@stillat.com"
     }
   ],
+  "require": {
+    "nikic/php-parser": "^4.10",
+    "laravel/framework": "^7.0 || ^8.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.5 || ^9.0"
+  },
   "autoload": {
     "psr-4": {
       "Stillat\\Proteus\\": "src"
     }
   },
-  "license": "MIT",
-  "require-dev": {
-    "phpunit/phpunit": "^8.5.8"
+  "extra": {
+    "laravel": {
+        "providers": [
+            "Stillat\\Proteus\\WriterServiceProvider"
+        ]
+    }
   }
 }
