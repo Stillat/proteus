@@ -5,12 +5,13 @@ namespace Stillat\Proteus\Analyzers;
 use PhpParser\Lexer\Emulative;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
 use PhpParser\Parser\Php7;
+use Stillat\Proteus\Analyzers\FunctionHandlers\LaravelEnv;
 use Stillat\Proteus\Document\Printer;
 use Stillat\Proteus\Visitors\ConfigNodeVisitor;
 use Stillat\Proteus\Visitors\CreateParentVisitor;
@@ -97,8 +98,20 @@ class ConfigAnalyzer
      */
     private $rootNode = null;
 
+    /**
+     * The FunctionHandler instance.
+     *
+     * @var FunctionHandler
+     */
+    private $functionHandler = null;
+
     public function __construct()
     {
+        $this->functionHandler = new FunctionHandler();
+
+        // Register some default handlers.
+        $this->functionHandler->addHandler('env', new LaravelEnv());
+
         $this->lexer = new Emulative([
             'usedAttributes' => [
                 'comments',
@@ -237,6 +250,122 @@ class ConfigAnalyzer
     }
 
     /**
+     * Attempts to replace a value at a known location with the provided node value.
+     *
+     * @param string $key The replacement location.
+     * @param Node $node The value to insert.
+     * @param bool $completeReplace Whether or not merging behavior is enabled.
+     */
+    public function replaceNodeValue($key, Node $node, $completeReplace = false)
+    {
+        $currentNode = $this->nodeMapping[$key];
+
+        if ($currentNode instanceof ArrayItem) {
+            if ($currentNode->value instanceof Array_ && $node instanceof Array_) {
+                if ($completeReplace === false) {
+
+                    /** @var ArrayItem $mergeItem */
+                    foreach ($node->items as $mergeItem) {
+                        $mergeItemKeyValue = null;
+
+                        if ($mergeItem->key !== null && $mergeItem->key instanceof String_) {
+                            $mergeItemKeyValue = $mergeItem->key->value;
+                        }
+
+                        if ($mergeItem->value instanceof Array_) {
+                            foreach ($mergeItem->value->items as $subMergeItem) {
+                                $currentNode->value->items[] = $subMergeItem;
+                            }
+                        } else {
+                            // Check if this array already has a value with the same key.
+
+                            $didReplace = false;
+                            foreach ($currentNode->value->items as $checkNode) {
+                                if ($checkNode instanceof ArrayItem) {
+                                    $checkNodeKeyValue = null;
+
+                                    if ($checkNode->key !== null && $checkNode->key instanceof String_) {
+                                        $checkNodeKeyValue = $checkNode->key->value;
+                                    }
+
+                                    if ($checkNodeKeyValue !== null && $mergeItemKeyValue === $checkNodeKeyValue) {
+                                        $checkNode->value = $mergeItem->value;
+                                        $didReplace = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if ($didReplace === false) {
+                                $currentNode->value->items[] = $mergeItem;
+                            }
+                        }
+                    }
+                } else {
+
+                    $newNodes = [];
+                    /** @var ArrayItem $mergeItem */
+                    foreach ($node->items as $mergeItem) {
+                        $mergeKey = $mergeItem->key;
+                        $mergeKeyValue = null;
+
+                        if ($mergeKey instanceof String_) {
+                            $mergeKeyValue = $mergeKey->value;
+                        }
+
+                        unset($mergeKey);
+
+                        if ($mergeKeyValue === null || mb_strlen(trim($mergeKeyValue)) === 0) {
+                            if ($mergeItem->value instanceof Array_) {
+                                foreach ($mergeItem->value->items as $subMergeItem) {
+                                    $newNodes[] = $subMergeItem;
+                                }
+
+                            } else {
+                                $newNodes[] = $mergeItem;
+                            }
+                        } else {
+                            $newNodes[] = $mergeItem;
+                        }
+                    }
+
+                    $currentNode->value->items = array_values($newNodes);
+                }
+                return;
+            }
+
+            if ($currentNode->value instanceof Node\Expr\Cast\Bool_) {
+                $boolCastNode = $currentNode->value;
+
+                $this->functionHandler->handle($boolCastNode->expr, $currentNode, $node);
+                return;
+            } elseif ($currentNode->value instanceof Node\Expr\Cast\String_) {
+                $stringCastNode = $currentNode->value;
+
+                $this->functionHandler->handle($stringCastNode->expr, $currentNode, $node);
+                return;
+            } elseif ($currentNode->value instanceof Node\Expr\Cast\Int_) {
+                $intCastNode = $currentNode->value;
+
+                $this->functionHandler->handle($intCastNode->expr, $currentNode, $node);
+                return;
+            } elseif ($currentNode->value instanceof Node\Expr\Cast\Double) {
+                $doubleCastNode = $currentNode->value;
+
+                $this->functionHandler->handle($doubleCastNode->expr, $currentNode, $node);
+                return;
+            } elseif ($currentNode->value instanceof FuncCall) {
+
+                $this->functionHandler->handle($currentNode->value, $currentNode, $node);
+                return;
+            } else {
+                // Replace node value.
+                $currentNode->value = $node;
+            }
+        }
+    }
+
+    /**
      * Checks if a known node is an array.
      *
      * @param string $key The desired key.
@@ -347,13 +476,6 @@ class ConfigAnalyzer
         return $foundNode;
     }
 
-    protected function getLastKeySegment($key)
-    {
-        $parts = explode('.', $key);
-
-        return array_pop($parts);
-    }
-
     protected function getParentKey($key)
     {
         $parts = explode('.', $key);
@@ -362,177 +484,11 @@ class ConfigAnalyzer
         return implode('.', $parts);
     }
 
-    /**
-     * Attempts to replace a value at a known location with the provided node value.
-     *
-     * @param string $key The replacement location.
-     * @param Node $node The value to insert.
-     * @param bool $completeReplace Whether or not merging behavior is enabled.
-     */
-    public function replaceNodeValue($key, Node $node, $completeReplace = false)
+    protected function getLastKeySegment($key)
     {
-        $currentNode = $this->nodeMapping[$key];
+        $parts = explode('.', $key);
 
-        if ($currentNode instanceof ArrayItem) {
-            if ($currentNode->value instanceof Array_ && $node instanceof Array_) {
-                if ($completeReplace === false) {
-
-                    /** @var ArrayItem $mergeItem */
-                    foreach ($node->items as $mergeItem) {
-                        $mergeItemKeyValue = null;
-
-                        if ($mergeItem->key !== null && $mergeItem->key instanceof String_) {
-                            $mergeItemKeyValue = $mergeItem->key->value;
-                        }
-
-                        if ($mergeItem->value instanceof Array_) {
-                            foreach ($mergeItem->value->items as $subMergeItem) {
-                                $currentNode->value->items[] = $subMergeItem;
-                            }
-                        } else {
-                            // Check if this array already has a value with the same key.
-
-                            $didReplace = false;
-                            foreach ($currentNode->value->items as $checkNode) {
-                                if ($checkNode instanceof ArrayItem) {
-                                    $checkNodeKeyValue = null;
-
-                                    if ($checkNode->key !== null && $checkNode->key instanceof String_) {
-                                        $checkNodeKeyValue = $checkNode->key->value;
-                                    }
-
-                                    if ($checkNodeKeyValue !== null && $mergeItemKeyValue === $checkNodeKeyValue) {
-                                        $checkNode->value = $mergeItem->value;
-                                        $didReplace = true;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if ($didReplace === false) {
-                                $currentNode->value->items[] = $mergeItem;
-                            }
-                        }
-                    }
-                } else {
-
-                    $newNodes = [];
-                    /** @var ArrayItem $mergeItem */
-                    foreach ($node->items as $mergeItem) {
-                        $mergeKey = $mergeItem->key;
-                        $mergeKeyValue = null;
-
-                        if ($mergeKey instanceof String_) {
-                            $mergeKeyValue = $mergeKey->value;
-                        }
-
-                        unset($mergeKey);
-
-                        if ($mergeKeyValue === null || mb_strlen(trim($mergeKeyValue)) === 0) {
-                            if ($mergeItem->value instanceof Array_) {
-                                foreach ($mergeItem->value->items as $subMergeItem) {
-                                    $newNodes[] = $subMergeItem;
-                                }
-
-                            } else {
-                                $newNodes[] = $mergeItem;
-                            }
-                        } else {
-                            $newNodes[] = $mergeItem;
-                        }
-                    }
-
-                    $currentNode->value->items = array_values($newNodes);
-                }
-                return;
-            }
-
-            if ($currentNode->value instanceof Node\Expr\Cast\Bool_) {
-                $boolCastNode = $currentNode->value;
-
-                if ($boolCastNode->expr instanceof FuncCall) {
-                    if ($this->isEnvCall($boolCastNode->expr)) {
-                        $this->replaceEnvCallDefault($currentNode->value->expr, $node);
-                        return;
-                    }
-                }
-            } elseif ($currentNode->value instanceof Node\Expr\Cast\String_) {
-                $stringCastNode = $currentNode->value;
-
-                if ($stringCastNode->expr instanceof FuncCall) {
-                    if ($this->isEnvCall($stringCastNode->expr)) {
-                        $this->replaceEnvCallDefault($currentNode->value->expr, $node);
-                        return;
-                    }
-                }
-            } elseif ($currentNode->value instanceof Node\Expr\Cast\Int_) {
-                $intCastNode = $currentNode->value;
-
-                if ($intCastNode->expr instanceof FuncCall) {
-                    if ($this->isEnvCall($intCastNode->expr)) {
-                        $this->replaceEnvCallDefault($currentNode->value->expr, $node);
-                        return;
-                    }
-                }
-            } elseif ($currentNode->value instanceof Node\Expr\Cast\Double) {
-                $doubleCastNode = $currentNode->value;
-
-                if ($doubleCastNode->expr instanceof FuncCall) {
-                    if ($this->isEnvCall($doubleCastNode->expr)) {
-                        $this->replaceEnvCallDefault($currentNode->value->expr, $node);
-                        return;
-                    }
-                }
-            } elseif ($currentNode->value instanceof FuncCall) {
-
-                if ($this->isEnvCall($currentNode->value)) {
-                    $this->replaceEnvCallDefault($currentNode->value, $node);
-
-                    return;
-                }
-            } else {
-                // Replace node value.
-                $currentNode->value = $node;
-            }
-        }
-    }
-
-    /**
-     * Tests if the provided function call is a call to Laravel's `env()` function.
-     *
-     * @param FuncCall $funcCall The function call to analyze.
-     * @return bool
-     */
-    protected function isEnvCall(FuncCall $funcCall)
-    {
-        if ($funcCall->name->parts[0] === 'env') {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Attempts to change the env() function call arguments.
-     *
-     * If the env() function call does not currently have a default argument, it will be
-     * set instead of over-writing the environment key value that is being checked for.
-     *
-     * @param FuncCall $funcCall The function call.
-     * @param string $newValue The new value.
-     */
-    protected function replaceEnvCallDefault(FuncCall $funcCall, $newValue)
-    {
-        $argCount = count($funcCall->args);
-
-        if ($argCount === 2) {
-            $lastArgIndex = count($funcCall->args) - 1;
-            $funcCall->args[$lastArgIndex]->value = $newValue;
-        } elseif ($argCount === 1) {
-            $funcArg = new Node\Arg($newValue);
-
-            $funcCall->args[] = $funcArg;
-        }
+        return array_pop($parts);
     }
 
     /**
