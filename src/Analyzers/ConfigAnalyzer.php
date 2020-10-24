@@ -113,6 +113,12 @@ class ConfigAnalyzer
         // Register some default handlers.
         $this->functionHandler->addHandler('env', new LaravelEnv());
         $this->functionHandler->addHandler('resource_path', new SimpleFunctionHandler());
+        $this->functionHandler->addHandler('app_path', new SimpleFunctionHandler());
+        $this->functionHandler->addHandler('base_path', new SimpleFunctionHandler());
+        $this->functionHandler->addHandler('config_path', new SimpleFunctionHandler());
+        $this->functionHandler->addHandler('database_path', new SimpleFunctionHandler());
+        $this->functionHandler->addHandler('public_path', new SimpleFunctionHandler());
+        $this->functionHandler->addHandler('storage_path', new SimpleFunctionHandler());
 
         $this->lexer = new Emulative([
             'usedAttributes' => [
