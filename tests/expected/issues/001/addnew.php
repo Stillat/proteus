@@ -22,7 +22,7 @@ return [
             'handle' => 'contact_you',
         ],
         'another_form' => [
-            'name_field' => 'name3',
+            'name_field' => 'name4',
             'first_name_field' => 'first_name',
             'last_name_field' => 'last_name',
             'email_field' => 'email3',
