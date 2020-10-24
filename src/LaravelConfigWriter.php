@@ -258,7 +258,7 @@ class LaravelConfigWriter implements ConfigWriterContract
     }
 
     /**
-     * Checks the provided keys against any resricted configuration levels.
+     * Checks the provided keys against any restricted configuration levels.
      *
      * @param string[] $keys The keys to check.
      * @throws GuardedConfigurationMutationException
@@ -290,11 +290,11 @@ class LaravelConfigWriter implements ConfigWriterContract
         $this->checkChangesWithGuard($namespace, $changes);
 
         if (!file_exists($file)) {
-            throw new ConfigNotFoundException("Config file for '{$key}' could not be located.");
+            throw new ConfigNotFoundException("Config file for '{$namespace}' could not be located.");
         }
 
         if (!is_writable($file)) {
-            throw new ConfigNotWriteableException("Config file for '{$key}' is not writeable.");
+            throw new ConfigNotWriteableException("Config file for '{$namespace}' is not writeable.");
         }
 
         $configUpdater = new ConfigUpdater();
@@ -319,7 +319,7 @@ class LaravelConfigWriter implements ConfigWriterContract
         $configDetails = $this->getFile($configNamespace);
 
         if ($configDetails === null) {
-            throw new ConfigNotFoundException("Could not locate configuration for '{$key}'.");
+            throw new ConfigNotFoundException("Could not locate configuration for '{$configNamespace}'.");
         }
 
         $file = $configDetails[self::KEY_FILEPATH];
@@ -340,18 +340,18 @@ class LaravelConfigWriter implements ConfigWriterContract
         $configDetails = $this->getFile($namespace);
 
         if ($configDetails === null) {
-            throw new ConfigNotFoundException("Could not locate configuration for '{$key}'.");
+            throw new ConfigNotFoundException("Could not locate configuration for '{$namespace}'.");
         }
 
         $file = $configDetails[self::KEY_FILEPATH];
 
 
         if (!file_exists($file)) {
-            throw new ConfigNotFoundException("Config file for '{$key}' could not be located.");
+            throw new ConfigNotFoundException("Config file for '{$namespace}' could not be located.");
         }
 
         if (!is_writable($file)) {
-            throw new ConfigNotWriteableException("Config file for '{$key}' is not writeable.");
+            throw new ConfigNotWriteableException("Config file for '{$namespace}' is not writeable.");
         }
 
         $configUpdater = new ConfigUpdater();
