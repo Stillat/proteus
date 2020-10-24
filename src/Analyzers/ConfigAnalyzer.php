@@ -379,7 +379,11 @@ class ConfigAnalyzer
 
                     /** @var ArrayItem $mergeItem */
                     foreach ($node->items as $mergeItem) {
-                        $mergeItemKeyValue = $mergeItem->key->value;
+                        $mergeItemKeyValue = null;
+
+                        if ($mergeItem->key !== null && $mergeItem->key instanceof String_) {
+                            $mergeItemKeyValue = $mergeItem->key->value;
+                        }
 
                         if ($mergeItem->value instanceof Array_) {
                             foreach ($mergeItem->value->items as $subMergeItem) {

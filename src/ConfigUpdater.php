@@ -163,7 +163,6 @@ class ConfigUpdater
         foreach ($changesToMake->updates as $update) {
             $constructedValue = TypeWriter::write($changes[$update]);
 
-
             if ($this->analyzer->hasNode($update)) {
                 if ($this->analyzer->isNodeArray($update) && is_array($changes[$update]) === false) {
                     $this->analyzer->appendArrayItem($update, $constructedValue);
