@@ -162,5 +162,30 @@ class NewRootEntriesAreAddedTest extends TestCase
         $this->assertEquals($expected, $doc);
     }
 
+    public function testThatAdditionalEntriesAreProperlyAdded()
+    {
+
+        $updater = new ConfigUpdater();
+        $updater->open(__DIR__ . '/configs/issues/001/addnew.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/issues/001/addnew.php'));
+
+        // Using the assignment method with an array value should replace an existing array.
+        $updater->update([
+            'forms.another_form' =>
+                [
+                    'name_field' => 'name3',
+                    'first_name_field' => 'first_name',
+                    'last_name_field' => 'last_name',
+                    'email_field' => 'email3',
+                    'content_field' => 'message',
+                    'handle' => 'contact_you',
+                ],
+        ]);
+
+        $doc = $updater->getDocument();
+
+        $this->assertEquals($expected, $doc);
+    }
+
 
 }
