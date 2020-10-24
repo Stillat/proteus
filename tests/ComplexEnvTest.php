@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Stillat\Proteus\ConfigUpdater;
+use Stillat\Proteus\Document\Transformer;
 
 if (!function_exists('env')) {
     function env($key, $default= null) {}
@@ -14,7 +15,7 @@ class ComplexEnvTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__.'/configs/app.php');
-        $expected = file_get_contents(__DIR__ . '/expected/envcast.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/envcast.php'));
         $updater->update([
             'debug' => true,
         ]);
@@ -28,7 +29,7 @@ class ComplexEnvTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__.'/configs/casts.php');
-        $expected = file_get_contents(__DIR__ . '/expected/casts.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/casts.php'));
         $updater->update([
             'debug' => false,
             'string' => 'replace',
@@ -50,7 +51,7 @@ class ComplexEnvTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__.'/configs/app.php');
-        $expected = file_get_contents(__DIR__ . '/expected/envaddsdefault.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/envaddsdefault.php'));
         $updater->update([
             'key' => 'newentry'
         ]);

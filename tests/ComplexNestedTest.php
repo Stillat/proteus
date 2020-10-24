@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Stillat\Proteus\ConfigUpdater;
+use Stillat\Proteus\Document\Transformer;
 
 class ComplexNestedTest extends TestCase
 {
@@ -10,7 +11,7 @@ class ComplexNestedTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__ . '/configs/nested/001.php');
-        $expected = file_get_contents(__DIR__ . '/expected/nested/001.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/nested/001.php'));
         $updater->update([
             'test.new' => [
                 'nested' => [
@@ -37,7 +38,7 @@ class ComplexNestedTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__ . '/configs/nested/002.php');
-        $expected = file_get_contents(__DIR__ . '/expected/nested/002.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/nested/002.php'));
         $updater->update([
             'test.nested.type' => 1
         ]);
@@ -51,7 +52,7 @@ class ComplexNestedTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__ . '/configs/nested/003.php');
-        $expected = file_get_contents(__DIR__ . '/expected/nested/003.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/nested/003.php'));
         $updater->update([
             'nested.new.key' => [
                 'these.keys' => 'should not get expanded'
@@ -67,7 +68,7 @@ class ComplexNestedTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__ . '/configs/nested/004.php');
-        $expected = file_get_contents(__DIR__ . '/expected/nested/004.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/nested/004.php'));
         $updater->update([
             'nested.new.key' => [
                 'these.keys' => 'replacement value'
@@ -83,7 +84,7 @@ class ComplexNestedTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__ . '/configs/nested/004.php');
-        $expected = file_get_contents(__DIR__ . '/expected/nested/005.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/nested/005.php'));
         $updater->update([
             'nested.new.key' => [
                 'these.keys' => 'replacement value',

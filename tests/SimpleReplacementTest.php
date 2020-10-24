@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use Stillat\Proteus\ConfigUpdater;
+use Stillat\Proteus\Document\Transformer;
 
 if (!function_exists('env')) {
     function env($key, $default = null)
@@ -12,12 +13,11 @@ if (!function_exists('env')) {
 class SimpleReplacementTest extends TestCase
 {
 
-
     public function testRootReplacementWorks()
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__ . '/configs/app.php');
-        $expected = file_get_contents(__DIR__ . '/expected/simple_replace.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/simple_replace.php'));
         $updater->update([
             'timezone' => 'America/Chicago',
             'fallback_locale' => 'fr'
@@ -32,7 +32,7 @@ class SimpleReplacementTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__ . '/configs/app.php');
-        $expected = file_get_contents(__DIR__ . '/expected/retain_env.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/retain_env.php'));
         $updater->update([
             'name' => 'Statamic',
         ]);
@@ -46,7 +46,7 @@ class SimpleReplacementTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__ . '/configs/app.php');
-        $expected = file_get_contents(__DIR__ . '/expected/multi_replace_env.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/multi_replace_env.php'));
         $updater->update([
             'name' => 'Statamic',
             'locale' => 'fr',
@@ -64,7 +64,7 @@ class SimpleReplacementTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__ . '/configs/configwithusing.php');
-        $expected = file_get_contents(__DIR__ . '/expected/configwithusing.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/configwithusing.php'));
         $updater->update([
             'test' => 'updated-value'
         ]);
@@ -78,7 +78,7 @@ class SimpleReplacementTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__ . '/configs/retain/func.php');
-        $expected = file_get_contents(__DIR__ . '/expected/retain/func.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/retain/func.php'));
         $updater->update([]);
 
         $doc = $updater->getDocument();
@@ -90,7 +90,7 @@ class SimpleReplacementTest extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open(__DIR__ . '/configs/mail.php');
-        $expected = file_get_contents(__DIR__ . '/expected/replace/001.php');
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/replace/001.php'));
         $updater->replace('from', [
             'my-values' => 'hi'
         ]);

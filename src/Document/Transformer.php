@@ -39,7 +39,7 @@ class Transformer
             $content = str_replace($search, $replace, $content);
         }
 
-        return $this->normalizeLineEndings($content);
+        return self::normalizeLineEndings($content);
     }
 
     /**
@@ -48,7 +48,7 @@ class Transformer
      * @param string $string The value to normalize.
      * @return string
      */
-    private function normalizeLineEndings($string)
+    public static function normalizeLineEndings($string)
     {
         $string = str_replace(["\r\n", "\r", "\n"], "\n", $string);
         $string = preg_replace("/\n{3,}/", "\n\n", $string);
