@@ -5,6 +5,7 @@ namespace Stillat\Proteus\Support\Facades;
 use Illuminate\Support\Facades\Facade;
 use Stillat\Proteus\ConfigUpdateWrapper;
 use Stillat\Proteus\Contracts\ConfigWriterContract;
+use Stillat\Proteus\Writers\FunctionWriter;
 
 /**
  * @method static bool write($key, $value)
@@ -15,6 +16,7 @@ use Stillat\Proteus\Contracts\ConfigWriterContract;
  * @method static string preview($key, $value)
  * @method static string previewMany($configNamespace, array $values)
  * @method static ConfigUpdateWrapper edit($namespace)
+ * @method static FunctionWriter f()
  *
  * @see \Stillat\Proteus\Contracts\ConfigWriterContract
  */
