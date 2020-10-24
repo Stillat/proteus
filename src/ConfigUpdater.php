@@ -6,6 +6,7 @@ use Exception;
 use Stillat\Proteus\Analyzers\ArrayAnalyzer;
 use Stillat\Proteus\Analyzers\ConfigAnalyzer;
 use Stillat\Proteus\Document\Transformer;
+use Stillat\Proteus\Exceptions\ConfigNotFoundException;
 use Stillat\Proteus\Writers\TypeWriter;
 
 /**
@@ -80,11 +81,17 @@ class ConfigUpdater
      *
      * @param string $filePath The file to open.
      * @throws Exception
+     * @throws ConfigNotFoundException
      */
     public function open($filePath)
     {
+        if (!file_exists($filePath)) {
+            throw new ConfigNotFoundException("Configuration file does not exist: {$filePath}");
+        }
+
         $existingConfigItems = require $filePath;
         $this->arrayAnalyzer->analyze($existingConfigItems);
+
         $this->analyzer->open($filePath);
     }
 
