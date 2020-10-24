@@ -5,6 +5,7 @@ namespace Stillat\Proteus\Analyzers;
 use PhpParser\Lexer\Emulative;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\NodeTraverser;
@@ -374,8 +375,6 @@ class ConfigAnalyzer
 
         if ($currentNode instanceof ArrayItem) {
             if ($currentNode->value instanceof Array_ && $node instanceof Array_) {
-
-
                 if ($completeReplace === false) {
 
                     /** @var ArrayItem $mergeItem */
@@ -408,14 +407,28 @@ class ConfigAnalyzer
                         }
                     }
                 } else {
+
                     $newNodes = [];
                     /** @var ArrayItem $mergeItem */
                     foreach ($node->items as $mergeItem) {
-                        if ($mergeItem->value instanceof Array_) {
-                            foreach ($mergeItem->value->items as $subMergeItem) {
-                                $newNodes[] = $subMergeItem;
-                            }
+                        $mergeKey = $mergeItem->key;
+                        $mergeKeyValue = null;
 
+                        if ($mergeKey instanceof String_) {
+                            $mergeKeyValue = $mergeKey->value;
+                        }
+
+                        unset($mergeKey);
+
+                        if ($mergeKeyValue === null || mb_strlen(trim($mergeKeyValue)) === 0) {
+                            if ($mergeItem->value instanceof Array_) {
+                                foreach ($mergeItem->value->items as $subMergeItem) {
+                                    $newNodes[] = $subMergeItem;
+                                }
+
+                            } else {
+                                $newNodes[] = $mergeItem;
+                            }
                         } else {
                             $newNodes[] = $mergeItem;
                         }
