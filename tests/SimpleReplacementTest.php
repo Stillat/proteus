@@ -1,8 +1,6 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-use Stillat\Proteus\ConfigUpdater;
-use Stillat\Proteus\Document\Transformer;
+require 'ProteusTestCase.php';
 
 if (!function_exists('env')) {
     function env($key, $default = null)
@@ -10,94 +8,67 @@ if (!function_exists('env')) {
     }
 }
 
-class SimpleReplacementTest extends TestCase
+class SimpleReplacementTest extends ProteusTestCase
 {
 
     public function testRootReplacementWorks()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/app.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/simple_replace.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/app.php',
+            __DIR__ . '/expected/simple_replace.php', [
             'timezone' => 'America/Chicago',
             'fallback_locale' => 'fr'
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testEnvCallsAreRetained()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/app.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/retain_env.php'));
-        $updater->update([
-            'name' => 'Statamic',
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/app.php',
+            __DIR__ . '/expected/retain_env.php', [
+            'name' => 'Statamic'
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testMultipleChangesPreserveEnvCalls()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/app.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/multi_replace_env.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/app.php',
+            __DIR__ . '/expected/multi_replace_env.php', [
             'name' => 'Statamic',
             'locale' => 'fr',
             'env' => 'development',
             'debug' => true,
             'url' => 'http://local.test'
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testOutputRetainsUsingStatements()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/configwithusing.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/configwithusing.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/configwithusing.php',
+            __DIR__ . '/expected/configwithusing.php', [
             'test' => 'updated-value'
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatCustomFunctionsAreRetained()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/retain/func.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/retain/func.php'));
-        $updater->update([]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/retain/func.php',
+            __DIR__ . '/expected/retain/func.php', [
+        ]);
     }
 
     public function testThatValuesCanBeCompletelyReplaced()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/mail.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/replace/001.php'));
-        $updater->replace('from', [
-            'my-values' => 'hi'
-        ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
+        $this->assertReplaceEquals(
+            __DIR__ . '/configs/mail.php',
+            __DIR__ . '/expected/replace/001.php',
+            'from', [
+                'my-values' => 'hi'
+            ]
+        );
     }
 
 }
