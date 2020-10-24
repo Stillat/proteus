@@ -38,9 +38,10 @@ class FunctionHandler
      * @param Expr $expr The source expression.
      * @param mixed $currentNode The current node.
      * @param mixed $referenceNode The reference node.
+     * @param string $referenceKey The reference key.
      * @return mixed
      */
-    public function handle(Expr $expr, $currentNode, $referenceNode)
+    public function handle(Expr $expr, $currentNode, $referenceNode, string $referenceKey)
     {
         $funcName = $this->getFunctionName($expr);
 
@@ -49,7 +50,7 @@ class FunctionHandler
         }
 
         if ($expr instanceof FuncCall && array_key_exists($funcName, $this->handlers)) {
-            $this->handlers[$funcName]->handle($expr, $currentNode, $referenceNode);
+            $this->handlers[$funcName]->handle($expr, $currentNode, $referenceNode, $referenceKey);
         }
     }
 

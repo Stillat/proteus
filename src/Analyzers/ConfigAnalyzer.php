@@ -138,6 +138,11 @@ class ConfigAnalyzer
         $this->parser = new Php7($this->lexer);
     }
 
+    /**
+     * Sets the current configuration values.
+     *
+     * @param array $values The values.
+     */
     public function setValues($values)
     {
         $this->currentValues = $values;
@@ -365,33 +370,33 @@ class ConfigAnalyzer
                 $boolCastNode = $currentNode->value;
 
                 if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
-                    $this->functionHandler->handle($boolCastNode->expr, $currentNode, $node);
+                    $this->functionHandler->handle($boolCastNode->expr, $currentNode, $node, $key);
                 }
                 return;
             } elseif ($currentNode->value instanceof Node\Expr\Cast\String_) {
                 $stringCastNode = $currentNode->value;
 
                 if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
-                    $this->functionHandler->handle($stringCastNode->expr, $currentNode, $node);
+                    $this->functionHandler->handle($stringCastNode->expr, $currentNode, $node, $key);
                 }
                 return;
             } elseif ($currentNode->value instanceof Node\Expr\Cast\Int_) {
                 $intCastNode = $currentNode->value;
 
                 if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
-                    $this->functionHandler->handle($intCastNode->expr, $currentNode, $node);
+                    $this->functionHandler->handle($intCastNode->expr, $currentNode, $node, $key);
                 }
                 return;
             } elseif ($currentNode->value instanceof Node\Expr\Cast\Double) {
                 $doubleCastNode = $currentNode->value;
 
                 if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
-                    $this->functionHandler->handle($doubleCastNode->expr, $currentNode, $node);
+                    $this->functionHandler->handle($doubleCastNode->expr, $currentNode, $node, $key);
                 }
                 return;
             } elseif ($currentNode->value instanceof FuncCall) {
                 if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
-                    $this->functionHandler->handle($currentNode->value, $currentNode, $node);
+                    $this->functionHandler->handle($currentNode->value, $currentNode, $node, $key);
                 }
                 return;
             } else {
