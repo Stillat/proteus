@@ -204,7 +204,7 @@ ConfigWriter::edit('app')
     ])->set('fallback_locale', 'fr')->save();
 ````
 
-### Writing Function Calls to Configuration Files (WIP)
+### Writing Function Calls to Configuration Files
 
 You may also write Laravel function calls as part of the generated configuration by using the `f` helper method:
 
