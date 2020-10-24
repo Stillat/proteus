@@ -395,9 +395,13 @@ class ConfigAnalyzer
                             $didReplace = false;
                             foreach ($currentNode->value->items as $checkNode) {
                                 if ($checkNode instanceof ArrayItem) {
-                                    $checkNodeKeyValue = $checkNode->key->value;
+                                    $checkNodeKeyValue = null;
 
-                                    if ($mergeItemKeyValue === $checkNodeKeyValue) {
+                                    if ($checkNode->key !== null && $checkNode->key instanceof String_) {
+                                        $checkNodeKeyValue = $checkNode->key->value;
+                                    }
+
+                                    if ($checkNodeKeyValue !== null && $mergeItemKeyValue === $checkNodeKeyValue) {
                                         $checkNode->value = $mergeItem->value;
                                         $didReplace = true;
                                         break;
