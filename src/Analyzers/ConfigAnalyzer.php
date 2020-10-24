@@ -106,6 +106,13 @@ class ConfigAnalyzer
      */
     private $functionHandler = null;
 
+    /**
+     * The current values.
+     *
+     * @var array
+     */
+    private $currentValues = [];
+
     public function __construct()
     {
         $this->functionHandler = new FunctionHandler();
@@ -127,7 +134,13 @@ class ConfigAnalyzer
                 'startTokenPos', 'endTokenPos',
             ],
         ]);
+
         $this->parser = new Php7($this->lexer);
+    }
+
+    public function setValues($values)
+    {
+        $this->currentValues = $values;
     }
 
     /**
@@ -342,35 +355,72 @@ class ConfigAnalyzer
                 return;
             }
 
+            $currentCheckValue = null;
+
+            if ($node instanceof String_) {
+                $currentCheckValue = $node->value;
+            }
+
             if ($currentNode->value instanceof Node\Expr\Cast\Bool_) {
                 $boolCastNode = $currentNode->value;
 
-                $this->functionHandler->handle($boolCastNode->expr, $currentNode, $node);
+                if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
+                    $this->functionHandler->handle($boolCastNode->expr, $currentNode, $node);
+                }
                 return;
             } elseif ($currentNode->value instanceof Node\Expr\Cast\String_) {
                 $stringCastNode = $currentNode->value;
 
-                $this->functionHandler->handle($stringCastNode->expr, $currentNode, $node);
+                if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
+                    $this->functionHandler->handle($stringCastNode->expr, $currentNode, $node);
+                }
                 return;
             } elseif ($currentNode->value instanceof Node\Expr\Cast\Int_) {
                 $intCastNode = $currentNode->value;
 
-                $this->functionHandler->handle($intCastNode->expr, $currentNode, $node);
+                if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
+                    $this->functionHandler->handle($intCastNode->expr, $currentNode, $node);
+                }
                 return;
             } elseif ($currentNode->value instanceof Node\Expr\Cast\Double) {
                 $doubleCastNode = $currentNode->value;
 
-                $this->functionHandler->handle($doubleCastNode->expr, $currentNode, $node);
+                if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
+                    $this->functionHandler->handle($doubleCastNode->expr, $currentNode, $node);
+                }
                 return;
             } elseif ($currentNode->value instanceof FuncCall) {
-
-                $this->functionHandler->handle($currentNode->value, $currentNode, $node);
+                if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
+                    $this->functionHandler->handle($currentNode->value, $currentNode, $node);
+                }
                 return;
             } else {
                 // Replace node value.
                 $currentNode->value = $node;
             }
         }
+    }
+
+    /**
+     * Guards against resupplying an already configured value in env() calls.
+     *
+     * @param string $key The configuration key.
+     * @param mixed $checkValue The check value.
+     * @return bool
+     */
+    private function shouldProceedWithFunctionRewrite($key, $checkValue)
+    {
+        if ($checkValue === null) {
+            return true;
+        }
+
+        if (array_key_exists($key, $this->currentValues)) {
+            if ($this->currentValues[$key] === $checkValue) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

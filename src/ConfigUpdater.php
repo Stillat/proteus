@@ -93,6 +93,7 @@ class ConfigUpdater
         $this->arrayAnalyzer->analyze($existingConfigItems);
 
         $this->analyzer->open($filePath);
+        $this->analyzer->setValues($existingConfigItems);
     }
 
     /**

@@ -21,8 +21,9 @@ interface FunctionHandlerContract
      * @param FuncCall $expr The source expression.
      * @param mixed $currentNode The current node.
      * @param mixed $referenceNode The reference node.
+     * @param string $referenceKey The reference key.
      * @return mixed
      */
-    public function handle(FuncCall $expr, $currentNode, $referenceNode);
+    public function handle(FuncCall $expr, $currentNode, $referenceNode, string $referenceKey);
 
 }
