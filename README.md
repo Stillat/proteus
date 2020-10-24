@@ -206,15 +206,14 @@ ConfigWriter::edit('app')
 
 ### Writing Function Calls to Configuration Files (WIP)
 
-You may also write Laravel function calls as part of the generated configuration by using the `Func` facade:
+You may also write Laravel function calls as part of the generated configuration by using the `f` helper method:
 
 ```php
 <?php
 
 use Stillat\Proteus\Support\Facades\ConfigWriter;
-use Stillat\Proteus\Support\Facades\Func;
 
-ConfigWriter::write('custom.path', Func::basePath('relative'));
+ConfigWriter::write('custom.path', ConfigWriter::f()->basePath('relative'));
 ```
 
 The configuration output would then be similar to the following:
@@ -229,16 +228,32 @@ return [
 
 The following functions are available:
 
-| Func Call | Laravel Function |
-|---|---|
-| `Func::storagePath()` | `storage_path` |
-| `Func::appPath()` | `app_path` |
-| `Func::basePath()` | `base_path` |
-| `Func::configPath()` | `config_path` |
-| `Func::databasePath()` | `database_path` |
-| `Func::mix()` | `mix` |
-| `Func::publicPath()` | `public_path` |
-| `Func::resourcePath()` | `resource_path` |
+```php
+<?php
+
+use Stillat\Proteus\Support\Facades\ConfigWriter;
+
+// base_path
+ConfigWriter::write('custom.path', ConfigWriter::f()->basePath('relative'));
+
+// storage_path
+ConfigWriter::write('custom.path', ConfigWriter::f()->storagePath('relative'));
+
+// app_path
+ConfigWriter::write('custom.path', ConfigWriter::f()->appPath('relative'));
+
+// config_path
+ConfigWriter::write('custom.path', ConfigWriter::f()->configPath('relative'));
+
+// database_path
+ConfigWriter::write('custom.path', ConfigWriter::f()->databasePath('relative'));
+
+// public_path
+ConfigWriter::write('custom.path', ConfigWriter::f()->publicPath('relative'));
+
+// resource_path
+ConfigWriter::write('custom.path', ConfigWriter::f()->resourcePath('relative'));
+```
 
 ## Advanced Usage
 
