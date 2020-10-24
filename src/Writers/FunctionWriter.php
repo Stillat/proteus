@@ -64,11 +64,6 @@ class FunctionWriter
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_DATABASE_PATH, $path);
     }
 
-    public function mix($path)
-    {
-        return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_MIX_PATH, $path);
-    }
-
     public function resourcePath($path)
     {
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_RESOURCE_PATH, $path);
