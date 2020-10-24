@@ -9,11 +9,11 @@ use Stillat\Proteus\Contracts\FunctionHandlerContract;
 /**
  * Class LaravelResourcePath
  *
- * Provides support for the Laravel `resource_path` helper function.
+ * Provides support for the simple named functions accepting one or zero parameters.
  *
  * @package Stillat\Proteus\Analyzers\FunctionHandlers
  */
-class LaravelResourcePath implements FunctionHandlerContract
+class SimpleFunctionHandler implements FunctionHandlerContract
 {
 
     /**
@@ -46,4 +46,3 @@ class LaravelResourcePath implements FunctionHandlerContract
     }
 
 }
-

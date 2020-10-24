@@ -12,7 +12,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
 use PhpParser\Parser\Php7;
 use Stillat\Proteus\Analyzers\FunctionHandlers\LaravelEnv;
-use Stillat\Proteus\Analyzers\FunctionHandlers\LaravelResourcePath;
+use Stillat\Proteus\Analyzers\FunctionHandlers\SimpleFunctionHandler;
 use Stillat\Proteus\Document\Printer;
 use Stillat\Proteus\Visitors\ConfigNodeVisitor;
 use Stillat\Proteus\Visitors\CreateParentVisitor;
@@ -112,7 +112,7 @@ class ConfigAnalyzer
 
         // Register some default handlers.
         $this->functionHandler->addHandler('env', new LaravelEnv());
-        $this->functionHandler->addHandler('resource_path', new LaravelResourcePath());
+        $this->functionHandler->addHandler('resource_path', new SimpleFunctionHandler());
 
         $this->lexer = new Emulative([
             'usedAttributes' => [
