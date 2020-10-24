@@ -36,6 +36,8 @@ class LaravelEnv implements FunctionHandlerContract
 
             $expr->args[] = $funcArg;
         }
+
+        return $expr;
     }
 
 }
