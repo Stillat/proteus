@@ -11,6 +11,7 @@ use Stillat\Proteus\Contracts\ConfigWriterContract;
 use Stillat\Proteus\Exceptions\ConfigNotFoundException;
 use Stillat\Proteus\Exceptions\ConfigNotWriteableException;
 use Stillat\Proteus\Exceptions\GuardedConfigurationMutationException;
+use Stillat\Proteus\Writers\FunctionWriter;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -63,11 +64,19 @@ class LaravelConfigWriter implements ConfigWriterContract
      */
     protected $configRepo = null;
 
+    /**
+     * The FunctionWriter instance.
+     *
+     * @var FunctionWriter
+     */
+    protected $functionWriter = null;
+
     public function __construct(Application $app, Repository $configRepo)
     {
         $this->app = $app;
         $this->configRepo = $configRepo;
         $this->files = $this->getConfigurationFiles($this->app);
+        $this->functionWriter = new FunctionWriter();
 
         // Produces a sorted mapping.
         $this->configNamespaces = array_keys($this->files);
@@ -75,6 +84,16 @@ class LaravelConfigWriter implements ConfigWriterContract
         uasort($this->configNamespaces, function ($a, $b) {
             return mb_strlen($a) > mb_strlen($b) ? -1 : 1;
         });
+    }
+
+    /**
+     * Returns access to the FunctionWriter instance.
+     *
+     * @return FunctionWriter
+     */
+    public function f()
+    {
+        return $this->functionWriter;
     }
 
     /**
