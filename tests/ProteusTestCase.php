@@ -31,4 +31,16 @@ class ProteusTestCase extends TestCase
         $this->assertEquals($expected, $doc);
     }
 
+    protected function assertRemoveEquals($configPath, $expectedPath, $k)
+    {
+        $updater = new ConfigUpdater();
+        $updater->open($configPath);
+        $expected = Transformer::normalizeLineEndings(file_get_contents($expectedPath));
+        $updater->remove($k);
+
+        $doc = $updater->getDocument();
+
+        $this->assertEquals($expected, $doc);
+    }
+
 }

@@ -1,38 +1,18 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-use Stillat\Proteus\ConfigUpdater;
-use Stillat\Proteus\Document\Transformer;
+require_once 'ProteusTestCase.php';
 
-if (!function_exists('env')) {
-    function env($key, $default= null) {}
-}
-
-class RemoveValuesTest extends TestCase
+class RemoveValuesTest extends ProteusTestCase
 {
 
     public function testThatArrayElementsCanBeRemovedFromArray()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__.'/configs/mail.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/remove/001.php'));
-        $updater->remove('from.address');
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
+        $this->assertRemoveEquals(__DIR__ . '/configs/mail.php', __DIR__ . '/expected/remove/001.php', 'from.address');
     }
 
     public function testThatEntireArraysCanBeRemoved()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__.'/configs/mail.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/remove/002.php'));
-        $updater->remove('from');
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
+        $this->assertRemoveEquals(__DIR__ . '/configs/mail.php', __DIR__ . '/expected/remove/002.php', 'from');
     }
 
 }

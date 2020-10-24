@@ -1,12 +1,6 @@
 <?php
 
-require 'ProteusTestCase.php';
-
-if (!function_exists('env')) {
-    function env($key, $default = null)
-    {
-    }
-}
+require_once 'ProteusTestCase.php';
 
 class SimpleReplacementTest extends ProteusTestCase
 {

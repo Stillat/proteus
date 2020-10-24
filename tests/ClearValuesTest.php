@@ -1,24 +1,17 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-use Stillat\Proteus\ConfigUpdater;
-use Stillat\Proteus\Document\Transformer;
+require_once 'ProteusTestCase.php';
 
-class ClearValuesTest extends TestCase
+class ClearValuesTest extends ProteusTestCase
 {
 
     public function testThatReassigningAnEmptyArrayToAnArrayClearsValues()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__.'/configs/clear/001.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/clear/001.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/clear/001.php',
+            __DIR__ . '/expected/clear/001.php', [
             'nested.new.key' => []
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
 }

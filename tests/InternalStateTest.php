@@ -50,5 +50,4 @@ class InternalStateTest extends TestCase
         $this->assertEquals($expectedKeys, $keys);
     }
 
-
 }

@@ -1,36 +1,24 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-use Stillat\Proteus\ConfigUpdater;
-use Stillat\Proteus\Document\Transformer;
+require_once 'ProteusTestCase.php';
 
-if (!function_exists('env')) {
-    function env($key, $default= null) {}
-}
-
-class ComplexEnvTest extends TestCase
+class ComplexEnvTest extends ProteusTestCase
 {
 
     public function testThatEnvReturnCastsArePreserved()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__.'/configs/app.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/envcast.php'));
-        $updater->update([
-            'debug' => true,
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/app.php',
+            __DIR__ . '/expected/envcast.php', [
+            'debug' => true
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatMultipleEnvCastsSucceed()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__.'/configs/casts.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/casts.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/casts.php',
+            __DIR__ . '/expected/casts.php', [
             'debug' => false,
             'string' => 'replace',
             'int' => '20',
@@ -41,24 +29,15 @@ class ComplexEnvTest extends TestCase
             'test2' => 60.3,
             'test3' => 'this is another string'
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatEnvAddsSecondArgumentToSingleArgEnvCalls()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__.'/configs/app.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/envaddsdefault.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/app.php',
+            __DIR__ . '/expected/envaddsdefault.php', [
             'key' => 'newentry'
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
 }

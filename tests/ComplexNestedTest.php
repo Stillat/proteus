@@ -1,18 +1,15 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-use Stillat\Proteus\ConfigUpdater;
-use Stillat\Proteus\Document\Transformer;
+require_once 'ProteusTestCase.php';
 
-class ComplexNestedTest extends TestCase
+class ComplexNestedTest extends ProteusTestCase
 {
 
     public function testThatMixedTypeValuesAreAddedWhenNesting()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/nested/001.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/nested/001.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/nested/001.php',
+            __DIR__ . '/expected/nested/001.php', [
             'test.new' => [
                 'nested' => [
                     'key-one' => 'value-one',
@@ -28,73 +25,49 @@ class ComplexNestedTest extends TestCase
                 ]
             ]
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatNonArrayValuesUseLastKeyElementForNewElement()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/nested/002.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/nested/002.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/nested/002.php',
+            __DIR__ . '/expected/nested/002.php', [
             'test.nested.type' => 1
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatDotNotationKeysAreNotExpandedWhenUsedInsideArrays()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/nested/003.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/nested/003.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/nested/003.php',
+            __DIR__ . '/expected/nested/003.php', [
             'nested.new.key' => [
                 'these.keys' => 'should not get expanded'
             ]
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatComplexNestedKeysGetValuesReplaced()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/nested/004.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/nested/004.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/nested/004.php',
+            __DIR__ . '/expected/nested/004.php', [
             'nested.new.key' => [
                 'these.keys' => 'replacement value'
             ]
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatComplexReplacementsAllowAddingNewElements()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/nested/004.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/nested/005.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/nested/004.php',
+            __DIR__ . '/expected/nested/005.php', [
             'nested.new.key' => [
                 'these.keys' => 'replacement value',
                 'this' => 'should be added'
             ]
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
 }

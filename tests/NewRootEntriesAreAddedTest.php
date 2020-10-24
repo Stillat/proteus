@@ -1,106 +1,66 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
-use Stillat\Proteus\ConfigUpdater;
-use Stillat\Proteus\Document\Transformer;
+require_once 'ProteusTestCase.php';
 
-if (!function_exists('env')) {
-    function env($key, $default = null)
-    {
-    }
-}
-
-class NewRootEntriesAreAddedTest extends TestCase
+class NewRootEntriesAreAddedTest extends ProteusTestCase
 {
 
     public function testThatNewRootArrayEntriesAreAdded()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/app.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/simplenewkey.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/app.php',
+            __DIR__ . '/expected/simplenewkey.php', [
             'new' => [
                 'value-one',
                 'value-two'
             ],
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatNewKeysUsingDotNotationAreProperlyNested()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/app.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/simpledotnotationkeyset.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/app.php',
+            __DIR__ . '/expected/simpledotnotationkeyset.php', [
             'new.key' => 'value'
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatNewDeeplyNestedKeysAreCreated()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/app.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/deeplynestedtest.php'));
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/app.php',
+            __DIR__ . '/expected/deeplynestedtest.php', [
             'new.deeply.nested.key' => [
                 'hello',
                 'world'
             ]
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatNewSimpleItemsAreAppendedToArrays()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/appendarray.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/appendarray.php'));
-
-        // Using the assignment method should just append to the existing values.
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/appendarray.php',
+            __DIR__ . '/expected/appendarray.php', [
             'test' => 'new-value'
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatResettingAnArrayReplacesTheArray()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/appendarray.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/arrayreplacesarray.php'));
-
-        // Using the assignment method with an array value should replace an existing array.
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/appendarray.php',
+            __DIR__ . '/expected/arrayreplacesarray.php', [
             'test' => ['new-value']
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatNewNestedEntriesAreProperlyCreated()
     {
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/issues/001/setnew.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/issues/001/setnew.php'));
-
-        // Using the assignment method with an array value should replace an existing array.
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/issues/001/setnew.php',
+            __DIR__ . '/expected/issues/001/setnew.php', [
             'forms' => [
                 'contact_us' => [
                     'name_field' => 'name',
@@ -121,21 +81,13 @@ class NewRootEntriesAreAddedTest extends TestCase
                     ],
             ]
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatNewNestedEntriesAreProperlyUpdatedOnExistingPlaceholder()
     {
-
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/issues/001/fromplaceholder.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/issues/001/fromplaceholder.php'));
-
-        // Using the assignment method with an array value should replace an existing array.
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/issues/001/fromplaceholder.php',
+            __DIR__ . '/expected/issues/001/fromplaceholder.php', [
             'forms' => [
                 'contact_us' => [
                     'name_field' => 'name',
@@ -156,21 +108,13 @@ class NewRootEntriesAreAddedTest extends TestCase
                     ],
             ]
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
 
     public function testThatAdditionalEntriesAreProperlyAdded()
     {
-
-        $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/issues/001/addnew.php');
-        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__ . '/expected/issues/001/addnew.php'));
-
-        // Using the assignment method with an array value should replace an existing array.
-        $updater->update([
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/issues/001/addnew.php',
+            __DIR__ . '/expected/issues/001/addnew.php', [
             'forms.another_form' =>
                 [
                     'name_field' => 'name4',
@@ -181,11 +125,6 @@ class NewRootEntriesAreAddedTest extends TestCase
                     'handle' => 'contact_you',
                 ],
         ]);
-
-        $doc = $updater->getDocument();
-
-        $this->assertEquals($expected, $doc);
     }
-
 
 }
