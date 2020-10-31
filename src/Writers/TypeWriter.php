@@ -54,6 +54,10 @@ class TypeWriter
         } elseif ($type === Types::TYPE_BOOL) {
             $boolWriter = new BoolWriter();
             return $boolWriter->write($value);
+        } elseif ($type === Types::TYPE_SPECIAL_NULL) {
+            $nullWriter = new NullWriter();
+
+            return $nullWriter->write(null);
         }
 
         return null;
