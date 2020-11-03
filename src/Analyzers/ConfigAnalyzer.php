@@ -179,64 +179,15 @@ class ConfigAnalyzer
      */
     private function wrapInArrayItem($key, $node)
     {
-        if ($node instanceof Array_) {
-            $node = $this->checkForNestedUselessArrays($node);
-        }
+        // TODO: Review if this can be removed completely.
+        // if ($node instanceof Array_) {
+        // $node = $this->checkForNestedUselessArrays($node);
+        // }
 
         $stringWriter = new StringWriter();
         $itemKey = $stringWriter->write($key);
+
         return new ArrayItem($node, $itemKey);
-    }
-
-    /**
-     * Analyzes the provided node and checks for useless double array wrappings.
-     *
-     * These typically come out of the key->structure process and look like this:
-     *  'newkey' => [['value1', 'value2']]
-     *
-     * This method rewrites them to look like this:
-     *  'newkey' => ['value1', 'value2']
-     *
-     * @param Array_ $node The node to check.
-     * @return Array_
-     */
-    private function checkForNestedUselessArrays(Array_ $node)
-    {
-        $newNodes = [];
-
-        $innerArrCount = 0;
-        /** @var ArrayItem $innerItem */
-        foreach ($node->items as $innerItem) {
-            if ($innerItem->value instanceof Array_) {
-                $innerArrCount += 1;
-            }
-        }
-
-        // If none of the inner items are an array, we will just bail and return the current node.
-        if ($innerArrCount === 0) {
-            return $node;
-        }
-
-        /** @var ArrayItem $item */
-        foreach ($node->items as $item) {
-            if ($item->value instanceof Array_) {
-                if ($item->key != null) {
-                    $newNodes[] = new ArrayItem($this->checkForNestedUselessArrays($item->value), $item->key);
-                } else {
-                    if ($item->value instanceof Array_) {
-                        foreach ($item->value->items as $subItem) {
-                            $newNodes[] = $subItem;
-                        }
-                    }
-                }
-            } else {
-                $newNodes[] = $item;
-            }
-        }
-
-        $node->items = array_values($newNodes);
-
-        return $node;
     }
 
     /**
@@ -288,6 +239,7 @@ class ConfigAnalyzer
 
         if ($currentNode instanceof ArrayItem) {
             if ($currentNode->value instanceof Array_ && $node instanceof Array_) {
+
                 if ($completeReplace === false) {
 
                     /** @var ArrayItem $mergeItem */
@@ -298,7 +250,7 @@ class ConfigAnalyzer
                             $mergeItemKeyValue = $mergeItem->key->value;
                         }
 
-                        if ($mergeItem->value instanceof Array_) {
+                        if ($mergeItem->value instanceof Array_ && $mergeItemKeyValue === null) {
                             foreach ($mergeItem->value->items as $subMergeItem) {
                                 $currentNode->value->items[] = $subMergeItem;
                             }
@@ -598,7 +550,6 @@ class ConfigAnalyzer
         return $this->sourceNodes;
     }
 
-
     /**
      * Converts the mutated configuration back to a PHP document.
      *
@@ -611,6 +562,58 @@ class ConfigAnalyzer
         ]);
 
         return $printer->printFormatPreserving($this->newStmts, $this->oldStmts, $this->oldTokens);
+    }
+
+    /**
+     * Analyzes the provided node and checks for useless double array wrappings.
+     *
+     * These typically come out of the key->structure process and look like this:
+     *  'newkey' => [['value1', 'value2']]
+     *
+     * This method rewrites them to look like this:
+     *  'newkey' => ['value1', 'value2']
+     *
+     * @param Array_ $node The node to check.
+     * @return Array_
+     * @deprecated
+     */
+    private function checkForNestedUselessArrays(Array_ $node)
+    {
+        $newNodes = [];
+
+        $innerArrCount = 0;
+        /** @var ArrayItem $innerItem */
+        foreach ($node->items as $innerItem) {
+            if ($innerItem->value instanceof Array_) {
+                $innerArrCount += 1;
+            }
+        }
+
+        // If none of the inner items are an array, we will just bail and return the current node.
+        if ($innerArrCount === 0) {
+            return $node;
+        }
+
+        /** @var ArrayItem $item */
+        foreach ($node->items as $item) {
+            if ($item->value instanceof Array_) {
+                if ($item->key != null) {
+                    $newNodes[] = new ArrayItem($this->checkForNestedUselessArrays($item->value), $item->key);
+                } else {
+                    if ($item->value instanceof Array_) {
+                        foreach ($item->value->items as $subItem) {
+                            $newNodes[] = $subItem;
+                        }
+                    }
+                }
+            } else {
+                $newNodes[] = $item;
+            }
+        }
+
+        $node->items = array_values($newNodes);
+
+        return $node;
     }
 
 }
