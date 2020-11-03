@@ -163,4 +163,21 @@ class NewRootEntriesAreAddedTest extends ProteusTestCase
         ]);
     }
 
+    public function testThatSimpleArraysInsideArraysArePreservedWhenSourceKeyAlreadyExists()
+    {
+        $this->assertChangeEquals(
+            __DIR__ . '/configs/issues/005-2.php',
+            __DIR__ . '/expected/issues/005-2.php', [
+            'forms' => [[
+                'name_field' => 'name3',
+                'first_name_field' => 'first_name',
+                'last_name_field' => 'last_name',
+                'email_field' => 'email3',
+                'content_field' => 'message',
+                'handle' => 'contact_you',
+                'consent_field' => null
+            ]],
+        ]);
+    }
+
 }

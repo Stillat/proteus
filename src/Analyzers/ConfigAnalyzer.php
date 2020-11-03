@@ -280,34 +280,7 @@ class ConfigAnalyzer
                         }
                     }
                 } else {
-
-                    $newNodes = [];
-                    /** @var ArrayItem $mergeItem */
-                    foreach ($node->items as $mergeItem) {
-                        $mergeKey = $mergeItem->key;
-                        $mergeKeyValue = null;
-
-                        if ($mergeKey instanceof String_) {
-                            $mergeKeyValue = $mergeKey->value;
-                        }
-
-                        unset($mergeKey);
-
-                        if ($mergeKeyValue === null || mb_strlen(trim($mergeKeyValue)) === 0) {
-                            if ($mergeItem->value instanceof Array_) {
-                                foreach ($mergeItem->value->items as $subMergeItem) {
-                                    $newNodes[] = $subMergeItem;
-                                }
-
-                            } else {
-                                $newNodes[] = $mergeItem;
-                            }
-                        } else {
-                            $newNodes[] = $mergeItem;
-                        }
-                    }
-
-                    $currentNode->value->items = array_values($newNodes);
+                    $currentNode->value = $node;
                 }
                 return;
             }
