@@ -250,7 +250,7 @@ class Printer extends Standard
         return $result;
     }
 
-    private function pMaybeMultiline(array $nodes, bool $trailingComma = false)
+    protected function pMaybeMultiline(array $nodes, bool $trailingComma = false)
     {
         return $this->pCommaSeparatedMultiline($nodes, $trailingComma) . $this->nl;
     }
@@ -272,7 +272,7 @@ class Printer extends Standard
         return parent::pExpr_ArrayItem($node);
     }
 
-    private function hasNodeWithComments(array $nodes)
+    protected function hasNodeWithComments(array $nodes)
     {
         foreach ($nodes as $node) {
             if ($node && $node->getComments()) {
