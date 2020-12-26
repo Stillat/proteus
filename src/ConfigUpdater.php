@@ -111,6 +111,23 @@ class ConfigUpdater
     }
 
     /**
+     * Replaces an existing node structure.
+     *
+     * @param string $key The original key.
+     * @param string $newKey The new key.
+     * @param mixed $value The value to insert.
+     * @param string $docBlock The Laravel "block" comment.
+     * @param bool $forceNewLine Whether or not to force a new line.
+     * @throws Exception
+     */
+    public function replaceStructure($key, $newKey, $value, $docBlock, $forceNewLine = true)
+    {
+        if ($this->analyzer->hasNode($key)) {
+            $this->analyzer->replaceNodeWithDocBlock($key, $newKey, TypeWriter::write($value), $docBlock, $forceNewLine);
+        }
+    }
+
+    /**
      * Attempts to apply the requested changes to the existing configuration values.
      *
      * @param array $changes The changes to apply to the existing configuration.

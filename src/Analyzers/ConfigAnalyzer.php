@@ -2,6 +2,7 @@
 
 namespace Stillat\Proteus\Analyzers;
 
+use PhpParser\Comment;
 use PhpParser\Lexer\Emulative;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
@@ -14,6 +15,7 @@ use PhpParser\Parser\Php7;
 use Stillat\Proteus\Analyzers\FunctionHandlers\LaravelEnv;
 use Stillat\Proteus\Analyzers\FunctionHandlers\SimpleFunctionHandler;
 use Stillat\Proteus\Document\Printer;
+use Stillat\Proteus\Document\Transformer;
 use Stillat\Proteus\Visitors\ConfigNodeVisitor;
 use Stillat\Proteus\Visitors\CreateParentVisitor;
 use Stillat\Proteus\Writers\StringWriter;
@@ -402,6 +404,56 @@ class ConfigAnalyzer
 
         if ($currentNode instanceof ArrayItem) {
             $currentNode->value = $newValue;
+        }
+    }
+
+    /**
+     * Replaces a node's key and value, and overrides an existing docblock.
+     *
+     * @param string $key The original key.
+     * @param string $newKey The new key.
+     * @param mixed $newValue The value to insert.
+     * @param string $docBlock The Laravel "block" comment.
+     * @param bool $forceNewLine Whether or not to force a new line.
+     */
+    public function replaceNodeWithDocBlock($key, $newKey, $newValue, $docBlock, $forceNewLine = true)
+    {
+        $currentNode = $this->nodeMapping[$key];
+
+        if ($currentNode instanceof ArrayItem) {
+            $currentNode->value = $newValue;
+
+            if ($currentNode->key instanceof String_) {
+                $currentNode->key->value = $newKey;
+
+                $comments = $currentNode->getComments();
+
+                if ($comments != null && count($comments) > 0) {
+                    $firstComment = $comments[0];
+
+                    if ($forceNewLine) {
+                        $docBlock = $docBlock.Transformer::PROTEUS_NL;
+                    }
+
+                    if ($firstComment instanceof Comment) {
+                        $newComment = new Comment(
+                            $docBlock,
+                            $firstComment->getStartLine(),
+                            $firstComment->getStartFilePos(),
+                            $firstComment->getStartTokenPos(),
+                            $firstComment->getEndLine(),
+                            $firstComment->getEndFilePos(),
+                            $firstComment->getEndTokenPos()
+                        );
+
+                        $comments[0] = $newComment;
+
+                        $currentNode->setAttribute('comments', $comments);
+                    }
+                }
+
+            }
+
         }
     }
 

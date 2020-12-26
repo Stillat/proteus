@@ -65,4 +65,32 @@ class SimpleReplacementTest extends ProteusTestCase
         );
     }
 
+    public function testThatRootStructuresCanBeReplacedWithComments()
+    {
+        $updater = new \Stillat\Proteus\ConfigUpdater();
+        $updater->open(__DIR__.'/configs/issues/008.php');
+        $expected = \Stillat\Proteus\Document\Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/issues/008.php'));
+
+        $docBlock = <<<BLOCK
+/*
+|--------------------------------------------------------------------------
+| Cart
+|--------------------------------------------------------------------------
+|
+| Configure the Cart Driver in use on your site. It's what stores/gets the
+| Cart ID from the user's browser on every request.
+|
+*/
+BLOCK;
+
+        $updater->replaceStructure('cart_key', 'cart', [
+            'driver' => \Stillat\Proteus\ConfigUpdater::class,
+            'key' => 'simple-commerce-cart'
+        ], $docBlock, true);
+
+        $doc = $updater->getDocument();
+
+        $this->assertEquals($expected, $doc);
+    }
+
 }

@@ -15,9 +15,14 @@ class ConfigUpdateWrapper
     const MUTATION_REPLACE = 'replace';
     const MUTATION_REMOVE = 'remove';
     const MUTATION_UPDATE = 'update';
+    const MUTATION_REPLACE_STRUCTURE = 'replaceStructure';
+
     const KEY_MUTATION = 'mutation';
     const KEY_KEY = 'key';
+    const KEY_NEW_KEY = 'newKey';
     const KEY_VALUE = 'value';
+    const KEY_COMMENT = 'comment';
+    const KEY_FORCE_NEWLINE = 'forcenl';
 
     /**
      * The LaravelConfigWriter instance.
@@ -101,6 +106,32 @@ class ConfigUpdateWrapper
                 self::KEY_KEY => $key,
                 self::KEY_VALUE => $value
             ]
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Replaces an existing node structure.
+     *
+     * @param string $key The original key.
+     * @param string $newKey The new key.
+     * @param mixed $value The value to insert.
+     * @param string $docBlock The Laravel "block" comment.
+     * @param bool $forceNewLine Whether or not to force a new line.
+     * @return $this
+     */
+    public function replaceStructure($key, $newKey, $value, $docBlock, $forceNewLine = true)
+    {
+        $this->knownKeys[] = $this->makeAbsolute($key);
+
+        $this->mutations[] = [
+          self::KEY_MUTATION => self::MUTATION_REPLACE_STRUCTURE,
+          self::KEY_KEY => $key,
+          self::KEY_NEW_KEY => $newKey,
+          self::KEY_VALUE => $value,
+          self::KEY_COMMENT => $docBlock,
+          self::KEY_FORCE_NEWLINE => $forceNewLine
         ];
 
         return $this;
@@ -221,10 +252,31 @@ class ConfigUpdateWrapper
                 $this->doUpdate($updater, $mutation[self::KEY_VALUE]);
             } elseif ($requestedAction === self::MUTATION_REMOVE) {
                 $this->doRemove($updater, $mutation[self::KEY_VALUE]);
+            } elseif ($requestedAction === self::MUTATION_REPLACE_STRUCTURE) {
+                $key = $mutation[self::KEY_KEY];
+                $newKey = $mutation[self::KEY_NEW_KEY];
+                $value = $mutation[self::KEY_VALUE];
+                $docBlock = $mutation[self::KEY_COMMENT];
+                $forceNl = $mutation[self::KEY_FORCE_NEWLINE];
+
+                $this->doReplaceStructure($updater, $key, $newKey, $value, $docBlock, $forceNl);
             }
         }
 
         return $updater->getDocument();
+    }
+
+    /**
+     * @param ConfigUpdater $updater The updater instance.
+     * @param string $key The original key.
+     * @param string $newKey The new key.
+     * @param mixed $value The value to insert.
+     * @param string $docBlock The Laravel "block" comment.
+     * @param bool $forceNewLine Whether or not to force a new line.
+     */
+    private function doReplaceStructure($updater, $key, $newKey, $value, $docBlock, $forceNewLine = true)
+    {
+        $updater->replaceStructure($key, $newKey, $value, $docBlock, $forceNewLine);
     }
 
     /**

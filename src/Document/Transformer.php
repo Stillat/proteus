@@ -12,6 +12,7 @@ namespace Stillat\Proteus\Document;
  */
 class Transformer
 {
+    const PROTEUS_NL = '/*PROTEUS:NL*/';
 
     /**
      * A mapping of internal type adjustments and their final values.
@@ -25,6 +26,7 @@ class Transformer
         "(int) '/*W:INT:ST*/" => '',
         "/*W:D:SQ*/'" => '',
         "/*W:INT:SQ*/'" => '',
+        Transformer::PROTEUS_NL => "\n"
     ];
 
     /**

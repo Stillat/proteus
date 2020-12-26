@@ -45,6 +45,11 @@ class TypeWriter
             $doubleWriter = new DoubleWriter();
             return $doubleWriter->write($value);
         } elseif ($type === Types::TYPE_STRING) {
+            if (class_exists($value)) {
+                $classWriter = new ClassFetchWriter();
+
+                return $classWriter->write($value);
+            }
             $stringWriter = new StringWriter();
 
             return $stringWriter->write($value);
