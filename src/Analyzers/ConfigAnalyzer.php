@@ -472,7 +472,6 @@ class ConfigAnalyzer
         if ($currentNode instanceof ArrayItem) {
             $parent = $this->getParentKey($key);
 
-
             if (mb_strlen($parent) > 0 && $this->hasNode($parent)) {
                 $parentNode = $this->nodeMapping[$parent];
                 $relativeKey = $this->getLastKeySegment($key);
@@ -495,21 +494,23 @@ class ConfigAnalyzer
                     $parentNode->value->items = $newItems;
                 }
             } else {
-                $newItems = [];
+                if ($this->rootNode != null && $this->rootNode instanceof Array_) {
+                    $newItems = [];
 
-                /** @var ArrayItem $valueItem */
-                foreach ($this->rootNode->items as $valueItem) {
-                    $valueItemKey = $valueItem->key->value;
+                    /** @var ArrayItem $valueItem */
+                    foreach ($this->rootNode->items as $valueItem) {
+                        $valueItemKey = $valueItem->key->value;
 
-                    if ($valueItemKey === null || $valueItemKey !== $key) {
-                        $newItems[] = $valueItem;
-                    } else {
-                        $foundNode = true;
+                        if ($valueItemKey === null || $valueItemKey !== $key) {
+                            $newItems[] = $valueItem;
+                        } else {
+                            $foundNode = true;
+                        }
                     }
-                }
 
-                // Reassign the value items, without the node to remove.
-                $this->rootNode->items = $newItems;
+                    // Reassign the value items, without the node to remove.
+                    $this->rootNode->items = $newItems;
+                }
             }
         }
 
