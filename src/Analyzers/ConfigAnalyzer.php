@@ -561,9 +561,25 @@ class ConfigAnalyzer
         $refTraverser->addVisitor($configNodeVisitor);
         $refTraverser->traverse($parentStatements);
         $this->newStmts = $parentStatements;
-        $this->rootNode = $this->newStmts[0]->expr;
+
+        foreach ($this->newStmts as $statement) {
+            if ($statement instanceof Node\Stmt\Return_) {
+                $this->rootNode = $statement->expr;
+                break;
+            }
+        }
 
         $this->sourceNodes = array_keys($this->nodeMapping);
+    }
+
+    /**
+     * Returns the root node.
+     *
+     * @return Node|null
+     */
+    public function getRootNode()
+    {
+        return $this->rootNode;
     }
 
     /**

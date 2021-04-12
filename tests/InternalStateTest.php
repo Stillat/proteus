@@ -8,7 +8,6 @@ class InternalStateTest extends TestCase
 
     public function testThatSourceNodeKeysAreCorrectlyRetrieved()
     {
-
         $updater = new ConfigUpdater();
         $updater->open(__DIR__ . '/configs/mail.php');
         $keys = $updater->config()->getSourceNodeKeys();
@@ -48,6 +47,19 @@ class InternalStateTest extends TestCase
         ];
 
         $this->assertEquals($expectedKeys, $keys);
+    }
+
+    public function testThatNamespaceImportsAreIgnored()
+    {
+        $analyzer = new \Stillat\Proteus\Analyzers\ConfigAnalyzer();
+        $analyzer->open(__DIR__.'/configs/issues/009.php');
+        $root = $analyzer->getRootNode();
+
+        $this->assertNotNull($root);
+
+        if ($root != null) {
+            $this->assertSame(get_class($root), \PhpParser\Node\Expr\Array_::class);
+        }
     }
 
 }
