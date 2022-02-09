@@ -54,6 +54,21 @@ interface ConfigWriterContract
     public function guard($entry);
 
     /**
+     * Indicates that all function calls should be ignored when updating configuration files.
+     *
+     * @return ConfigWriterContract
+     */
+    public function ignoreFunctionCalls();
+
+    /**
+     * Sets a list of configuration keys that should always be preserved.
+     *
+     * @param array $config
+     * @return mixed
+     */
+    public function preserve($config);
+
+    /**
      * Attempts to update the source configuration and returns the modified document.
      *
      * @param string $key The configuration item to update.

@@ -115,6 +115,13 @@ class ConfigAnalyzer
      */
     private $currentValues = [];
 
+    /**
+     * Indicates if function calls should be ignored.
+     *
+     * @var bool
+     */
+    private $ignoreFunctions = false;
+
     public function __construct()
     {
         $this->functionHandler = new FunctionHandler();
@@ -138,6 +145,16 @@ class ConfigAnalyzer
         ]);
 
         $this->parser = new Php7($this->lexer);
+    }
+
+    /**
+     * Sets if function calls should be ignored.
+     *
+     * @param bool $ignoreFunctions
+     */
+    public function setIgnoreFunctions($ignoreFunctions)
+    {
+        $this->ignoreFunctions = $ignoreFunctions;
     }
 
     /**
@@ -342,6 +359,10 @@ class ConfigAnalyzer
      */
     private function shouldProceedWithFunctionRewrite($key, $checkValue)
     {
+        if ($this->ignoreFunctions) {
+            return false;
+        }
+
         if ($checkValue === null) {
             return true;
         }

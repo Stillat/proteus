@@ -71,6 +71,19 @@ class LaravelConfigWriter implements ConfigWriterContract
      */
     protected $functionWriter = null;
 
+    /**
+     * Specifies whether function calls should be ignored when updating configuration files.
+     *
+     * @var bool
+     */
+    protected $ignoreFunctions = false;
+
+    /**
+     * A list of configuration keys that should be preserved.
+     * @var array
+     */
+    protected $preserveKeys = [];
+
     public function __construct(Application $app, Repository $configRepo)
     {
         $this->app = $app;
@@ -238,6 +251,31 @@ class LaravelConfigWriter implements ConfigWriterContract
     }
 
     /**
+     * Sets a list of configuration items that will never be updated.
+     *
+     * @param array $config The configuration keys to preserve.
+     * @return $this
+     */
+    public function preserve($config)
+    {
+        $this->preserveKeys = $config;
+
+        return $this;
+    }
+
+    /**
+     * Will indicate that all function calls should be ignored when updating the configuration file.
+     *
+     * @return $this
+     */
+    public function ignoreFunctionCalls()
+    {
+        $this->ignoreFunctions = true;
+
+        return $this;
+    }
+
+    /**
      * Attempts to apply multiple changes to a configuration namespace.
      *
      * @param string $configNamespace The configuration namespace.
@@ -317,6 +355,8 @@ class LaravelConfigWriter implements ConfigWriterContract
         }
 
         $configUpdater = new ConfigUpdater();
+        $configUpdater->setIgnoreFunctions($this->ignoreFunctions)
+            ->setPreserveKeys($this->preserveKeys);
         $configUpdater->open($file);
         $configUpdater->update($changes);
 

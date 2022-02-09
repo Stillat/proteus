@@ -43,11 +43,52 @@ class ConfigUpdater
      */
     private $transformer = null;
 
+    /**
+     * Specifies whether function calls should be ignored when updating configuration files.
+     *
+     * @var bool
+     */
+    private $ignoreFunctions = false;
+
+    /**
+     * A list of configuration keys that should be preserved.
+     * @var array
+     */
+    private $preserveKeys = [];
+
     public function __construct()
     {
         $this->transformer = new Transformer();
         $this->arrayAnalyzer = new ArrayAnalyzer();
         $this->analyzer = new ConfigAnalyzer();
+    }
+
+    /**
+     * Sets whether function calls are ignored when updating the configuration.
+     *
+     * @param bool $ignore
+     * @return $this
+     */
+    public function setIgnoreFunctions($ignore)
+    {
+        $this->ignoreFunctions = $ignore;
+
+        $this->analyzer->setIgnoreFunctions($ignore);
+
+        return $this;
+    }
+
+    /**
+     * Sets a list of configuration keys that should always be preserved.
+     *
+     * @param array $keys
+     * @return $this
+     */
+    public function setPreserveKeys($keys)
+    {
+        $this->preserveKeys = $keys;
+
+        return $this;
     }
 
     /**
@@ -135,6 +176,12 @@ class ConfigUpdater
      */
     public function update(array $changes)
     {
+        if (! empty($this->preserveKeys)) {
+            foreach ($this->preserveKeys as $keyToPreserve) {
+                unset($changes[$keyToPreserve]);
+            }
+        }
+
         $changesToMake = $this->arrayAnalyzer->getChanges($changes);
 
         foreach ($changesToMake->insertions as $insert) {
