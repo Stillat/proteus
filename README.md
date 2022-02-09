@@ -95,6 +95,41 @@ ConfigWriter::guard('app.providers*');
 
 ```
 
+## Disabling Function Rewrites
+
+Changes to all function calls (such as `env`) can be disabled by calling the `ignoreFunctionCalls` method before updating a configuration file:
+
+```php
+<?php
+
+Stillat\Proteus\Support\Facades\ConfigWriter;
+
+// No env calls will updated here :)
+ConfigWriter::ignoreFunctionCalls()->writeMany('app', [
+    'key' => 'new-value',
+    'locale' => 'fr',
+    'timezone' => 'Europe/Paris'
+]);
+```
+
+## Preserving Configuration Values
+
+You may ignore certain configuration value updates by using the `preserve` method. The `preserve` method accepts an array of strings (dot notation is also supported!).
+
+```php
+<?php
+
+Stillat\Proteus\Support\Facades\ConfigWriter;
+
+// Changes to locale and timezone will be ignored, since they will be preserved.
+ConfigWriter::preserve([
+    'locale', 'timezone'
+])->writeMany('app', [
+    'locale' => 'fr',
+    'timezone' => 'Europe/Paris'
+]);
+```
+
 ## Intermediate Usage
 
 For more control to remove, replace, and even merge array values with existing configuration values, we can use the `edit` helper method. This helper method expects a configuration namespace, and returns access to a convenient wrapper to perform a variety of configuration changes.
