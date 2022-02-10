@@ -9,12 +9,13 @@ use Stillat\Proteus\Writers\FunctionWriter;
 
 /**
  * @method static bool write($key, $value)
- * @method static bool writeMany($configNamespace, array $values)
+ * @method static bool writeMany($configNamespace, array $values, $isMerge = false)
+ * @method static bool mergeMany($configNamespace, array $values)
  * @method static bool hasConfig($key)
  * @method static array|null getFile($key)
  * @method static void guard($entry)
  * @method static string preview($key, $value)
- * @method static string previewMany($configNamespace, array $values)
+ * @method static string previewMany($configNamespace, array $values, $isMerge = false)
  * @method static ConfigWriterContract ignoreFunctionCalls()
  * @method static ConfigWriterContract preserve($config)
  * @method static ConfigUpdateWrapper edit($namespace)

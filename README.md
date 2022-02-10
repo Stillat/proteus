@@ -56,6 +56,22 @@ $document = ConfigWriter::previewMany('app', [
 
 ```
 
+Instead of overwriting all values within the configuration file (when there are collisions), you may use the `mergeMany` method:
+
+```php
+<?php
+
+Stillat\Proteus\Support\Facades\ConfigWriter;
+
+$document = ConfigWriter::preview('app.locale', 'fr');
+
+$document = ConfigWriter::mergeMany('app', [
+    'locale' => 'fr',
+    'timezone' => 'Europe/Paris'
+]);
+
+```
+
 ## Preventing Changes to Configuration Items
 
 You may use the `guard` method to prevent changes to specific configuration entries:
