@@ -1,6 +1,12 @@
 This library provides utilities and features for parsing, updating, and writing Laravel style PHP configuration files.
-This project is very much an early-prototype and work-in-progress, there are definitely scenarios and edge cases that have
-not been fully worked through and tested.
+
+## Installation
+
+To install Proteus issue the following command, or at `stillat/proteus` to your `composer.json` file:
+
+```
+composer require stillat/proteus
+```
 
 ## Basic Usage
 
@@ -373,8 +379,6 @@ And yes, it did add the `new-key` value as the default value for the `env` call 
 
 There will undoubtedly be changes required overtime, and if you find something not working, please open an issue with
 the input you are supplying and the expected results. Bonus points if you add a test case for it :)
-
-This package is not yet available through packagist until things are tested/validated a bit more, but will be eventually.
 
 ## License
 
