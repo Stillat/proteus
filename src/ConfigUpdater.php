@@ -3,6 +3,7 @@
 namespace Stillat\Proteus;
 
 use Exception;
+use Illuminate\Support\Arr;
 use Stillat\Proteus\Analyzers\ArrayAnalyzer;
 use Stillat\Proteus\Analyzers\ConfigAnalyzer;
 use Stillat\Proteus\Document\Transformer;
@@ -172,13 +173,17 @@ class ConfigUpdater
      * Attempts to apply the requested changes to the existing configuration values.
      *
      * @param array $changes The changes to apply to the existing configuration.
+     * @param bool $isMerge Indicates if merge or forced overwrite behavior should be used.
      * @throws Exception
      */
-    public function update(array $changes)
+    public function update(array $changes, $isMerge = false)
     {
         if (! empty($this->preserveKeys)) {
+            $currentConfig = $this->analyzer->getValues();
+
             foreach ($this->preserveKeys as $keyToPreserve) {
                 unset($changes[$keyToPreserve]);
+                Arr::set($changes, $keyToPreserve, Arr::get($currentConfig, $keyToPreserve));
             }
         }
 
@@ -229,10 +234,17 @@ class ConfigUpdater
             $constructedValue = TypeWriter::write($changes[$update]);
 
             if ($this->analyzer->hasNode($update)) {
+
                 if ($this->analyzer->isNodeArray($update) && is_array($changes[$update]) === false) {
                     $this->analyzer->appendArrayItem($update, $constructedValue);
                 } else {
-                    $this->analyzer->replaceNodeValue($update, $constructedValue, true);
+                    $completeReplace = true;
+
+                    if ($isMerge) {
+                        $completeReplace = false;
+                    }
+
+                    $this->analyzer->replaceNodeValue($update, $constructedValue, $completeReplace);
                 }
             } else {
                 // How may existing entries are at the desired level?

@@ -168,6 +168,16 @@ class ConfigAnalyzer
     }
 
     /**
+     * Gets the current configuration values.
+     *
+     * @return array
+     */
+    public function getValues()
+    {
+        return $this->currentValues;
+    }
+
+    /**
      * Maps a known key to a resolved node.
      *
      * @param string $key The key.

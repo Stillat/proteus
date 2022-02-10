@@ -3,6 +3,7 @@
 namespace Stillat\Proteus;
 
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SplFileInfo;
 use Illuminate\Contracts\Foundation\Application;
@@ -280,14 +281,15 @@ class LaravelConfigWriter implements ConfigWriterContract
      *
      * @param string $configNamespace The configuration namespace.
      * @param array $values The key/value pairs to update.
+     * @param bool $isMerge Indiciates if the current operation is a merge, or forced update.
      * @return bool
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
      * @throws GuardedConfigurationMutationException
      */
-    public function writeMany($configNamespace, array $values)
+    public function writeMany($configNamespace, array $values, $isMerge = false)
     {
-        $document = $this->previewMany($configNamespace, $values);
+        $document = $this->previewMany($configNamespace, $values, $isMerge);
         $details = $this->getFile($configNamespace);
         $path = $details[self::KEY_FILEPATH];
 
@@ -298,6 +300,21 @@ class LaravelConfigWriter implements ConfigWriterContract
         }
 
         return true;
+    }
+
+    /**
+     * Attempts to merge multiple changes to a configuration namespace.
+     *
+     * @param string $configNamespace The configuration namespace.
+     * @param array $values The key/value pairs to update.
+     * @return bool
+     * @throws ConfigNotFoundException
+     * @throws ConfigNotWriteableException
+     * @throws GuardedConfigurationMutationException
+     */
+    public function mergeMany($configNamespace, array $values)
+    {
+        return $this->writeMany($configNamespace, $values, true);
     }
 
     /**
@@ -337,12 +354,13 @@ class LaravelConfigWriter implements ConfigWriterContract
      * @param string $file The path to the configuration file.
      * @param string $namespace The configuration namespace.
      * @param array $changes The changes to apply.
+     * @param bool $isMerge Indicates if merge or forced overwrite behavior should be used.
      * @return string
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
      * @throws GuardedConfigurationMutationException
      */
-    protected function getChanges($file, $namespace, array $changes)
+    protected function getChanges($file, $namespace, array $changes, $isMerge = false)
     {
         $this->checkChangesWithGuard($namespace, $changes);
 
@@ -358,7 +376,7 @@ class LaravelConfigWriter implements ConfigWriterContract
         $configUpdater->setIgnoreFunctions($this->ignoreFunctions)
             ->setPreserveKeys($this->preserveKeys);
         $configUpdater->open($file);
-        $configUpdater->update($changes);
+        $configUpdater->update($changes, $isMerge);
 
         return $configUpdater->getDocument();
     }
@@ -368,12 +386,13 @@ class LaravelConfigWriter implements ConfigWriterContract
      *
      * @param string $configNamespace The root configuration namespace.
      * @param array $values The key/value mapping of all changes.
+     * @param bool $isMerge Indiciates if the current operation is a merge, or forced update.
      * @return string
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
      * @throws GuardedConfigurationMutationException
      */
-    public function previewMany($configNamespace, array $values)
+    public function previewMany($configNamespace, array $values, $isMerge = false)
     {
         $configDetails = $this->getFile($configNamespace);
 
@@ -383,7 +402,7 @@ class LaravelConfigWriter implements ConfigWriterContract
 
         $file = $configDetails[self::KEY_FILEPATH];
 
-        return $this->getChanges($file, $configNamespace, $values);
+        return $this->getChanges($file, $configNamespace, $values, $isMerge);
     }
 
     /**
