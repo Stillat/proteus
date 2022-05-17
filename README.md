@@ -206,7 +206,7 @@ You may use the `remove` method to remove an existing configuration item:
 
 use Stillat\Proteus\Support\Facades\ConfigWriter;
 
-ConfigWriter::edit('app')-remove('locale')->save();
+ConfigWriter::edit('app')->remove('locale')->save();
 ```
 
 This method will also remove the configuration key from the configuration file - not just the value!
@@ -220,7 +220,7 @@ You may use the `replace` method to completely replace an existing configuration
 
 use Stillat\Proteus\Support\Facades\ConfigWriter;
 
-ConfigWriter::edit('app')-replace('providers', [
+ConfigWriter::edit('app')->replace('providers', [
     // The new list of providers.
 ])->save();
 ```
@@ -234,7 +234,7 @@ You may use the `merge` method to add new values to an existing configuration it
 
 use Stillat\Proteus\Support\Facades\ConfigWriter;
 
-ConfigWriter::edit('app')-merge('providers', [
+ConfigWriter::edit('app')->merge('providers', [
     SomeProvider::class,
     SomeOtherProvider::class
 ])->save();
