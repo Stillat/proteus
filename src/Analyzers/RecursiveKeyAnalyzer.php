@@ -3,20 +3,18 @@
 namespace Stillat\Proteus\Analyzers;
 
 /**
- * Class RecursiveKeyAnalyzer
+ * Class RecursiveKeyAnalyzer.
  *
  * Provides utilities for recursively retrieving key information from arrays.
- *
- * @package Stillat\Proteus\Analyzers
  */
 class RecursiveKeyAnalyzer
 {
-
     /**
      * Returns all nested keys in dot notation for the provided array.
      *
-     * @param array $values The key/value pairs to check.
+     * @param array  $values   The key/value pairs to check.
      * @param string $startKey The root key.
+     *
      * @return array
      */
     public static function getDotKeysRecursively(array $values, $startKey)
@@ -34,5 +32,4 @@ class RecursiveKeyAnalyzer
 
         return $keys;
     }
-
 }

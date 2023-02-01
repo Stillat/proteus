@@ -6,11 +6,10 @@ use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Class CreateParentVisitor
+ * Class CreateParentVisitor.
  *
  * Visits each node and sets its parent relationship.
  *
- * @package Stillat\Proteus\Visitors
  * @since 1.0.0
  */
 class CreateParentVisitor extends NodeVisitorAbstract

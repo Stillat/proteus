@@ -7,10 +7,8 @@ use Stillat\Proteus\Writers\FunctionWriter;
 
 class Func extends Facade
 {
-
     protected static function getFacadeAccessor()
     {
         return FunctionWriter::class;
     }
-
 }

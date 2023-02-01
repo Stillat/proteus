@@ -8,19 +8,17 @@ use PhpParser\Node\Name;
 use Stillat\Proteus\Contracts\ValueWriterContract;
 
 /**
- * Class ClassFetchWriter
+ * Class ClassFetchWriter.
  *
  * Provides utilities for converting runtime string values PHP class fetch constants.
  *
- * @package Stillat\Proteus\Writers
  * @since 1.0.6
  */
 class ClassFetchWriter implements ValueWriterContract
 {
-
     /**
-     *
      * @param string $value The input value.
+     *
      * @return ClassConstFetch
      */
     public function write($value)
@@ -29,5 +27,4 @@ class ClassFetchWriter implements ValueWriterContract
 
         return new ClassConstFetch($fqn, new Identifier('class'));
     }
-
 }

@@ -7,20 +7,19 @@ use PhpParser\Node\Name;
 use Stillat\Proteus\Contracts\ValueWriterContract;
 
 /**
- * Class NullWriter
+ * Class NullWriter.
  *
  * Provides utilities for converting `null` values to a valid node.
  *
- * @package Stillat\Proteus\Writers
  * @since 1.0.2
  */
 class NullWriter implements ValueWriterContract
 {
-
     /**
      * Writes the provided value.
      *
      * @param mixed $value The value to write.
+     *
      * @return mixed
      */
     public function write($value)
@@ -29,5 +28,4 @@ class NullWriter implements ValueWriterContract
 
         return new ConstFetch($constName);
     }
-
 }

@@ -5,7 +5,7 @@ return [
 
     'nested' => [
         'key' => [
-            'value' => 'test'
+            'value' => 'test',
         ],
     ],
 

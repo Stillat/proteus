@@ -11,18 +11,16 @@ use Stillat\Proteus\Exceptions\ConfigNotFoundException;
 use Stillat\Proteus\Writers\TypeWriter;
 
 /**
- * Class ConfigUpdater
+ * Class ConfigUpdater.
  *
  * Provides utilities and features to update Laravel-style configuration files.
  *
  * This class is a wrapper around the ConfigAnalyzer and the ArrayAnalyzer.
  *
- * @package Stillat\Proteus
  * @since 1.0.0
  */
 class ConfigUpdater
 {
-
     /**
      * The ConfigAnalyzer instance.
      *
@@ -53,6 +51,7 @@ class ConfigUpdater
 
     /**
      * A list of configuration keys that should be preserved.
+     *
      * @var array
      */
     private $preserveKeys = [];
@@ -68,6 +67,7 @@ class ConfigUpdater
      * Sets whether function calls are ignored when updating the configuration.
      *
      * @param bool $ignore
+     *
      * @return $this
      */
     public function setIgnoreFunctions($ignore)
@@ -83,6 +83,7 @@ class ConfigUpdater
      * Sets a list of configuration keys that should always be preserved.
      *
      * @param array $keys
+     *
      * @return $this
      */
     public function setPreserveKeys($keys)
@@ -95,8 +96,9 @@ class ConfigUpdater
     /**
      * Flattens deeply nested arrays using "dot" notation, while preserving root keys.
      *
-     * @param array $array
+     * @param array  $array
      * @param string $prefix
+     *
      * @return array
      */
     private function flattenKeys($array, $prefix = '')
@@ -123,6 +125,7 @@ class ConfigUpdater
      * Attempts to remove the key and its value from the configuration.
      *
      * @param string $key The key to remove.
+     *
      * @return bool
      */
     public function remove($key)
@@ -149,6 +152,7 @@ class ConfigUpdater
      * Opens the provided file and parses the configuration values.
      *
      * @param string $filePath The file to open.
+     *
      * @throws Exception
      * @throws ConfigNotFoundException
      */
@@ -168,8 +172,9 @@ class ConfigUpdater
     /**
      * Replaces a node's value with the provided new value.
      *
-     * @param string $key The key to update.
-     * @param mixed $value The value to replace.
+     * @param string $key   The key to update.
+     * @param mixed  $value The value to replace.
+     *
      * @throws Exception
      */
     public function replace($key, $value)
@@ -182,11 +187,12 @@ class ConfigUpdater
     /**
      * Replaces an existing node structure.
      *
-     * @param string $key The original key.
-     * @param string $newKey The new key.
-     * @param mixed $value The value to insert.
-     * @param string $docBlock The Laravel "block" comment.
-     * @param bool $forceNewLine Whether or not to force a new line.
+     * @param string $key          The original key.
+     * @param string $newKey       The new key.
+     * @param mixed  $value        The value to insert.
+     * @param string $docBlock     The Laravel "block" comment.
+     * @param bool   $forceNewLine Whether or not to force a new line.
+     *
      * @throws Exception
      */
     public function replaceStructure($key, $newKey, $value, $docBlock, $forceNewLine = true)
@@ -200,7 +206,8 @@ class ConfigUpdater
      * Attempts to apply the requested changes to the existing configuration values.
      *
      * @param array $changes The changes to apply to the existing configuration.
-     * @param bool $isMerge Indicates if merge or forced overwrite behavior should be used.
+     * @param bool  $isMerge Indicates if merge or forced overwrite behavior should be used.
+     *
      * @throws Exception
      */
     public function update(array $changes, $isMerge = false)
@@ -211,7 +218,7 @@ class ConfigUpdater
             $isMerge = true;
         }
 
-        if (! empty($this->preserveKeys)) {
+        if (!empty($this->preserveKeys)) {
             $currentConfig = $this->analyzer->getValues();
 
             foreach ($this->preserveKeys as $keyToPreserve) {
@@ -237,7 +244,6 @@ class ConfigUpdater
 
                 $this->analyzer->replaceNodeValue($insert, $valuesToInsert, $completeReplace);
             } else {
-
                 if ($this->arrayAnalyzer->isCompound($insert)) {
                     $insertionPoint = $this->arrayAnalyzer->getInsertionPoint($insert);
 
@@ -259,6 +265,7 @@ class ConfigUpdater
 
                         $this->analyzer->replaceNodeValue($insertionPoint, $valuesToInsert);
                     }
+
                     return;
                 } else {
                     $this->analyzer->insertValuesAtNode($insert, $valuesToInsert);
@@ -270,7 +277,6 @@ class ConfigUpdater
             $constructedValue = TypeWriter::write($changes[$update]);
 
             if ($this->analyzer->hasNode($update)) {
-
                 if ($this->analyzer->isNodeArray($update) && is_array($changes[$update]) === false) {
                     $this->analyzer->appendArrayItem($update, $constructedValue);
                 } else {
@@ -301,11 +307,9 @@ class ConfigUpdater
                         $this->analyzer->insertRootValue($update, $constructedValue);
                     }
                 } else {
-
                     if ($this->arrayAnalyzer->isCompound($update)) {
                         $components = $this->arrayAnalyzer->getCompoundWithoutRoot($update);
                         $compoundStruct = $this->arrayAnalyzer->getCompoundStructure($components, $changes[$update]);
-
 
                         $constructedValue = TypeWriter::write($compoundStruct);
 
@@ -327,5 +331,4 @@ class ConfigUpdater
     {
         return $this->transformer->transform($this->analyzer->dumpConfig());
     }
-
 }

@@ -109,7 +109,7 @@ return [
 
     'cart' => [
         'driver' => \Stillat\Proteus\ConfigUpdater::class,
-        'key' => 'simple-commerce-cart',
+        'key'    => 'simple-commerce-cart',
     ],
 
     /*

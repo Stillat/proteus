@@ -2,27 +2,25 @@
 
 namespace Stillat\Proteus\Analyzers\FunctionHandlers;
 
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use Stillat\Proteus\Contracts\FunctionHandlerContract;
-use PhpParser\Node\Arg;
 
 /**
- * Class LaravelEnv
+ * Class LaravelEnv.
  *
  * Provides support for rewriting Laravel env() helper function calls.
- *
- * @package Stillat\Proteus\Analyzers\FunctionHandlers
  */
 class LaravelEnv implements FunctionHandlerContract
 {
-
     /**
      * Analyzes the source expression and applies any required function mutations.
      *
-     * @param FuncCall $expr The source expression.
-     * @param mixed $currentNode The current node.
-     * @param mixed $referenceNode The reference node.
-     * @param string $referenceKey The reference key.
+     * @param FuncCall $expr          The source expression.
+     * @param mixed    $currentNode   The current node.
+     * @param mixed    $referenceNode The reference node.
+     * @param string   $referenceKey  The reference key.
+     *
      * @return mixed
      */
     public function handle(FuncCall $expr, $currentNode, $referenceNode, string $referenceKey)
@@ -40,5 +38,4 @@ class LaravelEnv implements FunctionHandlerContract
 
         return $expr;
     }
-
 }
