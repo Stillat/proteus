@@ -87,9 +87,36 @@ class ConfigUpdater
      */
     public function setPreserveKeys($keys)
     {
-        $this->preserveKeys = $keys;
+        $this->preserveKeys = $this->flattenKeys($keys);
 
         return $this;
+    }
+
+    /**
+     * Flattens deeply nested arrays using "dot" notation, while preserving root keys.
+     *
+     * @param array $array
+     * @param string $prefix
+     * @return array
+     */
+    private function flattenKeys($array, $prefix = '')
+    {
+        $newArray = [];
+
+        foreach ($array as $key => $value) {
+            $prefixToUse = $prefix;
+            if (strlen(trim($prefixToUse)) > 0) {
+                $prefixToUse = $prefix.'.';
+            }
+
+            if (is_array($value)) {
+                $newArray = array_merge($this->flattenKeys($value, $prefixToUse.$key), $newArray);
+            } else {
+                $newArray[] = $prefixToUse.$value;
+            }
+        }
+
+        return $newArray;
     }
 
     /**
@@ -178,10 +205,19 @@ class ConfigUpdater
      */
     public function update(array $changes, $isMerge = false)
     {
+        // If we have keys to preserve, writing without all the
+        // required values will just stomp all over everything.
+        if (count($this->preserveKeys) > 0) {
+            $isMerge = true;
+        }
+
         if (! empty($this->preserveKeys)) {
             $currentConfig = $this->analyzer->getValues();
 
             foreach ($this->preserveKeys as $keyToPreserve) {
+                if ($this->ignoreFunctions && $this->analyzer->containsFunctionCall($keyToPreserve)) {
+                    continue;
+                }
                 unset($changes[$keyToPreserve]);
                 Arr::set($changes, $keyToPreserve, Arr::get($currentConfig, $keyToPreserve));
             }

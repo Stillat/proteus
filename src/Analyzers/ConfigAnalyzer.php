@@ -405,6 +405,26 @@ class ConfigAnalyzer
         return false;
     }
 
+    private function isFunctionLike($node)
+    {
+        if ($node instanceof Node\Expr\Cast\Bool_ ||
+            $node instanceof Node\Expr\Cast\String_ ||
+            $node instanceof Node\Expr\Cast\Int_ ||
+            $node instanceof Node\Expr\Cast\Double ||
+            $node instanceof FuncCall) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function containsFunctionCall($key)
+    {
+        if (!$this->hasNode($key) || !$this->nodeMapping[$key] instanceof ArrayItem) { return false; }
+
+        return $this->isFunctionLike($this->nodeMapping[$key]->value);
+    }
+
     /**
      * Appends a value to an existing array at a known location.
      *

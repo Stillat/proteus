@@ -386,7 +386,7 @@ class LaravelConfigWriter implements ConfigWriterContract
      *
      * @param string $configNamespace The root configuration namespace.
      * @param array $values The key/value mapping of all changes.
-     * @param bool $isMerge Indiciates if the current operation is a merge, or forced update.
+     * @param bool $isMerge Indicates if the current operation is a merge, or forced update.
      * @return string
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
