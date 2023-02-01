@@ -21,16 +21,14 @@ use Stillat\Proteus\Visitors\CreateParentVisitor;
 use Stillat\Proteus\Writers\StringWriter;
 
 /**
- * Class ConfigAnalyzer
+ * Class ConfigAnalyzer.
  *
  *
  *
- * @package Stillat\Proteus\Analyzers
  * @since 1.0.0
  */
 class ConfigAnalyzer
 {
-
     /**
      * The loaded file path.
      *
@@ -59,7 +57,6 @@ class ConfigAnalyzer
      */
     private $lexer = null;
 
-
     /**
      * The original statements, to help preserve formatting.
      *
@@ -76,6 +73,7 @@ class ConfigAnalyzer
 
     /**
      * The old tokens, which contain the original formatting details.
+     *
      * @var array
      */
     private $oldTokens = [];
@@ -180,8 +178,8 @@ class ConfigAnalyzer
     /**
      * Maps a known key to a resolved node.
      *
-     * @param string $key The key.
-     * @param Node $node The node.
+     * @param string $key  The key.
+     * @param Node   $node The node.
      */
     public function mapNode($key, Node $node)
     {
@@ -191,8 +189,8 @@ class ConfigAnalyzer
     /**
      * Inserts a new value with the provided root key.
      *
-     * @param string $key The new value's key.
-     * @param Node $node The new value.
+     * @param string $key  The new value's key.
+     * @param Node   $node The new value.
      */
     public function insertRootValue($key, Node $node)
     {
@@ -202,8 +200,9 @@ class ConfigAnalyzer
     /**
      * Wraps the provided value in an ArrayItem object.
      *
-     * @param string $key The desired key.
-     * @param Node $node The node value to wrap.
+     * @param string $key  The desired key.
+     * @param Node   $node The node value to wrap.
+     *
      * @return ArrayItem
      */
     private function wrapInArrayItem($key, $node)
@@ -222,8 +221,8 @@ class ConfigAnalyzer
     /**
      * Attempts to insert the provided values at the target key location.
      *
-     * @param string $key The key insertion point.
-     * @param mixed $values The values to insert.
+     * @param string $key    The key insertion point.
+     * @param mixed  $values The values to insert.
      */
     public function insertValuesAtNode($key, $values)
     {
@@ -248,6 +247,7 @@ class ConfigAnalyzer
      * Checks if a node with the provided key exists.
      *
      * @param string $key The desired key.
+     *
      * @return bool
      */
     public function hasNode($key)
@@ -258,9 +258,9 @@ class ConfigAnalyzer
     /**
      * Attempts to replace a value at a known location with the provided node value.
      *
-     * @param string $key The replacement location.
-     * @param Node $node The value to insert.
-     * @param bool $completeReplace Whether or not merging behavior is enabled.
+     * @param string $key             The replacement location.
+     * @param Node   $node            The value to insert.
+     * @param bool   $completeReplace Whether or not merging behavior is enabled.
      */
     public function replaceNodeValue($key, Node $node, $completeReplace = false)
     {
@@ -268,7 +268,6 @@ class ConfigAnalyzer
 
         if ($currentNode instanceof ArrayItem) {
             if ($currentNode->value instanceof Array_ && $node instanceof Array_) {
-
                 if ($completeReplace === false) {
 
                     /** @var ArrayItem $mergeItem */
@@ -311,6 +310,7 @@ class ConfigAnalyzer
                 } else {
                     $currentNode->value = $node;
                 }
+
                 return;
             }
 
@@ -326,6 +326,7 @@ class ConfigAnalyzer
                 if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
                     $this->functionHandler->handle($boolCastNode->expr, $currentNode, $node, $key);
                 }
+
                 return;
             } elseif ($currentNode->value instanceof Node\Expr\Cast\String_) {
                 $stringCastNode = $currentNode->value;
@@ -333,6 +334,7 @@ class ConfigAnalyzer
                 if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
                     $this->functionHandler->handle($stringCastNode->expr, $currentNode, $node, $key);
                 }
+
                 return;
             } elseif ($currentNode->value instanceof Node\Expr\Cast\Int_) {
                 $intCastNode = $currentNode->value;
@@ -340,6 +342,7 @@ class ConfigAnalyzer
                 if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
                     $this->functionHandler->handle($intCastNode->expr, $currentNode, $node, $key);
                 }
+
                 return;
             } elseif ($currentNode->value instanceof Node\Expr\Cast\Double) {
                 $doubleCastNode = $currentNode->value;
@@ -347,11 +350,13 @@ class ConfigAnalyzer
                 if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
                     $this->functionHandler->handle($doubleCastNode->expr, $currentNode, $node, $key);
                 }
+
                 return;
             } elseif ($currentNode->value instanceof FuncCall) {
                 if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
                     $this->functionHandler->handle($currentNode->value, $currentNode, $node, $key);
                 }
+
                 return;
             } else {
                 // Replace node value.
@@ -363,8 +368,9 @@ class ConfigAnalyzer
     /**
      * Guards against resupplying an already configured value in env() calls.
      *
-     * @param string $key The configuration key.
-     * @param mixed $checkValue The check value.
+     * @param string $key        The configuration key.
+     * @param mixed  $checkValue The check value.
+     *
      * @return bool
      */
     private function shouldProceedWithFunctionRewrite($key, $checkValue)
@@ -390,6 +396,7 @@ class ConfigAnalyzer
      * Checks if a known node is an array.
      *
      * @param string $key The desired key.
+     *
      * @return bool
      */
     public function isNodeArray($key)
@@ -420,7 +427,9 @@ class ConfigAnalyzer
 
     public function containsFunctionCall($key)
     {
-        if (!$this->hasNode($key) || !$this->nodeMapping[$key] instanceof ArrayItem) { return false; }
+        if (!$this->hasNode($key) || !$this->nodeMapping[$key] instanceof ArrayItem) {
+            return false;
+        }
 
         return $this->isFunctionLike($this->nodeMapping[$key]->value);
     }
@@ -428,8 +437,8 @@ class ConfigAnalyzer
     /**
      * Appends a value to an existing array at a known location.
      *
-     * @param string $key The target location.
-     * @param Node $node The value to append.
+     * @param string $key  The target location.
+     * @param Node   $node The value to append.
      */
     public function appendArrayItem($key, Node $node)
     {
@@ -446,8 +455,8 @@ class ConfigAnalyzer
     /**
      * Replaces a node's value with the provided new value.
      *
-     * @param string $key The key.
-     * @param mixed $newValue The value to insert.
+     * @param string $key      The key.
+     * @param mixed  $newValue The value to insert.
      */
     public function replaceNode($key, $newValue)
     {
@@ -461,11 +470,11 @@ class ConfigAnalyzer
     /**
      * Replaces a node's key and value, and overrides an existing docblock.
      *
-     * @param string $key The original key.
-     * @param string $newKey The new key.
-     * @param mixed $newValue The value to insert.
-     * @param string $docBlock The Laravel "block" comment.
-     * @param bool $forceNewLine Whether or not to force a new line.
+     * @param string $key          The original key.
+     * @param string $newKey       The new key.
+     * @param mixed  $newValue     The value to insert.
+     * @param string $docBlock     The Laravel "block" comment.
+     * @param bool   $forceNewLine Whether or not to force a new line.
      */
     public function replaceNodeWithDocBlock($key, $newKey, $newValue, $docBlock, $forceNewLine = true)
     {
@@ -502,9 +511,7 @@ class ConfigAnalyzer
                         $currentNode->setAttribute('comments', $comments);
                     }
                 }
-
             }
-
         }
     }
 
@@ -512,6 +519,7 @@ class ConfigAnalyzer
      * Removes the key and its associated value from the configuration.
      *
      * @param string $key The key to remove.
+     *
      * @return bool
      */
     public function removeNode($key)
@@ -651,7 +659,7 @@ class ConfigAnalyzer
     public function dumpConfig()
     {
         $printer = new Printer([
-            'shortArraySyntax' => true
+            'shortArraySyntax' => true,
         ]);
 
         return $printer->printFormatPreserving($this->newStmts, $this->oldStmts, $this->oldTokens);
@@ -667,7 +675,9 @@ class ConfigAnalyzer
      *  'newkey' => ['value1', 'value2']
      *
      * @param Array_ $node The node to check.
+     *
      * @return Array_
+     *
      * @deprecated
      */
     private function checkForNestedUselessArrays(Array_ $node)
@@ -708,5 +718,4 @@ class ConfigAnalyzer
 
         return $node;
     }
-
 }

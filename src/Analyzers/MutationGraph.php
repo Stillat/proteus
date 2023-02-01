@@ -3,16 +3,14 @@
 namespace Stillat\Proteus\Analyzers;
 
 /**
- * Class MutationGraph
+ * Class MutationGraph.
  *
  * Represents a collection of mutations to apply to a configuration document.
  *
- * @package Stillat\Proteus\Analyzers
  * @since 1.0.0
  */
 class MutationGraph
 {
-
     /**
      * The probable insertions.
      *
@@ -26,5 +24,4 @@ class MutationGraph
      * @var array
      */
     public $updates = [];
-
 }

@@ -7,11 +7,10 @@ use PhpParser\Node\Scalar\String_;
 use Stillat\Proteus\Contracts\ValueWriterContract;
 
 /**
- * Class IntWriter
+ * Class IntWriter.
  *
  * Provides utilities for converting runtime integer values into mutable node values.
  *
- * @package Stillat\Proteus\Writers
  * @since 1.0.0
  */
 class IntWriter implements ValueWriterContract
@@ -26,6 +25,6 @@ class IntWriter implements ValueWriterContract
 
     private function wrap($value)
     {
-        return self::PROTEUS_INT_PREFIX . strval($value) . self::PROTEUS_INT_SUFFIX_QUOTE;
+        return self::PROTEUS_INT_PREFIX.strval($value).self::PROTEUS_INT_SUFFIX_QUOTE;
     }
 }

@@ -2,24 +2,22 @@
 
 namespace Stillat\Proteus\Visitors;
 
+use Illuminate\Support\Str;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitor;
 use Stillat\Proteus\Analyzers\ConfigAnalyzer;
-use Illuminate\Support\Str;
 
 /**
- * Class ConfigNodeVisitor
+ * Class ConfigNodeVisitor.
  *
  * Visits each AST node and sets information about the parent history.
  *
- * @package Stillat\Proteus\Visitors
  * @since 1.0.0
  */
 class ConfigNodeVisitor implements NodeVisitor
 {
-
     /**
      * @var null|ConfigAnalyzer
      */
@@ -64,7 +62,7 @@ class ConfigNodeVisitor implements NodeVisitor
         if ($parent != null) {
             $nodeKey = $this->getArrayItemKey($parent);
 
-            return $this->getParentKeyChainItem($parent, $nodeKey . '.' . $key);
+            return $this->getParentKeyChainItem($parent, $nodeKey.'.'.$key);
         }
 
         return $key;
@@ -92,5 +90,4 @@ class ConfigNodeVisitor implements NodeVisitor
     public function afterTraverse(array $nodes)
     {
     }
-
 }

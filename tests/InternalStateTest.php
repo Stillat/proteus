@@ -5,11 +5,10 @@ use Stillat\Proteus\ConfigUpdater;
 
 class InternalStateTest extends TestCase
 {
-
     public function testThatSourceNodeKeysAreCorrectlyRetrieved()
     {
         $updater = new ConfigUpdater();
-        $updater->open(__DIR__ . '/configs/mail.php');
+        $updater->open(__DIR__.'/configs/mail.php');
         $keys = $updater->config()->getSourceNodeKeys();
 
         $expectedKeys = [
@@ -43,7 +42,7 @@ class InternalStateTest extends TestCase
             'from.name',
             'markdown',
             'markdown.theme',
-            'markdown.paths'
+            'markdown.paths',
         ];
 
         $this->assertEquals($expectedKeys, $keys);
@@ -61,5 +60,4 @@ class InternalStateTest extends TestCase
             $this->assertSame(get_class($root), \PhpParser\Node\Expr\Array_::class);
         }
     }
-
 }

@@ -6,7 +6,6 @@ use Stillat\Proteus\Document\Transformer;
 
 class ProteusTestCase extends TestCase
 {
-
     protected function assertChangeEquals($configPath, $expectedPath, $changes)
     {
         $updater = new ConfigUpdater();
@@ -42,5 +41,4 @@ class ProteusTestCase extends TestCase
 
         $this->assertEquals($expected, $doc);
     }
-
 }

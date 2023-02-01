@@ -3,11 +3,10 @@
 namespace Stillat\Proteus\Document;
 
 /**
- * Class Transformer
+ * Class Transformer.
  *
  * Transforms a temporary document structure into its final, consumable form.
  *
- * @package Stillat\Proteus\Document
  * @since 1.0.0
  */
 class Transformer
@@ -20,19 +19,20 @@ class Transformer
      * @var string[]
      */
     protected $simpleReplacements = [
-        "(bool) ''" => 'false',
-        "(bool) '1'" => 'true',
-        "(double) '/*W:D:ST*/" => '',
-        "(int) '/*W:INT:ST*/" => '',
-        "/*W:D:SQ*/'" => '',
-        "/*W:INT:SQ*/'" => '',
-        Transformer::PROTEUS_NL => "\n"
+        "(bool) ''"             => 'false',
+        "(bool) '1'"            => 'true',
+        "(double) '/*W:D:ST*/"  => '',
+        "(int) '/*W:INT:ST*/"   => '',
+        "/*W:D:SQ*/'"           => '',
+        "/*W:INT:SQ*/'"         => '',
+        Transformer::PROTEUS_NL => "\n",
     ];
 
     /**
      * Prepares a final document for consumption.
      *
      * @param string $content The content.
+     *
      * @return string
      */
     public function transform($content)
@@ -48,6 +48,7 @@ class Transformer
      * Normalizes all line endings in the provided string.
      *
      * @param string $string The value to normalize.
+     *
      * @return string
      */
     public static function normalizeLineEndings($string)
@@ -57,5 +58,4 @@ class Transformer
 
         return $string;
     }
-
 }
