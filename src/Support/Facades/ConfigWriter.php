@@ -25,7 +25,6 @@ use Stillat\Proteus\Writers\FunctionWriter;
  */
 class ConfigWriter extends Facade
 {
-
     /**
      * Get the registered name of the component.
      *
@@ -35,5 +34,4 @@ class ConfigWriter extends Facade
     {
         return ConfigWriterContract::class;
     }
-
 }

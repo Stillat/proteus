@@ -3,8 +3,8 @@
 namespace Stillat\Proteus\Writers;
 
 use PhpParser\Node\Arg;
-use PhpParser\Node\Name;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 
 class FunctionWriter
@@ -17,7 +17,6 @@ class FunctionWriter
     const FUNC_LARAVEL_MIX_PATH = 'mix';
     const FUNC_LARAVEL_PUBLIC_PATH = 'public_path';
     const FUNC_LARAVEL_STORAGE_PATH = 'storage_path';
-
 
     protected function makeSimpleFunctionCall($name, $arg = null)
     {
@@ -68,5 +67,4 @@ class FunctionWriter
     {
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_RESOURCE_PATH, $path);
     }
-
 }

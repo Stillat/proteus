@@ -4,35 +4,33 @@ namespace Stillat\Proteus\Document;
 
 use Exception;
 use PhpParser\Builder\Class_;
-use PhpParser\Node\Stmt\InlineHTML;
-use PhpParser\Node\Expr\New_;
 use PhpParser\Internal\PrintableNewAnonClassNode;
 use PhpParser\Node;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\PrettyPrinter\Standard;
 
 /**
- * Class Printer
+ * Class Printer.
  *
  * Provides utilities for converting an AST tree back to a PHP document.
  *
- * @package Stillat\Proteus\Document
  * @since 1.0.0
  */
 class Printer extends Standard
 {
-
     protected function pExpr_Array(Array_ $node)
     {
-        return '[' . $this->pMaybeMultiline($node->items, true) . ']';
+        return '['.$this->pMaybeMultiline($node->items, true).']';
     }
 
-
-    protected function pExpr_FuncCall(FuncCall $node) {
+    protected function pExpr_FuncCall(FuncCall $node)
+    {
         return $this->pCallLhs($node->name)
-            . '(' . $this->pCommaSeparated($node->args) . ')';
+            .'('.$this->pCommaSeparated($node->args).')';
     }
 
     /**
@@ -40,16 +38,18 @@ class Printer extends Standard
      *
      * This method also handles formatting preservation for nodes.
      *
-     * @param Node $node Node to be pretty printed
+     * @param Node $node                  Node to be pretty printed
      * @param bool $parentFormatPreserved Whether parent node has preserved formatting
      *
-     * @return string Pretty printed node
      * @throws Exception
+     *
+     * @return string Pretty printed node
      */
-    protected function p(Node $node, $parentFormatPreserved = false) : string {
+    protected function p(Node $node, $parentFormatPreserved = false): string
+    {
         // No orig tokens means this is a normal pretty print without preservation of formatting
         if (!$this->origTokens) {
-            return $this->{'p' . $node->getType()}($node);
+            return $this->{'p'.$node->getType()}($node);
         }
 
         /** @var Node $origNode */
@@ -102,7 +102,12 @@ class Printer extends Standard
                 if (is_array($subNode) && is_array($origSubNode)) {
                     // Array subnode changed, we might be able to reconstruct it
                     $listResult = $this->pArray(
-                        $subNode, $origSubNode, $pos, $indentAdjustment, $type, $subNodeName,
+                        $subNode,
+                        $origSubNode,
+                        $pos,
+                        $indentAdjustment,
+                        $type,
+                        $subNodeName,
                         $fixupInfo[$subNodeName] ?? null
                     );
                     if (null === $listResult) {
@@ -115,7 +120,7 @@ class Printer extends Standard
 
                 if (is_int($subNode) && is_int($origSubNode)) {
                     // Check if this is a modifier change
-                    $key = $type . '->' . $subNodeName;
+                    $key = $type.'->'.$subNodeName;
                     if (!isset($this->modifierChangeMap[$key])) {
                         return $this->pFallback($fallbackNode);
                     }
@@ -145,7 +150,7 @@ class Printer extends Standard
                 }
 
                 // A node has been inserted, check if we have insertion information for it
-                $key = $type . '->' . $subNodeName;
+                $key = $type.'->'.$subNodeName;
                 if (!isset($this->insertionMap[$key])) {
                     return $this->pFallback($fallbackNode);
                 }
@@ -167,7 +172,7 @@ class Printer extends Standard
 
             if (null === $subNode) {
                 // A node has been removed, check if we have removal information for it
-                $key = $type . '->' . $subNodeName;
+                $key = $type.'->'.$subNodeName;
                 if (!isset($this->removalMap[$key])) {
                     return $this->pFallback($fallbackNode);
                 }
@@ -212,6 +217,7 @@ class Printer extends Standard
         }
 
         $result .= $this->origTokens->getTokenCode($pos, $endPos + 1, $indentAdjustment);
+
         return $result;
     }
 
@@ -225,7 +231,8 @@ class Printer extends Standard
      *
      * @return string Comma separated pretty printed nodes in multiline style
      */
-    protected function pCommaSeparatedMultiline(array $nodes, bool $trailingComma) : string {
+    protected function pCommaSeparatedMultiline(array $nodes, bool $trailingComma): string
+    {
         $this->indent();
 
         $result = '';
@@ -234,10 +241,10 @@ class Printer extends Standard
             if ($node !== null) {
                 $comments = $node->getComments();
                 if ($comments) {
-                    $result .= $this->nl. $this->pComments($comments);
+                    $result .= $this->nl.$this->pComments($comments);
                 }
 
-                $result .= $this->nl . $this->p($node);
+                $result .= $this->nl.$this->p($node);
             } else {
                 $result .= $this->nl;
             }
@@ -247,12 +254,13 @@ class Printer extends Standard
         }
 
         $this->outdent();
+
         return $result;
     }
 
     protected function pMaybeMultiline(array $nodes, bool $trailingComma = false)
     {
-        return $this->pCommaSeparatedMultiline($nodes, $trailingComma) . $this->nl;
+        return $this->pCommaSeparatedMultiline($nodes, $trailingComma).$this->nl;
     }
 
     /**
@@ -264,7 +272,7 @@ class Printer extends Standard
      */
     protected function pCommaSeparated(array $nodes): string
     {
-        return $this->pImplode($nodes, ",");
+        return $this->pImplode($nodes, ',');
     }
 
     protected function pExpr_ArrayItem(ArrayItem $node)
@@ -279,6 +287,7 @@ class Printer extends Standard
                 return true;
             }
         }
+
         return false;
     }
 
@@ -290,7 +299,8 @@ class Printer extends Standard
      *
      * @return string Imploded pretty printed nodes
      */
-    protected function pImplode(array $nodes, string $glue = '') : string {
+    protected function pImplode(array $nodes, string $glue = ''): string
+    {
         $pNodes = [];
         foreach ($nodes as $node) {
             if (null === $node) {
@@ -302,5 +312,4 @@ class Printer extends Standard
 
         return implode($glue.$this->nl, $pNodes);
     }
-
 }

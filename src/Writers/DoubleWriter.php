@@ -7,11 +7,10 @@ use PhpParser\Node\Scalar\String_;
 use Stillat\Proteus\Contracts\ValueWriterContract;
 
 /**
- * Class DoubleWriter
+ * Class DoubleWriter.
  *
  * Provides utilities for converting runtime float values to mutable node values.
  *
- * @package Stillat\Proteus\Writers
  * @since 1.0.0
  */
 class DoubleWriter implements ValueWriterContract
@@ -28,5 +27,4 @@ class DoubleWriter implements ValueWriterContract
     {
         return new Double(new String_($this->wrap($value)));
     }
-
 }

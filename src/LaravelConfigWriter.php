@@ -3,10 +3,9 @@
 namespace Stillat\Proteus;
 
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Support\Arr;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Str;
 use SplFileInfo;
-use Illuminate\Contracts\Foundation\Application;
 use Stillat\Proteus\Analyzers\RecursiveKeyAnalyzer;
 use Stillat\Proteus\Contracts\ConfigWriterContract;
 use Stillat\Proteus\Exceptions\ConfigNotFoundException;
@@ -16,11 +15,9 @@ use Stillat\Proteus\Writers\FunctionWriter;
 use Symfony\Component\Finder\Finder;
 
 /**
- * Class LaravelConfigWriter
+ * Class LaravelConfigWriter.
  *
  * Interacts with the Laravel configuration services to provide config-writing features.
- *
- * @package Stillat\Proteus
  */
 class LaravelConfigWriter implements ConfigWriterContract
 {
@@ -81,6 +78,7 @@ class LaravelConfigWriter implements ConfigWriterContract
 
     /**
      * A list of configuration keys that should be preserved.
+     *
      * @var array
      */
     protected $preserveKeys = [];
@@ -124,6 +122,7 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Get all of the configuration files for the application.
      *
      * @param Application $app
+     *
      * @return array
      */
     protected function getConfigurationFiles(Application $app)
@@ -135,7 +134,7 @@ class LaravelConfigWriter implements ConfigWriterContract
         foreach (Finder::create()->files()->name('*.php')->in($configPath) as $file) {
             $directory = $this->getNestedDirectory($file, $configPath);
 
-            $files[$directory . basename($file->getRealPath(), '.php')] = $file->getRealPath();
+            $files[$directory.basename($file->getRealPath(), '.php')] = $file->getRealPath();
         }
 
         ksort($files, SORT_NATURAL);
@@ -147,7 +146,8 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Get the configuration file nesting path.
      *
      * @param SplFileInfo $file
-     * @param string $configPath
+     * @param string      $configPath
+     *
      * @return string
      */
     protected function getNestedDirectory(SplFileInfo $file, $configPath)
@@ -155,7 +155,7 @@ class LaravelConfigWriter implements ConfigWriterContract
         $directory = $file->getPath();
 
         if ($nested = trim(str_replace($configPath, '', $directory), DIRECTORY_SEPARATOR)) {
-            $nested = str_replace(DIRECTORY_SEPARATOR, '.', $nested) . '.';
+            $nested = str_replace(DIRECTORY_SEPARATOR, '.', $nested).'.';
         }
 
         return $nested;
@@ -165,6 +165,7 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Attempts to locate the most specific configuration match available.
      *
      * @param string $key The configuration key.
+     *
      * @return array|null
      */
     public function getFile($key)
@@ -172,8 +173,8 @@ class LaravelConfigWriter implements ConfigWriterContract
         foreach ($this->configNamespaces as $configNamespace) {
             if (Str::startsWith($key, $configNamespace)) {
                 return [
-                    self::KEY_FILEPATH => $this->files[$configNamespace],
-                    self::KEY_NAMESPACE => $configNamespace
+                    self::KEY_FILEPATH  => $this->files[$configNamespace],
+                    self::KEY_NAMESPACE => $configNamespace,
                 ];
             }
         }
@@ -183,8 +184,9 @@ class LaravelConfigWriter implements ConfigWriterContract
 
     /**
      * Retrieves the value for the provided key.
-     * 
+     *
      * @param string $key The configuration key.
+     *
      * @return mixed
      */
     public function getConfigItem($key)
@@ -196,6 +198,7 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Checks if a configuration file with the provided key exists.
      *
      * @param string $key The key to check.
+     *
      * @return bool
      */
     public function hasConfig($key)
@@ -207,7 +210,8 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Adjusts the provided configuration key with respect to the configuration namespace.
      *
      * @param string $configNamespace The configuration namespace.
-     * @param string $configKey The configuration key to update.
+     * @param string $configKey       The configuration key to update.
+     *
      * @return string
      */
     protected function adjustKey($configNamespace, $configKey)
@@ -218,12 +222,14 @@ class LaravelConfigWriter implements ConfigWriterContract
     /**
      * Attempts to change a single configuration item and write the changes to disk.
      *
-     * @param string $key The configuration key.
-     * @param mixed $value The value to update.
-     * @return bool
+     * @param string $key   The configuration key.
+     * @param mixed  $value The value to update.
+     *
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
      * @throws GuardedConfigurationMutationException
+     *
+     * @return bool
      */
     public function write($key, $value)
     {
@@ -244,6 +250,7 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Returns an update wrapper for the provided configuration namespace.
      *
      * @param string $namespace The configuration instance.
+     *
      * @return ConfigUpdateWrapper
      */
     public function edit($namespace)
@@ -255,6 +262,7 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Sets a list of configuration items that will never be updated.
      *
      * @param array $config The configuration keys to preserve.
+     *
      * @return $this
      */
     public function preserve($config)
@@ -280,12 +288,14 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Attempts to apply multiple changes to a configuration namespace.
      *
      * @param string $configNamespace The configuration namespace.
-     * @param array $values The key/value pairs to update.
-     * @param bool $isMerge Indiciates if the current operation is a merge, or forced update.
-     * @return bool
+     * @param array  $values          The key/value pairs to update.
+     * @param bool   $isMerge         Indiciates if the current operation is a merge, or forced update.
+     *
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
      * @throws GuardedConfigurationMutationException
+     *
+     * @return bool
      */
     public function writeMany($configNamespace, array $values, $isMerge = false)
     {
@@ -306,11 +316,13 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Attempts to merge multiple changes to a configuration namespace.
      *
      * @param string $configNamespace The configuration namespace.
-     * @param array $values The key/value pairs to update.
-     * @return bool
+     * @param array  $values          The key/value pairs to update.
+     *
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
      * @throws GuardedConfigurationMutationException
+     *
+     * @return bool
      */
     public function mergeMany($configNamespace, array $values)
     {
@@ -321,7 +333,8 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Checks all requested changes against any restricted configuration levels.
      *
      * @param string $namespace The configuration namespace.
-     * @param array $changes The changes to validate.
+     * @param array  $changes   The changes to validate.
+     *
      * @throws GuardedConfigurationMutationException
      */
     private function checkChangesWithGuard($namespace, array $changes)
@@ -335,6 +348,7 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Checks the provided keys against any restricted configuration levels.
      *
      * @param string[] $keys The keys to check.
+     *
      * @throws GuardedConfigurationMutationException
      */
     public function checkGuard($keys)
@@ -351,14 +365,16 @@ class LaravelConfigWriter implements ConfigWriterContract
     /**
      * Attempts to apply the specified changes to the configuration file.
      *
-     * @param string $file The path to the configuration file.
+     * @param string $file      The path to the configuration file.
      * @param string $namespace The configuration namespace.
-     * @param array $changes The changes to apply.
-     * @param bool $isMerge Indicates if merge or forced overwrite behavior should be used.
-     * @return string
+     * @param array  $changes   The changes to apply.
+     * @param bool   $isMerge   Indicates if merge or forced overwrite behavior should be used.
+     *
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
      * @throws GuardedConfigurationMutationException
+     *
+     * @return string
      */
     protected function getChanges($file, $namespace, array $changes, $isMerge = false)
     {
@@ -385,12 +401,14 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Attempts to apply many changes to a source configuration document and return the modified document.
      *
      * @param string $configNamespace The root configuration namespace.
-     * @param array $values The key/value mapping of all changes.
-     * @param bool $isMerge Indicates if the current operation is a merge, or forced update.
-     * @return string
+     * @param array  $values          The key/value mapping of all changes.
+     * @param bool   $isMerge         Indicates if the current operation is a merge, or forced update.
+     *
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
      * @throws GuardedConfigurationMutationException
+     *
+     * @return string
      */
     public function previewMany($configNamespace, array $values, $isMerge = false)
     {
@@ -409,9 +427,11 @@ class LaravelConfigWriter implements ConfigWriterContract
      * Creates and returns a ConfigUpdater instance for the requested namespace.
      *
      * @param string $namespace The configuration namespace.
-     * @return ConfigUpdater
+     *
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
+     *
+     * @return ConfigUpdater
      */
     public function getUpdater($namespace)
     {
@@ -422,7 +442,6 @@ class LaravelConfigWriter implements ConfigWriterContract
         }
 
         $file = $configDetails[self::KEY_FILEPATH];
-
 
         if (!file_exists($file)) {
             throw new ConfigNotFoundException("Config file for '{$namespace}' could not be located.");
@@ -441,12 +460,14 @@ class LaravelConfigWriter implements ConfigWriterContract
     /**
      * Attempts to update the source configuration and returns the modified document.
      *
-     * @param string $key The configuration item to update.
-     * @param mixed $value The value to set.
-     * @return string
+     * @param string $key   The configuration item to update.
+     * @param mixed  $value The value to set.
+     *
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
      * @throws GuardedConfigurationMutationException
+     *
+     * @return string
      */
     public function preview($key, $value)
     {
@@ -460,8 +481,7 @@ class LaravelConfigWriter implements ConfigWriterContract
         $file = $configDetails[self::KEY_FILEPATH];
 
         return $this->getChanges($file, $configDetails[self::KEY_NAMESPACE], [
-            $adjustedKey => $value
+            $adjustedKey => $value,
         ]);
     }
-
 }

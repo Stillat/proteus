@@ -6,16 +6,14 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 
 /**
- * Class ArrayWriter
+ * Class ArrayWriter.
  *
  * Provides utilities for converting runtime arrays to a mutable node value.
  *
- * @package Stillat\Proteus\Writers
  * @since 1.0.0
  */
 class ArrayWriter
 {
-
     public function analyze($value)
     {
         $items = [];
@@ -38,5 +36,4 @@ class ArrayWriter
     {
         return $value;
     }
-
 }

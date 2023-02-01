@@ -5,20 +5,19 @@ namespace Stillat\Proteus\Analyzers;
 use Exception;
 
 /**
- * Class TypeAnalyzer
+ * Class TypeAnalyzer.
  *
  * Provides utilities to analyze runtime value's types.
  *
- * @package Stillat\Proteus\Analyzers
  * @since 1.0.0
  */
 class TypeAnalyzer
 {
-
     /**
      * Converts the type mapping to a known string representation.
      *
      * @param int $type The type.
+     *
      * @return string
      */
     public static function typeToString($type)
@@ -42,8 +41,10 @@ class TypeAnalyzer
      * Infers the type from the provided value.
      *
      * @param mixed $value The value to analyze.
-     * @return int
+     *
      * @throws Exception
+     *
+     * @return int
      */
     public static function typeOf($value)
     {
@@ -63,7 +64,6 @@ class TypeAnalyzer
             return Types::TYPE_BOOL;
         }
 
-        throw new Exception("Support type: " . gettype($value));
+        throw new Exception('Support type: '.gettype($value));
     }
-
 }

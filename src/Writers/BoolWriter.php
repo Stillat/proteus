@@ -7,19 +7,16 @@ use PhpParser\Node\Scalar\String_;
 use Stillat\Proteus\Contracts\ValueWriterContract;
 
 /**
- * Class BoolWriter
+ * Class BoolWriter.
  *
  * Provides utilities for converting runtime boolean values to a mutable node value.
  *
- * @package Stillat\Proteus\Writers
  * @since 1.0.0
  */
 class BoolWriter implements ValueWriterContract
 {
-
     public function write($value)
     {
         return new Bool_(new String_($value));
     }
-
 }
