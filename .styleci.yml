@@ -1,0 +1,18 @@
+risky: false
+version: 8.1
+preset: recommended
+finder:
+  exclude:
+    - "modules"
+    - "node_modules"
+    - "nova"
+    - "nova-components"
+    - "storage"
+    - "spark"
+    - "vendor"
+    - "tests/configs/"
+    - "tests/expected/"
+  name: "*.php"
+  not-name:
+    - "*.blade.php"
+    - "_ide_helper.php"
