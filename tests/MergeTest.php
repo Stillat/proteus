@@ -54,70 +54,70 @@ class MergeTest extends ProteusTestCase
         $updater->open(__DIR__.'/configs/issues/018.php');
 
         $updater->update([
-                'forms' => [
-                    [
-                        'id' => 'new1',
-                        'form' => 'contact',
-                        'check_consent' => true,
-                        'consent_field' => 'newsletter',
-                        'disable_opt_in' => false,
-                        'marketing_permissions_field_ids' => [
-                            [
-                            ],
+            'forms' => [
+                [
+                    'id'                              => 'new1',
+                    'form'                            => 'contact',
+                    'check_consent'                   => true,
+                    'consent_field'                   => 'newsletter',
+                    'disable_opt_in'                  => false,
+                    'marketing_permissions_field_ids' => [
+                        [
                         ],
-                        'merge_fields' => [
-                            [
-                                'id' => 'new2',
-                                'field_name' => 'first_name',
-                                'tag' => 'FNAME',
-                            ],
-                            [
-                                'id' => 'new3',
-                                'field_name' => 'last_name',
-                                'tag' => 'LNAME',
-                            ],
-                            [
-                                'id' => 'new4',
-                                'field_name' => 'company',
-                                'tag' => 'COMPANY',
-                            ],
-                        ],
-                        'primary_email_field' => 'email',
-                        'audience_id' => 'new5',
                     ],
-                    [
-                        'id' => 'b-new1',
-                        'form' => 'contact',
-                        'check_consent' => true,
-                        'consent_field' => 'newsletter',
-                        'disable_opt_in' => false,
-                        'marketing_permissions_field_ids' => [
-                            [
-                            ],
+                    'merge_fields' => [
+                        [
+                            'id'         => 'new2',
+                            'field_name' => 'first_name',
+                            'tag'        => 'FNAME',
                         ],
-                        'merge_fields' => [
-                            [
-                                'id' => 'b-new2',
-                                'field_name' => 'first_name',
-                                'tag' => 'FNAME',
-                            ],
-                            [
-                                'id' => 'b-new3',
-                                'field_name' => 'last_name',
-                                'tag' => 'LNAME',
-                            ],
-                            [
-                                'id' => 'b-new4',
-                                'field_name' => 'company',
-                                'tag' => 'COMPANY',
-                            ],
+                        [
+                            'id'         => 'new3',
+                            'field_name' => 'last_name',
+                            'tag'        => 'LNAME',
                         ],
-                        'primary_email_field' => 'email',
-                        'audience_id' => 'b-new5',
+                        [
+                            'id'         => 'new4',
+                            'field_name' => 'company',
+                            'tag'        => 'COMPANY',
+                        ],
                     ],
+                    'primary_email_field' => 'email',
+                    'audience_id'         => 'new5',
+                ],
+                [
+                    'id'                              => 'b-new1',
+                    'form'                            => 'contact',
+                    'check_consent'                   => true,
+                    'consent_field'                   => 'newsletter',
+                    'disable_opt_in'                  => false,
+                    'marketing_permissions_field_ids' => [
+                        [
+                        ],
+                    ],
+                    'merge_fields' => [
+                        [
+                            'id'         => 'b-new2',
+                            'field_name' => 'first_name',
+                            'tag'        => 'FNAME',
+                        ],
+                        [
+                            'id'         => 'b-new3',
+                            'field_name' => 'last_name',
+                            'tag'        => 'LNAME',
+                        ],
+                        [
+                            'id'         => 'b-new4',
+                            'field_name' => 'company',
+                            'tag'        => 'COMPANY',
+                        ],
+                    ],
+                    'primary_email_field' => 'email',
+                    'audience_id'         => 'b-new5',
+                ],
             ],
 
-        ],true);
+        ], true);
 
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/issues/018.php'));
         $this->assertSame($expected, $updater->getDocument());
@@ -126,74 +126,73 @@ class MergeTest extends ProteusTestCase
         $updater->open(__DIR__.'/expected/issues/018.php');
 
         $updater->update([
-                'forms' => [
-                    [
-                        'id' => 'c-new1',
-                        'form' => 'contact',
-                        'check_consent' => true,
-                        'consent_field' => 'newsletter',
-                        'disable_opt_in' => false,
-                        'marketing_permissions_field_ids' => [
-                            [
-                            ],
+            'forms' => [
+                [
+                    'id'                              => 'c-new1',
+                    'form'                            => 'contact',
+                    'check_consent'                   => true,
+                    'consent_field'                   => 'newsletter',
+                    'disable_opt_in'                  => false,
+                    'marketing_permissions_field_ids' => [
+                        [
                         ],
-                        'merge_fields' => [
-                            [
-                                'id' => 'c-new2',
-                                'field_name' => 'first_name',
-                                'tag' => 'FNAME',
-                            ],
-                            [
-                                'id' => 'c-new3',
-                                'field_name' => 'last_name',
-                                'tag' => 'LNAME',
-                            ],
-                            [
-                                'id' => 'c-new4',
-                                'field_name' => 'company',
-                                'tag' => 'COMPANY',
-                            ],
-                        ],
-                        'primary_email_field' => 'email',
-                        'audience_id' => 'c-new5',
                     ],
-                    [
-                        'id' => 'd-new1',
-                        'form' => 'contact',
-                        'check_consent' => true,
-                        'consent_field' => 'newsletter',
-                        'disable_opt_in' => false,
-                        'marketing_permissions_field_ids' => [
-                            [
-                            ],
+                    'merge_fields' => [
+                        [
+                            'id'         => 'c-new2',
+                            'field_name' => 'first_name',
+                            'tag'        => 'FNAME',
                         ],
-                        'merge_fields' => [
-                            [
-                                'id' => 'd-new2',
-                                'field_name' => 'first_name',
-                                'tag' => 'FNAME',
-                            ],
-                            [
-                                'id' => 'd-new3',
-                                'field_name' => 'last_name',
-                                'tag' => 'LNAME',
-                            ],
-                            [
-                                'id' => 'd-new4',
-                                'field_name' => 'company',
-                                'tag' => 'COMPANY',
-                            ],
+                        [
+                            'id'         => 'c-new3',
+                            'field_name' => 'last_name',
+                            'tag'        => 'LNAME',
                         ],
-                        'primary_email_field' => 'email',
-                        'audience_id' => 'd-new5',
+                        [
+                            'id'         => 'c-new4',
+                            'field_name' => 'company',
+                            'tag'        => 'COMPANY',
+                        ],
                     ],
+                    'primary_email_field' => 'email',
+                    'audience_id'         => 'c-new5',
                 ],
+                [
+                    'id'                              => 'd-new1',
+                    'form'                            => 'contact',
+                    'check_consent'                   => true,
+                    'consent_field'                   => 'newsletter',
+                    'disable_opt_in'                  => false,
+                    'marketing_permissions_field_ids' => [
+                        [
+                        ],
+                    ],
+                    'merge_fields' => [
+                        [
+                            'id'         => 'd-new2',
+                            'field_name' => 'first_name',
+                            'tag'        => 'FNAME',
+                        ],
+                        [
+                            'id'         => 'd-new3',
+                            'field_name' => 'last_name',
+                            'tag'        => 'LNAME',
+                        ],
+                        [
+                            'id'         => 'd-new4',
+                            'field_name' => 'company',
+                            'tag'        => 'COMPANY',
+                        ],
+                    ],
+                    'primary_email_field' => 'email',
+                    'audience_id'         => 'd-new5',
+                ],
+            ],
 
-            ],true);
+        ], true);
 
-            $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/issues/018a.php'));
-            $this->assertSame($expected, $updater->getDocument());
-
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/issues/018a.php'));
+        $this->assertSame($expected, $updater->getDocument());
 
         $updater = new ConfigUpdater();
         $updater->open(__DIR__.'/expected/issues/018a.php');
@@ -201,71 +200,70 @@ class MergeTest extends ProteusTestCase
         $updater->update([
             'forms' => [
                 [
-                    'id' => 'c-new1',
-                    'form' => 'contact',
-                    'check_consent' => true,
-                    'consent_field' => 'newsletter',
-                    'disable_opt_in' => false,
+                    'id'                              => 'c-new1',
+                    'form'                            => 'contact',
+                    'check_consent'                   => true,
+                    'consent_field'                   => 'newsletter',
+                    'disable_opt_in'                  => false,
                     'marketing_permissions_field_ids' => [
                         [
                         ],
                     ],
                     'merge_fields' => [
                         [
-                            'id' => 'c-new2',
+                            'id'         => 'c-new2',
                             'field_name' => 'first_name',
-                            'tag' => 'FNAME',
+                            'tag'        => 'FNAME',
                         ],
                         [
-                            'id' => 'c-new3',
+                            'id'         => 'c-new3',
                             'field_name' => 'last_name',
-                            'tag' => 'LNAME',
+                            'tag'        => 'LNAME',
                         ],
                         [
-                            'id' => 'c-new4',
+                            'id'         => 'c-new4',
                             'field_name' => 'company',
-                            'tag' => 'COMPANY',
+                            'tag'        => 'COMPANY',
                         ],
                     ],
                     'primary_email_field' => 'email',
-                    'audience_id' => 'c-new5',
+                    'audience_id'         => 'c-new5',
                 ],
                 [
-                    'id' => 'd-new1',
-                    'form' => 'contact',
-                    'check_consent' => true,
-                    'consent_field' => 'newsletter',
-                    'disable_opt_in' => false,
+                    'id'                              => 'd-new1',
+                    'form'                            => 'contact',
+                    'check_consent'                   => true,
+                    'consent_field'                   => 'newsletter',
+                    'disable_opt_in'                  => false,
                     'marketing_permissions_field_ids' => [
                         [
                         ],
                     ],
                     'merge_fields' => [
                         [
-                            'id' => 'd-new2',
+                            'id'         => 'd-new2',
                             'field_name' => 'first_name',
-                            'tag' => 'FNAME',
+                            'tag'        => 'FNAME',
                         ],
                         [
-                            'id' => 'd-new3',
+                            'id'         => 'd-new3',
                             'field_name' => 'last_name',
-                            'tag' => 'LNAME',
+                            'tag'        => 'LNAME',
                         ],
                         [
-                            'id' => 'd-new4',
+                            'id'         => 'd-new4',
                             'field_name' => 'company',
-                            'tag' => 'COMPANY',
+                            'tag'        => 'COMPANY',
                         ],
                     ],
                     'primary_email_field' => 'email',
-                    'audience_id' => 'd-new5',
+                    'audience_id'         => 'd-new5',
                 ],
             ],
 
-        ],false);
-
+        ], false);
 
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/issues/018b.php'));
         $this->assertSame($expected, $updater->getDocument());
-        }
+    }
 }

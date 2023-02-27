@@ -264,7 +264,7 @@ class ConfigAnalyzer
         $willWreckArray = true;
 
         foreach ($node->items as $item) {
-            if (! ($item instanceof ArrayItem && $item->value instanceof Array_)) {
+            if (!($item instanceof ArrayItem && $item->value instanceof Array_)) {
                 $willWreckArray = false;
                 break;
             }
