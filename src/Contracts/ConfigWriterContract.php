@@ -81,6 +81,8 @@ interface ConfigWriterContract
      */
     public function preserve($config);
 
+    public function replace($keys);
+
     /**
      * Attempts to update the source configuration and returns the modified document.
      *
