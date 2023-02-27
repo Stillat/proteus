@@ -255,6 +255,24 @@ class ConfigAnalyzer
         return array_key_exists($key, $this->nodeMapping);
     }
 
+    protected function willClobberTheExistingArray(Array_ $node, ArrayItem $incoming)
+    {
+        if ($incoming->key instanceof String_) {
+            return false;
+        }
+
+        $willWreckArray = true;
+
+        foreach ($node->items as $item) {
+            if (! ($item instanceof ArrayItem && $item->value instanceof Array_)) {
+                $willWreckArray = false;
+                break;
+            }
+        }
+
+        return $willWreckArray;
+    }
+
     /**
      * Attempts to replace a value at a known location with the provided node value.
      *
@@ -278,7 +296,7 @@ class ConfigAnalyzer
                             $mergeItemKeyValue = $mergeItem->key->value;
                         }
 
-                        if ($mergeItem->value instanceof Array_ && $mergeItemKeyValue === null) {
+                        if ($mergeItem->value instanceof Array_ && $mergeItemKeyValue === null && !$this->willClobberTheExistingArray($currentNode->value, $mergeItem)) {
                             foreach ($mergeItem->value->items as $subMergeItem) {
                                 $currentNode->value->items[] = $subMergeItem;
                             }
