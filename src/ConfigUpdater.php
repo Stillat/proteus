@@ -56,6 +56,8 @@ class ConfigUpdater
      */
     private $preserveKeys = [];
 
+    private $replaceKeys = [];
+
     public function __construct()
     {
         $this->transformer = new Transformer();
@@ -89,6 +91,13 @@ class ConfigUpdater
     public function setPreserveKeys($keys)
     {
         $this->preserveKeys = $this->flattenKeys($keys);
+
+        return $this;
+    }
+
+    public function setReplaceKeys($keys)
+    {
+        $this->replaceKeys = $this->flattenKeys($keys);
 
         return $this;
     }
@@ -284,6 +293,10 @@ class ConfigUpdater
 
                     if ($isMerge) {
                         $completeReplace = false;
+                    }
+
+                    if (in_array($update, $this->replaceKeys)) {
+                        $completeReplace = true;
                     }
 
                     $this->analyzer->replaceNodeValue($update, $constructedValue, $completeReplace);

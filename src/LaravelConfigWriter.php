@@ -83,6 +83,8 @@ class LaravelConfigWriter implements ConfigWriterContract
      */
     protected $preserveKeys = [];
 
+    protected $replaceableKeys = [];
+
     public function __construct(Application $app, Repository $configRepo)
     {
         $this->app = $app;
@@ -272,6 +274,13 @@ class LaravelConfigWriter implements ConfigWriterContract
         return $this;
     }
 
+    public function replace($keys)
+    {
+        $this->replaceableKeys = $keys;
+
+        return $this;
+    }
+
     /**
      * Will indicate that all function calls should be ignored when updating the configuration file.
      *
@@ -390,7 +399,8 @@ class LaravelConfigWriter implements ConfigWriterContract
 
         $configUpdater = new ConfigUpdater();
         $configUpdater->setIgnoreFunctions($this->ignoreFunctions)
-            ->setPreserveKeys($this->preserveKeys);
+            ->setPreserveKeys($this->preserveKeys)
+            ->setReplaceKeys($this->replaceableKeys);
         $configUpdater->open($file);
         $configUpdater->update($changes, $isMerge);
 
