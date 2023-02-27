@@ -221,6 +221,10 @@ class ConfigUpdater
      */
     public function update(array $changes, $isMerge = false)
     {
+        if ($this->ignoreFunctions && count($this->analyzer->getDiscoveredFunctionKeys()) > 0) {
+            $this->preserveKeys = array_merge($this->preserveKeys, $this->analyzer->getDiscoveredFunctionKeys());
+        }
+
         // If we have keys to preserve, writing without all the
         // required values will just stomp all over everything.
         if (count($this->preserveKeys) > 0) {

@@ -639,6 +639,8 @@ class ConfigAnalyzer
         $refTraverser->traverse($parentStatements);
         $this->newStmts = $parentStatements;
 
+        $this->autoDiscoverFunctionCalls($this->oldStmts);
+
         foreach ($this->newStmts as $statement) {
             if ($statement instanceof Node\Stmt\Return_) {
                 $this->rootNode = $statement->expr;
@@ -647,6 +649,73 @@ class ConfigAnalyzer
         }
 
         $this->sourceNodes = array_keys($this->nodeMapping);
+    }
+
+    private function autoDiscoverFunctionCalls($ast)
+    {
+        if (count($ast) != 1 || !$ast[0] instanceof Node\Stmt\Return_) {
+            return;
+        }
+        if (! $ast[0]->expr instanceof Array_) {
+            return;
+        }
+        /** @var Array_ $rootArray */
+        $rootArray = $ast[0]->expr;
+
+        $discoveredKeys = $this->locateFunctionValuesInsideArray($rootArray, '');
+
+        $this->discoveredFuncKeys = $discoveredKeys;
+    }
+
+    private $discoveredFuncKeys = [];
+
+    public function getDiscoveredFunctionKeys()
+    {
+        return $this->discoveredFuncKeys;
+    }
+
+    private function getKeyFromNode($node)
+    {
+        if ($node instanceof String_) {
+            return $node->value;
+        }
+
+        // Make better-er later.
+        return '';
+    }
+
+    private function locateFunctionValuesInsideArray(Array_ $array, $prefix = '')
+    {
+        if (strlen($prefix) > 0) {
+            $prefix = $prefix.'.';
+        }
+
+        $values = [];
+
+        foreach ($array->items as $item) {
+            if ($item->key == null) {
+                continue;
+            }
+
+            $values = array_merge($values, $this->lookInsideArrayForFunctions($prefix.$this->getKeyFromNode($item->key), $item->value));
+        }
+
+        return $values;
+    }
+
+    private function lookInsideArrayForFunctions($key, $arrayItem)
+    {
+        $values = [];
+
+        if ($arrayItem instanceof Array_) {
+            $values = array_merge($values, $this->locateFunctionValuesInsideArray($arrayItem, $key));
+        }
+
+        if ($this->isFunctionLike($arrayItem)) {
+            $values[] = $key;
+        }
+
+        return $values;
     }
 
     /**
