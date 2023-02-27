@@ -7,7 +7,6 @@ use Stillat\Proteus\Document\Transformer;
 
 class WriteTest extends ProteusTestCase
 {
-
     public function testWritesCanBeDoneEasilyWithoutTrashingConfigurationFiles()
     {
         $updater = new ConfigUpdater();
@@ -72,7 +71,7 @@ class WriteTest extends ProteusTestCase
                     'primary_email_field' => 'email',
                     'audience_id'         => 'new5',
                 ],
-            ]
+            ],
         ], false); // <-- Note: this is not mergeMany
 
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/issues/018d.php'));

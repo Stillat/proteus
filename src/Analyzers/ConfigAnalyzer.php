@@ -656,7 +656,7 @@ class ConfigAnalyzer
         if (count($ast) != 1 || !$ast[0] instanceof Node\Stmt\Return_) {
             return;
         }
-        if (! $ast[0]->expr instanceof Array_) {
+        if (!$ast[0]->expr instanceof Array_) {
             return;
         }
         /** @var Array_ $rootArray */
