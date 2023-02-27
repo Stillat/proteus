@@ -269,7 +269,6 @@ class MergeTest extends ProteusTestCase
 
     public function testSpecifiedKeysCanBeReplacedWhileMerging()
     {
-
         $updater = new ConfigUpdater();
         $updater->open(__DIR__.'/configs/issues/018.php');
         $updater->setReplaceKeys(['forms']);
@@ -277,64 +276,64 @@ class MergeTest extends ProteusTestCase
         $updater->update([
             'forms' => [
                 [
-                    'id' => 'id1',
-                    'form' => 'contact',
-                    'check_consent' => true,
-                    'consent_field' => 'newsletter',
-                    'disable_opt_in' => false,
+                    'id'                              => 'id1',
+                    'form'                            => 'contact',
+                    'check_consent'                   => true,
+                    'consent_field'                   => 'newsletter',
+                    'disable_opt_in'                  => false,
                     'marketing_permissions_field_ids' => [
                         [
                         ],
                     ],
                     'merge_fields' => [
                         [
-                            'id' => 'id2',
+                            'id'         => 'id2',
                             'field_name' => 'first_name',
-                            'tag' => 'FNAME',
+                            'tag'        => 'FNAME',
                         ],
                         [
-                            'id' => 'id3',
+                            'id'         => 'id3',
                             'field_name' => 'last_name',
-                            'tag' => 'LNAME',
+                            'tag'        => 'LNAME',
                         ],
                         [
-                            'id' => 'id',
+                            'id'         => 'id',
                             'field_name' => 'company',
-                            'tag' => 'COMPANY',
+                            'tag'        => 'COMPANY',
                         ],
                     ],
                     'primary_email_field' => 'email',
-                    'audience_id' => 'aud1',
+                    'audience_id'         => 'aud1',
                 ],
                 [
-                    'id' => 'b-new1',
-                    'form' => 'contact',
-                    'check_consent' => true,
-                    'consent_field' => 'newsletter',
-                    'disable_opt_in' => false,
+                    'id'                              => 'b-new1',
+                    'form'                            => 'contact',
+                    'check_consent'                   => true,
+                    'consent_field'                   => 'newsletter',
+                    'disable_opt_in'                  => false,
                     'marketing_permissions_field_ids' => [
                         [
                         ],
                     ],
                     'merge_fields' => [
                         [
-                            'id' => 'b-new2',
+                            'id'         => 'b-new2',
                             'field_name' => 'first_name',
-                            'tag' => 'FNAME',
+                            'tag'        => 'FNAME',
                         ],
                         [
-                            'id' => 'b-new3',
+                            'id'         => 'b-new3',
                             'field_name' => 'last_name',
-                            'tag' => 'LNAME',
+                            'tag'        => 'LNAME',
                         ],
                         [
-                            'id' => 'b-new4',
+                            'id'         => 'b-new4',
                             'field_name' => 'company',
-                            'tag' => 'COMPANY',
+                            'tag'        => 'COMPANY',
                         ],
                     ],
                     'primary_email_field' => 'email',
-                    'audience_id' => 'b-new5',
+                    'audience_id'         => 'b-new5',
                 ],
             ],
         ], true);
