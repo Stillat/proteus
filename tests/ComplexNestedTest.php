@@ -12,12 +12,12 @@ class ComplexNestedTest extends ProteusTestCase
             [
                 'test.new' => [
                     'nested' => [
-                        'key-one'   => 'value-one',
-                        'key-two'   => 'value-two',
+                        'key-one' => 'value-one',
+                        'key-two' => 'value-two',
                         'key-three' => 'value-three',
-                        'key-four'  => [
-                            'nested-one'   => 'nested-value-one',
-                            'nested-two'   => 'nested-value-two',
+                        'key-four' => [
+                            'nested-one' => 'nested-value-one',
+                            'nested-two' => 'nested-value-two',
                             'nested-three' => [
                                 'three' => 'value-three',
                             ],
@@ -73,7 +73,7 @@ class ComplexNestedTest extends ProteusTestCase
             [
                 'nested.new.key' => [
                     'these.keys' => 'replacement value',
-                    'this'       => 'should be added',
+                    'this' => 'should be added',
                 ],
             ]
         );

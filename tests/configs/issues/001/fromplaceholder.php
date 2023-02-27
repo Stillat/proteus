@@ -21,6 +21,6 @@ return [
             'content_field' => 'message',
             'handle' => 'contact_you',
         ],
-    ]
+    ],
 
 ];

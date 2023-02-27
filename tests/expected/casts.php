@@ -8,10 +8,10 @@ return [
     'bool' => (bool) env('BOOL_TEST', '0'),
     'double' => (float) env('DOUBLE_TEST', '40.2'),
     'nested' => [
-        'test' => (bool) env('TEST', true)
+        'test' => (bool) env('TEST', true),
     ],
 
     'test' => 40,
     'test2' => 60.3,
-    'test3' => 'this is another string'
+    'test3' => 'this is another string',
 ];

@@ -148,7 +148,7 @@ class ConfigAnalyzer
     /**
      * Sets if function calls should be ignored.
      *
-     * @param bool $ignoreFunctions
+     * @param  bool  $ignoreFunctions
      */
     public function setIgnoreFunctions($ignoreFunctions)
     {
@@ -158,7 +158,7 @@ class ConfigAnalyzer
     /**
      * Sets the current configuration values.
      *
-     * @param array $values The values.
+     * @param  array  $values The values.
      */
     public function setValues($values)
     {
@@ -178,8 +178,8 @@ class ConfigAnalyzer
     /**
      * Maps a known key to a resolved node.
      *
-     * @param string $key  The key.
-     * @param Node   $node The node.
+     * @param  string  $key  The key.
+     * @param  Node  $node The node.
      */
     public function mapNode($key, Node $node)
     {
@@ -189,8 +189,8 @@ class ConfigAnalyzer
     /**
      * Inserts a new value with the provided root key.
      *
-     * @param string $key  The new value's key.
-     * @param Node   $node The new value.
+     * @param  string  $key  The new value's key.
+     * @param  Node  $node The new value.
      */
     public function insertRootValue($key, Node $node)
     {
@@ -200,9 +200,8 @@ class ConfigAnalyzer
     /**
      * Wraps the provided value in an ArrayItem object.
      *
-     * @param string $key  The desired key.
-     * @param Node   $node The node value to wrap.
-     *
+     * @param  string  $key  The desired key.
+     * @param  Node  $node The node value to wrap.
      * @return ArrayItem
      */
     private function wrapInArrayItem($key, $node)
@@ -221,8 +220,8 @@ class ConfigAnalyzer
     /**
      * Attempts to insert the provided values at the target key location.
      *
-     * @param string $key    The key insertion point.
-     * @param mixed  $values The values to insert.
+     * @param  string  $key    The key insertion point.
+     * @param  mixed  $values The values to insert.
      */
     public function insertValuesAtNode($key, $values)
     {
@@ -246,8 +245,7 @@ class ConfigAnalyzer
     /**
      * Checks if a node with the provided key exists.
      *
-     * @param string $key The desired key.
-     *
+     * @param  string  $key The desired key.
      * @return bool
      */
     public function hasNode($key)
@@ -264,7 +262,7 @@ class ConfigAnalyzer
         $willWreckArray = true;
 
         foreach ($node->items as $item) {
-            if (!($item instanceof ArrayItem && $item->value instanceof Array_)) {
+            if (! ($item instanceof ArrayItem && $item->value instanceof Array_)) {
                 $willWreckArray = false;
                 break;
             }
@@ -276,9 +274,9 @@ class ConfigAnalyzer
     /**
      * Attempts to replace a value at a known location with the provided node value.
      *
-     * @param string $key             The replacement location.
-     * @param Node   $node            The value to insert.
-     * @param bool   $completeReplace Whether or not merging behavior is enabled.
+     * @param  string  $key             The replacement location.
+     * @param  Node  $node            The value to insert.
+     * @param  bool  $completeReplace Whether or not merging behavior is enabled.
      */
     public function replaceNodeValue($key, Node $node, $completeReplace = false)
     {
@@ -287,7 +285,6 @@ class ConfigAnalyzer
         if ($currentNode instanceof ArrayItem) {
             if ($currentNode->value instanceof Array_ && $node instanceof Array_) {
                 if ($completeReplace === false) {
-
                     /** @var ArrayItem $mergeItem */
                     foreach ($node->items as $mergeItem) {
                         $mergeItemKeyValue = null;
@@ -296,7 +293,7 @@ class ConfigAnalyzer
                             $mergeItemKeyValue = $mergeItem->key->value;
                         }
 
-                        if ($mergeItem->value instanceof Array_ && $mergeItemKeyValue === null && !$this->willClobberTheExistingArray($currentNode->value, $mergeItem)) {
+                        if ($mergeItem->value instanceof Array_ && $mergeItemKeyValue === null && ! $this->willClobberTheExistingArray($currentNode->value, $mergeItem)) {
                             foreach ($mergeItem->value->items as $subMergeItem) {
                                 $currentNode->value->items[] = $subMergeItem;
                             }
@@ -386,9 +383,8 @@ class ConfigAnalyzer
     /**
      * Guards against resupplying an already configured value in env() calls.
      *
-     * @param string $key        The configuration key.
-     * @param mixed  $checkValue The check value.
-     *
+     * @param  string  $key        The configuration key.
+     * @param  mixed  $checkValue The check value.
      * @return bool
      */
     private function shouldProceedWithFunctionRewrite($key, $checkValue)
@@ -413,8 +409,7 @@ class ConfigAnalyzer
     /**
      * Checks if a known node is an array.
      *
-     * @param string $key The desired key.
-     *
+     * @param  string  $key The desired key.
      * @return bool
      */
     public function isNodeArray($key)
@@ -445,7 +440,7 @@ class ConfigAnalyzer
 
     public function containsFunctionCall($key)
     {
-        if (!$this->hasNode($key) || !$this->nodeMapping[$key] instanceof ArrayItem) {
+        if (! $this->hasNode($key) || ! $this->nodeMapping[$key] instanceof ArrayItem) {
             return false;
         }
 
@@ -455,8 +450,8 @@ class ConfigAnalyzer
     /**
      * Appends a value to an existing array at a known location.
      *
-     * @param string $key  The target location.
-     * @param Node   $node The value to append.
+     * @param  string  $key  The target location.
+     * @param  Node  $node The value to append.
      */
     public function appendArrayItem($key, Node $node)
     {
@@ -473,8 +468,8 @@ class ConfigAnalyzer
     /**
      * Replaces a node's value with the provided new value.
      *
-     * @param string $key      The key.
-     * @param mixed  $newValue The value to insert.
+     * @param  string  $key      The key.
+     * @param  mixed  $newValue The value to insert.
      */
     public function replaceNode($key, $newValue)
     {
@@ -488,11 +483,11 @@ class ConfigAnalyzer
     /**
      * Replaces a node's key and value, and overrides an existing docblock.
      *
-     * @param string $key          The original key.
-     * @param string $newKey       The new key.
-     * @param mixed  $newValue     The value to insert.
-     * @param string $docBlock     The Laravel "block" comment.
-     * @param bool   $forceNewLine Whether or not to force a new line.
+     * @param  string  $key          The original key.
+     * @param  string  $newKey       The new key.
+     * @param  mixed  $newValue     The value to insert.
+     * @param  string  $docBlock     The Laravel "block" comment.
+     * @param  bool  $forceNewLine Whether or not to force a new line.
      */
     public function replaceNodeWithDocBlock($key, $newKey, $newValue, $docBlock, $forceNewLine = true)
     {
@@ -536,8 +531,7 @@ class ConfigAnalyzer
     /**
      * Removes the key and its associated value from the configuration.
      *
-     * @param string $key The key to remove.
-     *
+     * @param  string  $key The key to remove.
      * @return bool
      */
     public function removeNode($key)
@@ -612,7 +606,7 @@ class ConfigAnalyzer
     /**
      * Retrieves the file contents and parses the document.
      *
-     * @param string $path The file path.
+     * @param  string  $path The file path.
      */
     public function open($path)
     {
@@ -653,10 +647,10 @@ class ConfigAnalyzer
 
     private function autoDiscoverFunctionCalls($ast)
     {
-        if (count($ast) != 1 || !$ast[0] instanceof Node\Stmt\Return_) {
+        if (count($ast) != 1 || ! $ast[0] instanceof Node\Stmt\Return_) {
             return;
         }
-        if (!$ast[0]->expr instanceof Array_) {
+        if (! $ast[0]->expr instanceof Array_) {
             return;
         }
         /** @var Array_ $rootArray */
@@ -761,8 +755,7 @@ class ConfigAnalyzer
      * This method rewrites them to look like this:
      *  'newkey' => ['value1', 'value2']
      *
-     * @param Array_ $node The node to check.
-     *
+     * @param  Array_  $node The node to check.
      * @return Array_
      *
      * @deprecated

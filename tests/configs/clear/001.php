@@ -18,6 +18,6 @@ return [
                 'these.keys' => 'replacement value', 'this' => 'should be added',
             ],
         ],
-    ]
+    ],
 
 ];

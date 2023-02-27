@@ -16,6 +16,7 @@ use Stillat\Proteus\Contracts\ValueWriterContract;
 class DoubleWriter implements ValueWriterContract
 {
     const PROTEUS_DOUBLE_SUFFIX_QUOTE = '/*W:D:SQ*/';
+
     const PROTEUS_DOUBLE_PREFIX = '/*W:D:ST*/';
 
     private function wrap($value)

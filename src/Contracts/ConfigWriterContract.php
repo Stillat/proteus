@@ -12,9 +12,8 @@ interface ConfigWriterContract
     /**
      * Attempts to change a single configuration item and write the changes to disk.
      *
-     * @param string $key   The configuration key.
-     * @param mixed  $value The value to update.
-     *
+     * @param  string  $key   The configuration key.
+     * @param  mixed  $value The value to update.
      * @return bool
      */
     public function write($key, $value);
@@ -22,10 +21,9 @@ interface ConfigWriterContract
     /**
      * Attempts to apply multiple changes to a configuration namespace.
      *
-     * @param string $configNamespace The configuration namespace.
-     * @param array  $values          The key/value pairs to update.
-     * @param bool   $isMerge         Indiciates if the current operation is a merge, or forced update.
-     *
+     * @param  string  $configNamespace The configuration namespace.
+     * @param  array  $values          The key/value pairs to update.
+     * @param  bool  $isMerge         Indiciates if the current operation is a merge, or forced update.
      * @return bool
      */
     public function writeMany($configNamespace, array $values, $isMerge = false);
@@ -33,9 +31,8 @@ interface ConfigWriterContract
     /**
      * Attempts to merge multiple changes to a configuration namespace.
      *
-     * @param string $configNamespace The configuration namespace.
-     * @param array  $values          The key/value pairs to update.
-     *
+     * @param  string  $configNamespace The configuration namespace.
+     * @param  array  $values          The key/value pairs to update.
      * @return bool
      */
     public function mergeMany($configNamespace, array $values);
@@ -43,8 +40,7 @@ interface ConfigWriterContract
     /**
      * Checks if a configuration file with the provided key exists.
      *
-     * @param string $key The key to check.
-     *
+     * @param  string  $key The key to check.
      * @return bool
      */
     public function hasConfig($key);
@@ -52,8 +48,7 @@ interface ConfigWriterContract
     /**
      * Checks if a configuration file with the provided key exists.
      *
-     * @param string $key The key to check.
-     *
+     * @param  string  $key The key to check.
      * @return array|null
      */
     public function getFile($key);
@@ -61,7 +56,7 @@ interface ConfigWriterContract
     /**
      * Prevents changes to the specified configuration level.
      *
-     * @param string $entry The configuration item.
+     * @param  string  $entry The configuration item.
      */
     public function guard($entry);
 
@@ -75,8 +70,7 @@ interface ConfigWriterContract
     /**
      * Sets a list of configuration keys that should always be preserved.
      *
-     * @param array $config
-     *
+     * @param  array  $config
      * @return mixed
      */
     public function preserve($config);
@@ -86,9 +80,8 @@ interface ConfigWriterContract
     /**
      * Attempts to update the source configuration and returns the modified document.
      *
-     * @param string $key   The configuration item to update.
-     * @param mixed  $value The value to set.
-     *
+     * @param  string  $key   The configuration item to update.
+     * @param  mixed  $value The value to set.
      * @return string
      */
     public function preview($key, $value);
@@ -96,10 +89,9 @@ interface ConfigWriterContract
     /**
      * Attempts to apply many changes to a source configuration document and return the modified document.
      *
-     * @param string $configNamespace The root configuration namespace.
-     * @param array  $values          The key/value mapping of all changes.
-     * @param bool   $isMerge         Indiciates if the current operation is a merge, or forced update.
-     *
+     * @param  string  $configNamespace The root configuration namespace.
+     * @param  array  $values          The key/value mapping of all changes.
+     * @param  bool  $isMerge         Indiciates if the current operation is a merge, or forced update.
      * @return string
      */
     public function previewMany($configNamespace, array $values, $isMerge = false);

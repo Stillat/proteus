@@ -21,15 +21,15 @@ class ComplexEnvTest extends ProteusTestCase
             __DIR__.'/configs/casts.php',
             __DIR__.'/expected/casts.php',
             [
-                'debug'       => false,
-                'string'      => 'replace',
-                'int'         => '20',
-                'double'      => '40.2',
-                'bool'        => '0',
+                'debug' => false,
+                'string' => 'replace',
+                'int' => '20',
+                'double' => '40.2',
+                'bool' => '0',
                 'nested.test' => true,
-                'test'        => 40,
-                'test2'       => 60.3,
-                'test3'       => 'this is another string',
+                'test' => 40,
+                'test2' => 60.3,
+                'test3' => 'this is another string',
             ]
         );
     }

@@ -16,6 +16,7 @@ use Stillat\Proteus\Contracts\ValueWriterContract;
 class IntWriter implements ValueWriterContract
 {
     const PROTEUS_INT_SUFFIX_QUOTE = '/*W:INT:SQ*/';
+
     const PROTEUS_INT_PREFIX = '/*W:INT:ST*/';
 
     public function write($value)

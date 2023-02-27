@@ -19,24 +19,24 @@ class PreserveArrayKeysTest extends ProteusTestCase
             ],
         ])->update([
             'stripe' => [
-                'leave'   => 'hello, there!',
+                'leave' => 'hello, there!',
                 'reports' => [
                     [
-                        'frequency'       => 'daily',
+                        'frequency' => 'daily',
                         'email_addresses' => 'entry1',
                     ],
                     [
-                        'frequency'       => 'daily',
+                        'frequency' => 'daily',
                         'email_addresses' => 'entry2',
                     ],
                     [
-                        'frequency'       => 'daily',
+                        'frequency' => 'daily',
                         'email_addresses' => 'entry3',
                     ],
                 ],
                 'test' => [
                     'what' => [
-                        'nested'  => 'value',
+                        'nested' => 'value',
                         'happens' => [
                             1, 2, 3, 'four', 'five', 5, 'six', 'seven' => [8],
                         ],

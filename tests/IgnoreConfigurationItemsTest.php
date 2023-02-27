@@ -14,7 +14,7 @@ class IgnoreConfigurationItemsTest extends ProteusTestCase
         $updater->open(__DIR__.'/configs/withenv.php');
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/withenv.php'));
         $updater->update([
-            'some_key'         => 'new-value',
+            'some_key' => 'new-value',
             'nested.key.value' => 'inserted-value',
         ]);
 
@@ -34,8 +34,8 @@ class IgnoreConfigurationItemsTest extends ProteusTestCase
         $updater->open(__DIR__.'/configs/withenv.php');
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/withenv_preserve.php'));
         $updater->update([
-            'some_key'          => 'new-value',
-            'nested.key.value'  => 'inserted-value',
+            'some_key' => 'new-value',
+            'nested.key.value' => 'inserted-value',
             'nested.key.append' => 'Hello, universe!',
         ]);
 

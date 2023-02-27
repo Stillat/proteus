@@ -28,8 +28,8 @@ class IgnoreFunctionsWriteManyPreserveTest extends ProteusTestCase
             'stripe' => [
                 'reports' => [
                     [
-                        'id'              => 'a new thing',
-                        'frequency'       => 'daily',
+                        'id' => 'a new thing',
+                        'frequency' => 'daily',
                         'email_addresses' => 'helloworld@example.org',
                     ],
                 ],

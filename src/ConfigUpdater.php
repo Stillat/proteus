@@ -68,8 +68,7 @@ class ConfigUpdater
     /**
      * Sets whether function calls are ignored when updating the configuration.
      *
-     * @param bool $ignore
-     *
+     * @param  bool  $ignore
      * @return $this
      */
     public function setIgnoreFunctions($ignore)
@@ -84,8 +83,7 @@ class ConfigUpdater
     /**
      * Sets a list of configuration keys that should always be preserved.
      *
-     * @param array $keys
-     *
+     * @param  array  $keys
      * @return $this
      */
     public function setPreserveKeys($keys)
@@ -105,9 +103,8 @@ class ConfigUpdater
     /**
      * Flattens deeply nested arrays using "dot" notation, while preserving root keys.
      *
-     * @param array  $array
-     * @param string $prefix
-     *
+     * @param  array  $array
+     * @param  string  $prefix
      * @return array
      */
     private function flattenKeys($array, $prefix = '')
@@ -133,8 +130,7 @@ class ConfigUpdater
     /**
      * Attempts to remove the key and its value from the configuration.
      *
-     * @param string $key The key to remove.
-     *
+     * @param  string  $key The key to remove.
      * @return bool
      */
     public function remove($key)
@@ -160,14 +156,14 @@ class ConfigUpdater
     /**
      * Opens the provided file and parses the configuration values.
      *
-     * @param string $filePath The file to open.
+     * @param  string  $filePath The file to open.
      *
      * @throws Exception
      * @throws ConfigNotFoundException
      */
     public function open($filePath)
     {
-        if (!file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             throw new ConfigNotFoundException("Configuration file does not exist: {$filePath}");
         }
 
@@ -181,8 +177,8 @@ class ConfigUpdater
     /**
      * Replaces a node's value with the provided new value.
      *
-     * @param string $key   The key to update.
-     * @param mixed  $value The value to replace.
+     * @param  string  $key   The key to update.
+     * @param  mixed  $value The value to replace.
      *
      * @throws Exception
      */
@@ -196,11 +192,11 @@ class ConfigUpdater
     /**
      * Replaces an existing node structure.
      *
-     * @param string $key          The original key.
-     * @param string $newKey       The new key.
-     * @param mixed  $value        The value to insert.
-     * @param string $docBlock     The Laravel "block" comment.
-     * @param bool   $forceNewLine Whether or not to force a new line.
+     * @param  string  $key          The original key.
+     * @param  string  $newKey       The new key.
+     * @param  mixed  $value        The value to insert.
+     * @param  string  $docBlock     The Laravel "block" comment.
+     * @param  bool  $forceNewLine Whether or not to force a new line.
      *
      * @throws Exception
      */
@@ -214,8 +210,8 @@ class ConfigUpdater
     /**
      * Attempts to apply the requested changes to the existing configuration values.
      *
-     * @param array $changes The changes to apply to the existing configuration.
-     * @param bool  $isMerge Indicates if merge or forced overwrite behavior should be used.
+     * @param  array  $changes The changes to apply to the existing configuration.
+     * @param  bool  $isMerge Indicates if merge or forced overwrite behavior should be used.
      *
      * @throws Exception
      */
@@ -231,7 +227,7 @@ class ConfigUpdater
             $isMerge = true;
         }
 
-        if (!empty($this->preserveKeys)) {
+        if (! empty($this->preserveKeys)) {
             $currentConfig = $this->analyzer->getValues();
 
             foreach ($this->preserveKeys as $keyToPreserve) {

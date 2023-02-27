@@ -10,8 +10,8 @@ class LaravelFunctionCallTest extends ProteusTestCase
             __DIR__.'/configs/laravelhelpers/resource.php',
             __DIR__.'/expected/laravelhelpers/resource.php',
             [
-                'path'       => 'new-value',
-                'path_two'   => 'inserted-value',
+                'path' => 'new-value',
+                'path_two' => 'inserted-value',
                 'path_three' => '',
             ]
         );

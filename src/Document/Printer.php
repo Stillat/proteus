@@ -38,17 +38,16 @@ class Printer extends Standard
      *
      * This method also handles formatting preservation for nodes.
      *
-     * @param Node $node                  Node to be pretty printed
-     * @param bool $parentFormatPreserved Whether parent node has preserved formatting
+     * @param  Node  $node                  Node to be pretty printed
+     * @param  bool  $parentFormatPreserved Whether parent node has preserved formatting
+     * @return string Pretty printed node
      *
      * @throws Exception
-     *
-     * @return string Pretty printed node
      */
     protected function p(Node $node, $parentFormatPreserved = false): string
     {
         // No orig tokens means this is a normal pretty print without preservation of formatting
-        if (!$this->origTokens) {
+        if (! $this->origTokens) {
             return $this->{'p'.$node->getType()}($node);
         }
 
@@ -75,7 +74,7 @@ class Printer extends Standard
         // InlineHTML node does not contain closing and opening PHP tags. If the parent formatting
         // is not preserved, then we need to use the fallback code to make sure the tags are
         // printed.
-        if ($node instanceof InlineHTML && !$parentFormatPreserved) {
+        if ($node instanceof InlineHTML && ! $parentFormatPreserved) {
             return $this->pFallback($fallbackNode);
         }
 
@@ -91,8 +90,8 @@ class Printer extends Standard
             $subNode = $node->$subNodeName;
             $origSubNode = $origNode->$subNodeName;
 
-            if ((!$subNode instanceof Node && $subNode !== null)
-                || (!$origSubNode instanceof Node && $origSubNode !== null)
+            if ((! $subNode instanceof Node && $subNode !== null)
+                || (! $origSubNode instanceof Node && $origSubNode !== null)
             ) {
                 if ($subNode === $origSubNode) {
                     // Unchanged, can reuse old code
@@ -115,19 +114,21 @@ class Printer extends Standard
                     }
 
                     $result .= $listResult;
+
                     continue;
                 }
 
                 if (is_int($subNode) && is_int($origSubNode)) {
                     // Check if this is a modifier change
                     $key = $type.'->'.$subNodeName;
-                    if (!isset($this->modifierChangeMap[$key])) {
+                    if (! isset($this->modifierChangeMap[$key])) {
                         return $this->pFallback($fallbackNode);
                     }
 
                     $findToken = $this->modifierChangeMap[$key];
                     $result .= $this->pModifiers($subNode);
                     $pos = $this->origTokens->findRight($pos, $findToken);
+
                     continue;
                 }
 
@@ -151,14 +152,14 @@ class Printer extends Standard
 
                 // A node has been inserted, check if we have insertion information for it
                 $key = $type.'->'.$subNodeName;
-                if (!isset($this->insertionMap[$key])) {
+                if (! isset($this->insertionMap[$key])) {
                     return $this->pFallback($fallbackNode);
                 }
 
-                list($findToken, $beforeToken, $extraLeft, $extraRight) = $this->insertionMap[$key];
+                [$findToken, $beforeToken, $extraLeft, $extraRight] = $this->insertionMap[$key];
                 if (null !== $findToken) {
                     $subStartPos = $this->origTokens->findRight($pos, $findToken)
-                        + (int) !$beforeToken;
+                        + (int) ! $beforeToken;
                 } else {
                     $subStartPos = $pos;
                 }
@@ -173,7 +174,7 @@ class Printer extends Standard
             if (null === $subNode) {
                 // A node has been removed, check if we have removal information for it
                 $key = $type.'->'.$subNodeName;
-                if (!isset($this->removalMap[$key])) {
+                if (! isset($this->removalMap[$key])) {
                     return $this->pFallback($fallbackNode);
                 }
 
@@ -226,9 +227,8 @@ class Printer extends Standard
      *
      * The result includes a leading newline and one level of indentation (same as pStmts).
      *
-     * @param Node[] $nodes         Array of Nodes to be printed
-     * @param bool   $trailingComma Whether to use a trailing comma
-     *
+     * @param  Node[]  $nodes         Array of Nodes to be printed
+     * @param  bool  $trailingComma Whether to use a trailing comma
      * @return string Comma separated pretty printed nodes in multiline style
      */
     protected function pCommaSeparatedMultiline(array $nodes, bool $trailingComma): string
@@ -266,8 +266,7 @@ class Printer extends Standard
     /**
      * Pretty prints an array of nodes and implodes the printed values with commas.
      *
-     * @param Node[] $nodes Array of Nodes to be printed
-     *
+     * @param  Node[]  $nodes Array of Nodes to be printed
      * @return string Comma separated pretty printed nodes
      */
     protected function pCommaSeparated(array $nodes): string
@@ -294,9 +293,8 @@ class Printer extends Standard
     /**
      * Pretty prints an array of nodes and implodes the printed values.
      *
-     * @param Node[] $nodes Array of Nodes to be printed
-     * @param string $glue  Character to implode with
-     *
+     * @param  Node[]  $nodes Array of Nodes to be printed
+     * @param  string  $glue  Character to implode with
      * @return string Imploded pretty printed nodes
      */
     protected function pImplode(array $nodes, string $glue = ''): string

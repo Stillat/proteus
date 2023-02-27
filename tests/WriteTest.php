@@ -17,13 +17,13 @@ class WriteTest extends ProteusTestCase
             'stripe' => [
                 'reports' => [
                     [
-                        'id'              => 'a new thing',
-                        'frequency'       => 'daily',
+                        'id' => 'a new thing',
+                        'frequency' => 'daily',
                         'email_addresses' => 'helloworld@example.org',
                     ],
                     [
-                        'id'              => 'a new thing!!!',
-                        'frequency'       => 'dailyasdfasdf',
+                        'id' => 'a new thing!!!',
+                        'frequency' => 'dailyasdfasdf',
                         'email_addresses' => 'hellasdfasdfasdfasdfoworld@example.org',
                     ],
                 ],
@@ -42,34 +42,34 @@ class WriteTest extends ProteusTestCase
         $updater->setIgnoreFunctions(true)->update([
             'forms' => [
                 [
-                    'id'                              => 'new1',
-                    'form'                            => 'contact',
-                    'check_consent'                   => true,
-                    'consent_field'                   => 'newsletter',
-                    'disable_opt_in'                  => false,
+                    'id' => 'new1',
+                    'form' => 'contact',
+                    'check_consent' => true,
+                    'consent_field' => 'newsletter',
+                    'disable_opt_in' => false,
                     'marketing_permissions_field_ids' => [
                         [
                         ],
                     ],
                     'merge_fields' => [
                         [
-                            'id'         => 'new2',
+                            'id' => 'new2',
                             'field_name' => 'first_name',
-                            'tag'        => 'FNAME',
+                            'tag' => 'FNAME',
                         ],
                         [
-                            'id'         => 'new3',
+                            'id' => 'new3',
                             'field_name' => 'last_name',
-                            'tag'        => 'LNAME',
+                            'tag' => 'LNAME',
                         ],
                         [
-                            'id'         => 'new4',
+                            'id' => 'new4',
                             'field_name' => 'company',
-                            'tag'        => 'COMPANY',
+                            'tag' => 'COMPANY',
                         ],
                     ],
                     'primary_email_field' => 'email',
-                    'audience_id'         => 'new5',
+                    'audience_id' => 'new5',
                 ],
             ],
         ], false); // <-- Note: this is not mergeMany

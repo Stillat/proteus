@@ -56,7 +56,7 @@ class ArrayAnalyzer
      *
      * This is simply a friendly wrapper around analyzeArrayDepth(), and sets up the initial state.
      *
-     * @param array $value The value to analyze.
+     * @param  array  $value The value to analyze.
      *
      * @throws Exception
      */
@@ -71,9 +71,9 @@ class ArrayAnalyzer
     /**
      * Recursively discovers all keys and depth mappings in the value.
      *
-     * @param array  $value     The values to check.
-     * @param int    $lastDepth The last observed depth.
-     * @param string $lastKey   The last observed key.
+     * @param  array  $value     The values to check.
+     * @param  int  $lastDepth The last observed depth.
+     * @param  string  $lastKey   The last observed key.
      *
      * @throws Exception
      */
@@ -90,7 +90,7 @@ class ArrayAnalyzer
                 $this->analyzeArrayDepth($v, $lastDepth + 1, $dotKey);
             }
 
-            if (!array_key_exists($lastDepth, $this->depthMapping)) {
+            if (! array_key_exists($lastDepth, $this->depthMapping)) {
                 $this->depthMapping[$lastDepth] = [];
             }
 
@@ -114,8 +114,7 @@ class ArrayAnalyzer
     /**
      * Checks if a root node with the provided key exists.
      *
-     * @param string $root The root to check.
-     *
+     * @param  string  $root The root to check.
      * @return bool
      */
     public function hasRoot($root)
@@ -129,8 +128,7 @@ class ArrayAnalyzer
      * test - not compound
      * test.nested - is compound
      *
-     * @param string $key The key in dot notation.
-     *
+     * @param  string  $key The key in dot notation.
      * @return bool
      */
     public function isCompound($key)
@@ -141,8 +139,7 @@ class ArrayAnalyzer
     /**
      * Checks if the provided key can be augmented (is it an array node?).
      *
-     * @param string $key The key to check.
-     *
+     * @param  string  $key The key to check.
      * @return bool
      */
     public function canBeAugmented($key)
@@ -159,8 +156,7 @@ class ArrayAnalyzer
     /**
      * Returns the number of existing nodes that match the provided key.
      *
-     * @param string $key The key to check.
-     *
+     * @param  string  $key The key to check.
      * @return int
      */
     public function getDepthMatchCount($key)
@@ -229,8 +225,7 @@ class ArrayAnalyzer
     /**
      * Determines which keys in the input mapping must be updated vs. inserted.
      *
-     * @param array $updates A mapping of the key/value pairs to update.
-     *
+     * @param  array  $updates A mapping of the key/value pairs to update.
      * @return MutationGraph
      */
     public function getChanges($updates)
@@ -255,8 +250,7 @@ class ArrayAnalyzer
      *
      * If this method returns `null`, you will be inserting off the root node.
      *
-     * @param string $key The key to add, in dot notation.
-     *
+     * @param  string  $key The key to add, in dot notation.
      * @return string|null
      */
     public function getInsertionPoint($key)
@@ -270,8 +264,7 @@ class ArrayAnalyzer
     /**
      * Constructs all possible array paths for the given key parts.
      *
-     * @param string[] $keyParts The key parts.
-     *
+     * @param  string[]  $keyParts The key parts.
      * @return array
      */
     public function constructPaths($keyParts)
@@ -296,8 +289,7 @@ class ArrayAnalyzer
     /**
      * Checks the existing level graph and finds the furthest existing node from root.
      *
-     * @param string[] $paths The key paths to check.
-     *
+     * @param  string[]  $paths The key paths to check.
      * @return string|null
      */
     public function getFurthestExistingDepth($paths)
@@ -316,8 +308,7 @@ class ArrayAnalyzer
     /**
      * Returns all of the nested components of the provided key.
      *
-     * @param string $key The string to analyze.
-     *
+     * @param  string  $key The string to analyze.
      * @return string[]
      */
     public function getCompound($key)
@@ -328,8 +319,7 @@ class ArrayAnalyzer
     /**
      * Returns all of the nested components, without the root value, of the provided key.
      *
-     * @param string $key The key to analyze.
-     *
+     * @param  string  $key The key to analyze.
      * @return string[]
      */
     public function getCompoundWithoutRoot($key)
@@ -342,9 +332,8 @@ class ArrayAnalyzer
     /**
      * Constructs a compound structure with the provided value as the inner-most value.
      *
-     * @param array $structure The existing structure array.
-     * @param mixed $value     The value to place inside.
-     *
+     * @param  array  $structure The existing structure array.
+     * @param  mixed  $value     The value to place inside.
      * @return array|array[]
      */
     public function getCompoundStructure($structure, $value)
@@ -361,7 +350,7 @@ class ArrayAnalyzer
 
         $lastElement = 0;
 
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             $structure = array_reverse($structure);
             $lastElement = array_pop($structure);
         }
@@ -386,8 +375,7 @@ class ArrayAnalyzer
     /**
      * Returns the 0-th compound element of the provided key.
      *
-     * @param string $key The key to check.
-     *
+     * @param  string  $key The key to check.
      * @return string
      */
     public function getAbsoluteRoot($key)
