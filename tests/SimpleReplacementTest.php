@@ -49,6 +49,7 @@ class SimpleReplacementTest extends ProteusTestCase
             __DIR__.'/expected/configwithusing.php',
             [
                 'test' => 'updated-value',
+                'test_two' => 'another-value!',
             ]
         );
     }
