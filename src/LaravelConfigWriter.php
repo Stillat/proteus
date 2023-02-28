@@ -276,11 +276,12 @@ class LaravelConfigWriter implements ConfigWriterContract
     /**
      * Will indicate that all function calls should be ignored when updating the configuration file.
      *
+     * @param  bool  $ignoreFunctions
      * @return $this
      */
-    public function ignoreFunctionCalls()
+    public function ignoreFunctionCalls($ignoreFunctions = true)
     {
-        $this->ignoreFunctions = true;
+        $this->ignoreFunctions = $ignoreFunctions;
 
         return $this;
     }

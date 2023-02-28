@@ -100,17 +100,17 @@ ConfigWriter::guard('app.providers*');
 
 ```
 
-## Disabling Function Rewrites
+## Enabling Function Rewrites
 
-Changes to all function calls (such as `env`) can be disabled by calling the `ignoreFunctionCalls` method before updating a configuration file:
+Changes to function calls (such as `env`) can are disabled by default. To enable them, you may call the `ignoreFunctionCalls` method with `false`:
 
 ```php
 <?php
 
 Stillat\Proteus\Support\Facades\ConfigWriter;
 
-// No env calls will updated here :)
-ConfigWriter::ignoreFunctionCalls()->writeMany('app', [
+// Calls to env, and other functions, will be updated.
+ConfigWriter::ignoreFunctionCalls(false)->writeMany('app', [
     'key' => 'new-value',
     'locale' => 'fr',
     'timezone' => 'Europe/Paris'

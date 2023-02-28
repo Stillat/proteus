@@ -53,9 +53,10 @@ interface ConfigWriterContract
     /**
      * Indicates that all function calls should be ignored when updating configuration files.
      *
+     * @param  bool  $ignoreFunctions
      * @return ConfigWriterContract
      */
-    public function ignoreFunctionCalls();
+    public function ignoreFunctionCalls($ignoreFunctions = true);
 
     /**
      * Sets a list of configuration keys that should always be preserved.
