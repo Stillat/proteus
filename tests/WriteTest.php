@@ -104,4 +104,60 @@ class WriteTest extends ProteusTestCase
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/issues/014b.php'));
         $this->assertSame($expected, $updater->getDocument());
     }
+
+    public function testUpdatingMultipleNestedKeys()
+    {
+        $updater = new ConfigUpdater();
+        $updater->setIgnoreFunctions(true);
+        $updater->open(__DIR__.'/configs/merge.php');
+
+        $updater->update([
+            'stripe' => [
+                'reports' => [
+                    ['one', 'two'],
+                    ['three', 'four'],
+                ],
+                'test' => [
+                    1, 2, 3, 4,
+                ],
+            ],
+        ], false);
+
+        $expected = <<<'EXP'
+<?php
+
+return [
+    'trackable_videos' => env('SIMPLE_TRACKABLE_VIDEOS', false),
+
+    'stripe' => [
+        'secret' => env('STRIPE_SECRET_KEY'),
+        'public' => env('STRIPE_PUBLIC_KEY'),
+        'webhook' => env('STRIPE_WEBHOOK_SECRET'),
+
+        // Reporting
+        'reports' => [
+            [
+                'one',
+                'two',
+            ],
+            [
+                'three',
+                'four',
+            ],
+        ],
+        'leave' => 'this should be ignored.',
+        'test' => [
+            1,
+            2,
+            3,
+            4,
+        ],
+    ],
+
+];
+
+EXP;
+
+        $this->assertSame($expected, $updater->getDocument());
+    }
 }

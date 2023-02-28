@@ -117,7 +117,7 @@ class MergeTest extends ProteusTestCase
                     'audience_id' => 'b-new5',
                 ],
             ],
-        ], true);
+        ], false);
 
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/issues/018c.php'));
         $this->assertSame($expected, $updater->getDocument());

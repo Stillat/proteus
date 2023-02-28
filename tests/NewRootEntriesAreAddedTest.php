@@ -71,14 +71,16 @@ class NewRootEntriesAreAddedTest extends ProteusTestCase
             __DIR__.'/configs/issues/004.php',
             __DIR__.'/expected/issues/004.php',
             [
-                'forms.another_form' => [
-                    'name_field' => 'name3',
-                    'first_name_field' => 'first_name',
-                    'last_name_field' => 'last_name',
-                    'email_field' => 'email3',
-                    'content_field' => 'message',
-                    'handle' => 'contact_you',
-                    'consent_field' => null,
+                'forms' => [
+                    'another_form' => [
+                        'name_field' => 'name3',
+                        'first_name_field' => 'first_name',
+                        'last_name_field' => 'last_name',
+                        'email_field' => 'email3',
+                        'content_field' => 'message',
+                        'handle' => 'contact_you',
+                        'consent_field' => null,
+                    ],
                 ],
             ]
         );

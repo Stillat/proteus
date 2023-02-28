@@ -271,6 +271,17 @@ class ConfigUpdater
 
         $autoPreserve = array_diff($existingKeys, $incomingKeys);
 
+        $filteredAp = [];
+        $hasCollision = false;
+
+        foreach ($autoPreserve as $k) {
+            if (! Str::startsWith($k, $incomingKeys)) {
+                $filteredAp[] = $k;
+            } else {
+                $hasCollision = true;
+            }
+        }
+
         $this->replaceKeys = array_merge($this->replaceKeys, $incomingKeys);
 
         if (! empty($this->preserveKeys)) {
@@ -284,6 +295,10 @@ class ConfigUpdater
         }
 
         $changesToMake = $this->arrayAnalyzer->getChanges($changes);
+
+        if ($hasCollision) {
+            $changesToMake->updates = $incomingKeys;
+        }
 
         foreach ($changesToMake->insertions as $insert) {
             $valuesToInsert = TypeWriter::write($changes[$insert]);
@@ -356,7 +371,7 @@ class ConfigUpdater
                     if ($depthCount === 0 && $insertPoint === null) {
                         // Most likely a replacement :)
                         $components = $this->arrayAnalyzer->getCompoundWithoutRoot($update);
-                        $structure = $this->arrayAnalyzer->getCompoundStructure($components, $changes[$update]);
+                        $structure = $this->arrayAnalyzer->getCompoundStructure($components, Arr::get($changes, $update, []));
                         // Rewrite our construction.
                         $constructedValue = TypeWriter::write($structure);
 
@@ -367,7 +382,7 @@ class ConfigUpdater
                 } else {
                     if ($this->arrayAnalyzer->isCompound($update)) {
                         $components = $this->arrayAnalyzer->getCompoundWithoutRoot($update);
-                        $compoundStruct = $this->arrayAnalyzer->getCompoundStructure($components, $changes[$update]);
+                        $compoundStruct = $this->arrayAnalyzer->getCompoundStructure($components, Arr::get($changes, $update, []));
 
                         $constructedValue = TypeWriter::write($compoundStruct);
 
