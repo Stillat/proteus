@@ -28,6 +28,7 @@ class WriteTest extends ProteusTestCase
                 ],
             ],
         ], false);
+
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/issues/014a.php'));
         $this->assertSame($expected, $updater->getDocument());
     }
@@ -37,7 +38,7 @@ class WriteTest extends ProteusTestCase
         $updater = new ConfigUpdater();
         $updater->open(__DIR__.'/configs/issues/018.php');
 
-        $updater->setIgnoreFunctions(true)->update([
+        $updater->update([
             'forms' => [
                 [
                     'id' => 'new1',
@@ -79,7 +80,6 @@ class WriteTest extends ProteusTestCase
     public function testWritesCanBeDoneEasilyWithoutTrashingConfigurationFilesThree()
     {
         $updater = new ConfigUpdater();
-        $updater->setIgnoreFunctions(true);
         $updater->open(__DIR__.'/configs/issues/014a.php');
 
         $updater->update([
@@ -106,7 +106,6 @@ class WriteTest extends ProteusTestCase
     public function testUpdatingMultipleNestedKeys()
     {
         $updater = new ConfigUpdater();
-        $updater->setIgnoreFunctions(true);
         $updater->open(__DIR__.'/configs/merge.php');
 
         $updater->update([
