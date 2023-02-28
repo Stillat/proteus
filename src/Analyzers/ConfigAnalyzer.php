@@ -118,7 +118,7 @@ class ConfigAnalyzer
      *
      * @var bool
      */
-    private $ignoreFunctions = false;
+    private $ignoreFunctions = true;
 
     public function __construct()
     {

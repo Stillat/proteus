@@ -10,7 +10,6 @@ class PreserveArrayKeysTest extends ProteusTestCase
     public function testUsingArraysForKeyPreservationWorks()
     {
         $updater = new ConfigUpdater();
-        $updater->setIgnoreFunctions(true);
         $updater->open(__DIR__.'/configs/merge.php');
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/merge.php'));
         $updater->setPreserveKeys([

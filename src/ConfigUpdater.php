@@ -48,7 +48,7 @@ class ConfigUpdater
      *
      * @var bool
      */
-    private $ignoreFunctions = false;
+    private $ignoreFunctions = true;
 
     /**
      * A list of configuration keys that should be preserved.

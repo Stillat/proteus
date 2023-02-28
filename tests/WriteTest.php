@@ -10,10 +10,9 @@ class WriteTest extends ProteusTestCase
     public function testWritesCanBeDoneEasilyWithoutTrashingConfigurationFiles()
     {
         $updater = new ConfigUpdater();
-        $updater->setIgnoreFunctions(true);
         $updater->open(__DIR__.'/configs/issues/014.php');
 
-        $updater->setIgnoreFunctions(true)->update([
+        $updater->update([
             'stripe' => [
                 'reports' => [
                     [
@@ -36,7 +35,6 @@ class WriteTest extends ProteusTestCase
     public function testWritesCanBeDoneEasilyWithoutTrashingConfigurationFilesTwo()
     {
         $updater = new ConfigUpdater();
-        $updater->setIgnoreFunctions(true);
         $updater->open(__DIR__.'/configs/issues/018.php');
 
         $updater->setIgnoreFunctions(true)->update([
@@ -84,7 +82,7 @@ class WriteTest extends ProteusTestCase
         $updater->setIgnoreFunctions(true);
         $updater->open(__DIR__.'/configs/issues/014a.php');
 
-        $updater->setIgnoreFunctions(true)->update([
+        $updater->update([
             'stripe' => [
                 'reports' => [
                     [

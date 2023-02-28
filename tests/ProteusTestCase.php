@@ -9,6 +9,7 @@ class ProteusTestCase extends TestCase
     protected function assertChangeEquals($configPath, $expectedPath, $changes)
     {
         $updater = new ConfigUpdater();
+        $updater->setIgnoreFunctions(false);
         $updater->open($configPath);
         $expected = Transformer::normalizeLineEndings(file_get_contents($expectedPath));
         $updater->update($changes);
@@ -22,6 +23,7 @@ class ProteusTestCase extends TestCase
     {
         $updater = new ConfigUpdater();
         $updater->open($configPath);
+        $updater->setIgnoreFunctions(false);
         $expected = Transformer::normalizeLineEndings(file_get_contents($expectedPath));
         $updater->replace($k, $v);
 
@@ -33,6 +35,7 @@ class ProteusTestCase extends TestCase
     protected function assertRemoveEquals($configPath, $expectedPath, $k)
     {
         $updater = new ConfigUpdater();
+        $updater->setIgnoreFunctions(false);
         $updater->open($configPath);
         $expected = Transformer::normalizeLineEndings(file_get_contents($expectedPath));
         $updater->remove($k);

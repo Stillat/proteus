@@ -10,7 +10,6 @@ class IgnoreConfigurationItemsTest extends ProteusTestCase
     public function testThatFunctionCallsWereIgnored()
     {
         $updater = new ConfigUpdater();
-        $updater->setIgnoreFunctions(true);
         $updater->open(__DIR__.'/configs/withenv.php');
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/withenv.php'));
         $updater->update([

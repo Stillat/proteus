@@ -76,7 +76,7 @@ class LaravelConfigWriter implements ConfigWriterContract
      *
      * @var bool
      */
-    protected $ignoreFunctions = false;
+    protected $ignoreFunctions = true;
 
     /**
      * A list of configuration keys that should be preserved.

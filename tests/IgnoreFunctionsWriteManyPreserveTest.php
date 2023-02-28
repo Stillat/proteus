@@ -10,7 +10,6 @@ class IgnoreFunctionsWriteManyPreserveTest extends ProteusTestCase
     public function testFunctionsAreRestoredWhenWritingItemsAndPreservingKeys()
     {
         $updater = new ConfigUpdater();
-        $updater->setIgnoreFunctions(true);
         $updater->open(__DIR__.'/configs/issues/014.php');
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/issues/014.php'));
         $updater->setPreserveKeys([
