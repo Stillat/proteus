@@ -290,16 +290,15 @@ class LaravelConfigWriter implements ConfigWriterContract
      *
      * @param  string  $configNamespace The configuration namespace.
      * @param  array  $values          The key/value pairs to update.
-     * @param  bool  $isMerge         Indiciates if the current operation is a merge, or forced update.
      * @return bool
      *
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
      * @throws GuardedConfigurationMutationException
      */
-    public function writeMany($configNamespace, array $values, $isMerge = false)
+    public function writeMany($configNamespace, array $values)
     {
-        $document = $this->previewMany($configNamespace, $values, $isMerge);
+        $document = $this->previewMany($configNamespace, $values);
         $details = $this->getFile($configNamespace);
         $path = $details[self::KEY_FILEPATH];
 
@@ -310,22 +309,6 @@ class LaravelConfigWriter implements ConfigWriterContract
         }
 
         return true;
-    }
-
-    /**
-     * Attempts to merge multiple changes to a configuration namespace.
-     *
-     * @param  string  $configNamespace The configuration namespace.
-     * @param  array  $values          The key/value pairs to update.
-     * @return bool
-     *
-     * @throws ConfigNotFoundException
-     * @throws ConfigNotWriteableException
-     * @throws GuardedConfigurationMutationException
-     */
-    public function mergeMany($configNamespace, array $values)
-    {
-        return $this->writeMany($configNamespace, $values, true);
     }
 
     /**
@@ -401,14 +384,13 @@ class LaravelConfigWriter implements ConfigWriterContract
      *
      * @param  string  $configNamespace The root configuration namespace.
      * @param  array  $values          The key/value mapping of all changes.
-     * @param  bool  $isMerge         Indicates if the current operation is a merge, or forced update.
      * @return string
      *
      * @throws ConfigNotFoundException
      * @throws ConfigNotWriteableException
      * @throws GuardedConfigurationMutationException
      */
-    public function previewMany($configNamespace, array $values, $isMerge = false)
+    public function previewMany($configNamespace, array $values)
     {
         $configDetails = $this->getFile($configNamespace);
 
@@ -418,7 +400,7 @@ class LaravelConfigWriter implements ConfigWriterContract
 
         $file = $configDetails[self::KEY_FILEPATH];
 
-        return $this->getChanges($file, $configNamespace, $values, $isMerge);
+        return $this->getChanges($file, $configNamespace, $values, false);
     }
 
     /**

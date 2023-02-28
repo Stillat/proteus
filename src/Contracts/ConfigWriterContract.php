@@ -23,19 +23,9 @@ interface ConfigWriterContract
      *
      * @param  string  $configNamespace The configuration namespace.
      * @param  array  $values          The key/value pairs to update.
-     * @param  bool  $isMerge         Indiciates if the current operation is a merge, or forced update.
      * @return bool
      */
-    public function writeMany($configNamespace, array $values, $isMerge = false);
-
-    /**
-     * Attempts to merge multiple changes to a configuration namespace.
-     *
-     * @param  string  $configNamespace The configuration namespace.
-     * @param  array  $values          The key/value pairs to update.
-     * @return bool
-     */
-    public function mergeMany($configNamespace, array $values);
+    public function writeMany($configNamespace, array $values);
 
     /**
      * Checks if a configuration file with the provided key exists.
@@ -91,8 +81,7 @@ interface ConfigWriterContract
      *
      * @param  string  $configNamespace The root configuration namespace.
      * @param  array  $values          The key/value mapping of all changes.
-     * @param  bool  $isMerge         Indiciates if the current operation is a merge, or forced update.
      * @return string
      */
-    public function previewMany($configNamespace, array $values, $isMerge = false);
+    public function previewMany($configNamespace, array $values);
 }
