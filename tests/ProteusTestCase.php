@@ -1,5 +1,7 @@
 <?php
 
+namespace Stillat\Proteus\Tests;
+
 use Orchestra\Testbench\TestCase;
 use Stillat\Proteus\ConfigUpdater;
 use Stillat\Proteus\Document\Transformer;

@@ -1,6 +1,6 @@
 <?php
 
-require_once 'ProteusTestCase.php';
+namespace Stillat\Proteus\Tests;
 
 use Stillat\Proteus\ConfigUpdater;
 use Stillat\Proteus\Document\Transformer;
