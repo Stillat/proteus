@@ -316,9 +316,15 @@ $updater = new ConfigUpdater();
 $updater->open('./path/to/config.php');
 $updater->update([
     'key' => 'new-key',
-    'new.deeply.nested.key' => [
-        'hello',
-        'world'
+    'new' => [
+        'deeply' => [
+            'nested' => [
+                'key' => [
+                    'hello',
+                    'world'
+                ]
+            ]        
+        ]
     ]
 ]);
 
