@@ -59,6 +59,8 @@ class ConfigUpdater
 
     private $replaceKeys = [];
 
+    private $allowRootRemoval = false;
+
     public function __construct()
     {
         $this->transformer = new Transformer();
@@ -241,6 +243,13 @@ class ConfigUpdater
         return $filtered;
     }
 
+    public function allowRootRemoval($allow = true)
+    {
+        $this->allowRootRemoval = $allow;
+
+        return $this;
+    }
+
     /**
      * Attempts to apply the requested changes to the existing configuration values.
      *
@@ -260,7 +269,9 @@ class ConfigUpdater
         if ($this->ignoreFunctions && count($this->analyzer->getDiscoveredFunctionKeys()) > 0) {
             $this->preserveKeys = array_merge($this->preserveKeys, $this->analyzer->getDiscoveredFunctionKeys());
         }
+
         $currentConfig = $this->analyzer->getValues();
+
         $existingKeys = $this->getStringKeys($currentConfig);
         $incomingKeys = $this->getStringKeys($changes);
 
@@ -301,6 +312,76 @@ class ConfigUpdater
         }
 
         $changesToMake->insertions = array_diff($changesToMake->insertions, $changesToMake->updates);
+
+        if (! $this->allowRootRemoval) {
+            $swapRoots = [];
+            $swapInsert = [];
+
+            if (count($existingKeys) > 0) {
+                foreach ($incomingKeys as $key) {
+                    if (! Str::contains($key, '.')) {
+                        continue;
+                    }
+
+                    $hasExistingParent = false;
+
+                    $parts = explode('.', $key);
+
+                    while (count($parts) >= 1) {
+                        $curCheck = implode('.', $parts);
+                        if (in_array($curCheck, $existingKeys)) {
+                            $hasExistingParent = true;
+                            break;
+                        }
+                        array_pop($parts);
+                    }
+
+                    if ($hasExistingParent) {
+                        continue;
+                    }
+
+                    $root = Str::before($key, '.');
+
+                    if (! in_array($key, $existingKeys)) {
+                        $swapRoots[] = $root;
+                        $swapInsert[] = $key;
+                    }
+                }
+            }
+
+            if (count($existingKeys) == 0) {
+                // And the other way around.
+                $shiftRoots = [];
+                $removeKeys = [];
+                foreach ($incomingKeys as $key) {
+                    $root = Str::before($key, '.');
+
+                    if (! in_array($root, $shiftRoots)) {
+                        $shiftRoots[] = $root;
+                    }
+                }
+
+                if (count($shiftRoots) > 0) {
+                    $changesToMake->updates = collect($changesToMake->updates)->filter(function ($key) use ($shiftRoots, &$removeKeys) {
+                        $isInvalid = ! Str::startsWith($key, $shiftRoots);
+
+                        if (! $isInvalid) {
+                            $removeKeys[] = $key;
+                        }
+
+                        return $isInvalid;
+                    })->values()->all();
+                }
+
+                $changesToMake->updates = array_diff($changesToMake->updates, $removeKeys);
+                $changesToMake->updates = array_merge($changesToMake->updates, $shiftRoots);
+            }
+
+            if (count($swapRoots) > 0) {
+                $changesToMake->updates = array_diff($changesToMake->updates, $swapRoots);
+                $changesToMake->insertions = array_merge($changesToMake->insertions, $swapInsert);
+            }
+        }
 
         foreach ($changesToMake->insertions as $insert) {
             $valuesToInsert = TypeWriter::write(Arr::get($changes, $insert, null));

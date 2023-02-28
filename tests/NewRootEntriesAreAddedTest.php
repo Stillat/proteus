@@ -18,13 +18,15 @@ class NewRootEntriesAreAddedTest extends ProteusTestCase
         );
     }
 
-    public function testThatNewKeysUsingDotNotationAreProperlyNested()
+    public function testThatNewSimpleKeysProperlyNested()
     {
         $this->assertChangeEquals(
             __DIR__.'/configs/app.php',
             __DIR__.'/expected/simpledotnotationkeyset.php',
             [
-                'new.key' => 'value',
+                'new' => [
+                    'key' => 'value',
+                ],
             ]
         );
     }
@@ -35,9 +37,15 @@ class NewRootEntriesAreAddedTest extends ProteusTestCase
             __DIR__.'/configs/app.php',
             __DIR__.'/expected/deeplynestedtest.php',
             [
-                'new.deeply.nested.key' => [
-                    'hello',
-                    'world',
+                'new' => [
+                    'deeply' => [
+                        'nested' => [
+                            'key' => [
+                                'hello',
+                                'world',
+                            ],
+                        ],
+                    ],
                 ],
             ]
         );

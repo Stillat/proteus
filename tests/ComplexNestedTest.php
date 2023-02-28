@@ -10,16 +10,18 @@ class ComplexNestedTest extends ProteusTestCase
             __DIR__.'/configs/nested/001.php',
             __DIR__.'/expected/nested/001.php',
             [
-                'test.new' => [
-                    'nested' => [
-                        'key-one' => 'value-one',
-                        'key-two' => 'value-two',
-                        'key-three' => 'value-three',
-                        'key-four' => [
-                            'nested-one' => 'nested-value-one',
-                            'nested-two' => 'nested-value-two',
-                            'nested-three' => [
-                                'three' => 'value-three',
+                'test' => [
+                    'new' => [
+                        'nested' => [
+                            'key-one' => 'value-one',
+                            'key-two' => 'value-two',
+                            'key-three' => 'value-three',
+                            'key-four' => [
+                                'nested-one' => 'nested-value-one',
+                                'nested-two' => 'nested-value-two',
+                                'nested-three' => [
+                                    'three' => 'value-three',
+                                ],
                             ],
                         ],
                     ],
@@ -34,7 +36,11 @@ class ComplexNestedTest extends ProteusTestCase
             __DIR__.'/configs/nested/002.php',
             __DIR__.'/expected/nested/002.php',
             [
-                'test.nested.type' => 1,
+                'test' => [
+                    'nested' => [
+                        'type' => 1,
+                    ],
+                ],
             ]
         );
     }
@@ -45,8 +51,12 @@ class ComplexNestedTest extends ProteusTestCase
             __DIR__.'/configs/nested/003.php',
             __DIR__.'/expected/nested/003.php',
             [
-                'nested.new.key' => [
-                    'these.keys' => 'should not get expanded',
+                'nested' => [
+                    'new' => [
+                        'key' => [
+                            'these.keys' => 'should not get expanded',
+                        ],
+                    ],
                 ],
             ]
         );
