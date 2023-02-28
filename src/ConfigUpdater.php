@@ -282,13 +282,10 @@ class ConfigUpdater
 
         $autoPreserve = array_diff($existingKeys, $incomingKeys);
 
-        $filteredAp = [];
         $hasCollision = false;
 
         foreach ($autoPreserve as $k) {
-            if (! Str::startsWith($k, $incomingKeys)) {
-                $filteredAp[] = $k;
-            } else {
+            if (Str::startsWith($k, $incomingKeys)) {
                 $hasCollision = true;
             }
         }
