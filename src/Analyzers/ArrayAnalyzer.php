@@ -3,6 +3,7 @@
 namespace Stillat\Proteus\Analyzers;
 
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
@@ -236,13 +237,46 @@ class ArrayAnalyzer
             $point = $this->getInsertionPoint($key);
 
             if ($point === null) {
-                $mutationGraph->updates[] = $key;
+                if (is_array($value)) {
+                    $subKey = $this->findEndOfStringKeys($value);
+                    if (strlen($subKey) > 0) {
+                        $mutationGraph->updates[] = $key.'.'.$subKey;
+                    } else {
+                        $mutationGraph->updates[] = $key;
+                    }
+                } else {
+                    $mutationGraph->updates[] = $key;
+                }
             } else {
                 $mutationGraph->insertions[] = $key;
             }
         }
 
         return $mutationGraph;
+    }
+
+    private function findEndOfStringKeys($array, $prefix = '')
+    {
+        if (strlen($prefix) > 0) {
+            $prefix = $prefix.'.';
+        }
+
+        if (count($array) != 1) {
+            return '';
+        }
+
+        foreach ($array as $k => $v) {
+            if (! is_array($v)) {
+                return '';
+            }
+            if (Arr::isList($v)) {
+                return $k;
+            } else {
+                return $this->findEndOfStringKeys($v, $prefix.$k);
+            }
+        }
+
+        return '';
     }
 
     /**

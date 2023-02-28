@@ -4,6 +4,7 @@ namespace Stillat\Proteus;
 
 use Exception;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Stillat\Proteus\Analyzers\ArrayAnalyzer;
 use Stillat\Proteus\Analyzers\ConfigAnalyzer;
 use Stillat\Proteus\Document\Transformer;
@@ -207,6 +208,39 @@ class ConfigUpdater
         }
     }
 
+    private function getStringKeys($array, $prefix = '')
+    {
+        if (strlen($prefix) > 0) {
+            $prefix = $prefix.'.';
+        }
+        $keys = [];
+
+        foreach ($array as $k => $v) {
+            if (is_string($k) && is_array($v)) {
+                $keys[] = $prefix.$k;
+
+                $keys = array_merge($keys, $this->getStringKeys($v, $prefix.$k));
+            } elseif (is_string($k)) {
+                $keys[] = $prefix.$k;
+            }
+        }
+
+        return $keys;
+    }
+
+    private function filterKeys($keys)
+    {
+        $filtered = [];
+
+        foreach ($keys as $k) {
+            if (Str::contains($k, '.')) {
+                $filtered[] = $k;
+            }
+        }
+
+        return $filtered;
+    }
+
     /**
      * Attempts to apply the requested changes to the existing configuration values.
      *
@@ -217,19 +251,29 @@ class ConfigUpdater
      */
     public function update(array $changes, $isMerge = false)
     {
-        if ($this->ignoreFunctions && count($this->analyzer->getDiscoveredFunctionKeys()) > 0) {
-            $this->preserveKeys = array_merge($this->preserveKeys, $this->analyzer->getDiscoveredFunctionKeys());
-        }
-
         // If we have keys to preserve, writing without all the
         // required values will just stomp all over everything.
         if (count($this->preserveKeys) > 0) {
             $isMerge = true;
         }
 
-        if (! empty($this->preserveKeys)) {
-            $currentConfig = $this->analyzer->getValues();
+        if ($this->ignoreFunctions && count($this->analyzer->getDiscoveredFunctionKeys()) > 0) {
+            $this->preserveKeys = array_merge($this->preserveKeys, $this->analyzer->getDiscoveredFunctionKeys());
+        }
+        $currentConfig = $this->analyzer->getValues();
+        $existingKeys = $this->getStringKeys($currentConfig);
+        $incomingKeys = $this->getStringKeys($changes);
 
+        if (count($incomingKeys) > 1) {
+            $incomingKeys = $this->filterKeys($incomingKeys);
+            $existingKeys = $this->filterKeys($existingKeys);
+        }
+
+        $autoPreserve = array_diff($existingKeys, $incomingKeys);
+
+        $this->replaceKeys = array_merge($this->replaceKeys, $incomingKeys);
+
+        if (! empty($this->preserveKeys)) {
             foreach ($this->preserveKeys as $keyToPreserve) {
                 if ($this->ignoreFunctions && $this->analyzer->containsFunctionCall($keyToPreserve)) {
                     continue;
@@ -245,13 +289,14 @@ class ConfigUpdater
             $valuesToInsert = TypeWriter::write($changes[$insert]);
 
             if ($this->analyzer->hasNode($insert)) {
-                $completeReplace = false;
+                /*$completeReplace = false;
 
                 if (is_array($changes[$insert]) && count($changes[$insert]) === 0) {
                     $completeReplace = true;
                 }
 
-                $this->analyzer->replaceNodeValue($insert, $valuesToInsert, $completeReplace);
+                $this->analyzer->replaceNodeValue($insert, $valuesToInsert, $completeReplace);*/
+                $this->analyzer->replaceNodeValue($insert, $valuesToInsert, true);
             } else {
                 if ($this->arrayAnalyzer->isCompound($insert)) {
                     $insertionPoint = $this->arrayAnalyzer->getInsertionPoint($insert);
@@ -283,10 +328,10 @@ class ConfigUpdater
         }
 
         foreach ($changesToMake->updates as $update) {
-            $constructedValue = TypeWriter::write($changes[$update]);
+            $constructedValue = TypeWriter::write(Arr::get($changes, $update, []));
 
             if ($this->analyzer->hasNode($update)) {
-                if ($this->analyzer->isNodeArray($update) && is_array($changes[$update]) === false) {
+                if ($this->analyzer->isNodeArray($update) && is_array(Arr::get($changes, $update, null)) === false) {
                     $this->analyzer->appendArrayItem($update, $constructedValue);
                 } else {
                     $completeReplace = true;

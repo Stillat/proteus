@@ -15,7 +15,8 @@ return [
     'timezone' => 'UTC', 'nested' => [
         'new' => [
             'key' => [
-                'these.keys' => 'replacement value', 'this' => 'should be added',
+                'these.keys' => 'replacement value',
+                'this' => 'should be added',
             ],
         ],
     ],

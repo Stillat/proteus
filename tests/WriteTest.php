@@ -72,9 +72,36 @@ class WriteTest extends ProteusTestCase
                     'audience_id' => 'new5',
                 ],
             ],
-        ], false); // <-- Note: this is not mergeMany
+        ], false);
 
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/issues/018d.php'));
+        $this->assertSame($expected, $updater->getDocument());
+    }
+
+    public function testWritesCanBeDoneEasilyWithoutTrashingConfigurationFilesThree()
+    {
+        $updater = new ConfigUpdater();
+        $updater->setIgnoreFunctions(true);
+        $updater->open(__DIR__.'/configs/issues/014a.php');
+
+        $updater->setIgnoreFunctions(true)->update([
+            'stripe' => [
+                'reports' => [
+                    [
+                        'id' => 'a new thing',
+                        'frequency' => 'daily',
+                        'email_addresses' => 'helloworld@example.org',
+                    ],
+                    [
+                        'id' => 'a new thing!!!',
+                        'frequency' => 'dailyasdfasdf',
+                        'email_addresses' => 'hellasdfasdfasdfasdfoworld@example.org',
+                    ],
+                ],
+            ],
+        ], false);
+
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/issues/014b.php'));
         $this->assertSame($expected, $updater->getDocument());
     }
 }
