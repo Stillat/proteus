@@ -46,7 +46,6 @@ ConfigWriter::writeMany('app', [
 
 If you only want the document contents (without writing to disk), you may use the `preview` and `previewMany` counterparts:
 
-
 ```php
 <?php
 
@@ -59,22 +58,6 @@ $document = ConfigWriter::previewMany('app', [
     'timezone' => 'Europe/Paris'
 ]);
 
-
-```
-
-Instead of overwriting all values within the configuration file (when there are collisions), you may use the `mergeMany` method:
-
-```php
-<?php
-
-Stillat\Proteus\Support\Facades\ConfigWriter;
-
-$document = ConfigWriter::preview('app.locale', 'fr');
-
-$document = ConfigWriter::mergeMany('app', [
-    'locale' => 'fr',
-    'timezone' => 'Europe/Paris'
-]);
 
 ```
 
