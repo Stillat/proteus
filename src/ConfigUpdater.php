@@ -300,8 +300,10 @@ class ConfigUpdater
             $changesToMake->updates = $incomingKeys;
         }
 
+        $changesToMake->insertions = array_diff($changesToMake->insertions, $changesToMake->updates);
+
         foreach ($changesToMake->insertions as $insert) {
-            $valuesToInsert = TypeWriter::write($changes[$insert]);
+            $valuesToInsert = TypeWriter::write(Arr::get($changes, $insert, null));
 
             if ($this->analyzer->hasNode($insert)) {
                 /*$completeReplace = false;
@@ -319,14 +321,14 @@ class ConfigUpdater
                     if ($insertionPoint === null) {
                         $root = $this->arrayAnalyzer->getAbsoluteRoot($insert);
                         $components = $this->arrayAnalyzer->getCompoundWithoutRoot($insert);
-                        $structure = $this->arrayAnalyzer->getCompoundStructure($components, $changes[$insert]);
+                        $structure = $this->arrayAnalyzer->getCompoundStructure($components, Arr::get($changes, $insert, null));
                         $valuesToInsert = TypeWriter::write($structure);
 
                         $this->analyzer->insertValuesAtNode($root, $valuesToInsert);
                     } else {
                         $components = $this->arrayAnalyzer->getCompoundWithoutRoot($insert);
                         $newKeyValue = array_pop($components);
-                        $newVal = [$newKeyValue => $changes[$insert]];
+                        $newVal = [$newKeyValue => Arr::get($changes, $insert, null)];
 
                         array_pop($components);
                         $structure = $this->arrayAnalyzer->getCompoundStructure($components, $newVal);
