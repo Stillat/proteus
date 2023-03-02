@@ -2,13 +2,13 @@
 
 return [
     'stripe' => [
-        'api_base' => env('STRIPE_API_BASE'),
-        'dg_price_1' => env('STRIPE_PRICE_ONE'),
-        'dg_product_1' => env('STRIPE_PRODUCT_ONE'),
-        'dg_product_2' => env('STRIPE_PRODUCT_TWO'),
-        'public' => env('STRIPE_PUBLIC_KEY'),
-        'secret' => env('STRIPE_SECRET_KEY'),
-        'webhook' => env('STRIPE_WEBHOOK_SECRET'),
+        'api_base' => 1,
+        'dg_price_1' => 2,
+        'dg_product_1' => 3,
+        'dg_product_2' => 4,
+        'public' => 5,
+        'secret' => 6,
+        'webhook' => 7,
 
         'reports' => [
             [

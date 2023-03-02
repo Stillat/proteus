@@ -23,11 +23,10 @@ class TypeWriter
     /**
      * Attempts to convert the input value into a mutable node value.
      *
-     * @param mixed $value The value to convert.
+     * @param  mixed  $value The value to convert.
+     * @return mixed|Array_|Bool_|float|Int_|String_|null
      *
      * @throws Exception
-     *
-     * @return mixed|Array_|Bool_|float|Int_|String_|null
      */
     public static function write($value)
     {

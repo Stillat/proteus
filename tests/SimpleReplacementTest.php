@@ -1,6 +1,6 @@
 <?php
 
-require_once 'ProteusTestCase.php';
+namespace Stillat\Proteus\Tests;
 
 class SimpleReplacementTest extends ProteusTestCase
 {
@@ -10,7 +10,7 @@ class SimpleReplacementTest extends ProteusTestCase
             __DIR__.'/configs/app.php',
             __DIR__.'/expected/simple_replace.php',
             [
-                'timezone'        => 'America/Chicago',
+                'timezone' => 'America/Chicago',
                 'fallback_locale' => 'fr',
             ]
         );
@@ -33,11 +33,11 @@ class SimpleReplacementTest extends ProteusTestCase
             __DIR__.'/configs/app.php',
             __DIR__.'/expected/multi_replace_env.php',
             [
-                'name'   => 'Statamic',
+                'name' => 'Statamic',
                 'locale' => 'fr',
-                'env'    => 'development',
-                'debug'  => true,
-                'url'    => 'http://local.test',
+                'env' => 'development',
+                'debug' => true,
+                'url' => 'http://local.test',
             ]
         );
     }
@@ -49,6 +49,7 @@ class SimpleReplacementTest extends ProteusTestCase
             __DIR__.'/expected/configwithusing.php',
             [
                 'test' => 'updated-value',
+                'test_two' => 'another-value!',
             ]
         );
     }
@@ -95,7 +96,7 @@ BLOCK;
 
         $updater->replaceStructure('cart_key', 'cart', [
             'driver' => \Stillat\Proteus\ConfigUpdater::class,
-            'key'    => 'simple-commerce-cart',
+            'key' => 'simple-commerce-cart',
         ], $docBlock, true);
 
         $doc = $updater->getDocument();

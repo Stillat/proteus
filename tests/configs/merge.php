@@ -1,4 +1,5 @@
 <?php
+
 return [
     'trackable_videos' => env('SIMPLE_TRACKABLE_VIDEOS', false),
 

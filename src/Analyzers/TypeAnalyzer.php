@@ -16,8 +16,7 @@ class TypeAnalyzer
     /**
      * Converts the type mapping to a known string representation.
      *
-     * @param int $type The type.
-     *
+     * @param  int  $type The type.
      * @return string
      */
     public static function typeToString($type)
@@ -40,11 +39,10 @@ class TypeAnalyzer
     /**
      * Infers the type from the provided value.
      *
-     * @param mixed $value The value to analyze.
+     * @param  mixed  $value The value to analyze.
+     * @return int
      *
      * @throws Exception
-     *
-     * @return int
      */
     public static function typeOf($value)
     {

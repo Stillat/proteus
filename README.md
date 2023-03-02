@@ -46,7 +46,6 @@ ConfigWriter::writeMany('app', [
 
 If you only want the document contents (without writing to disk), you may use the `preview` and `previewMany` counterparts:
 
-
 ```php
 <?php
 
@@ -59,22 +58,6 @@ $document = ConfigWriter::previewMany('app', [
     'timezone' => 'Europe/Paris'
 ]);
 
-
-```
-
-Instead of overwriting all values within the configuration file (when there are collisions), you may use the `mergeMany` method:
-
-```php
-<?php
-
-Stillat\Proteus\Support\Facades\ConfigWriter;
-
-$document = ConfigWriter::preview('app.locale', 'fr');
-
-$document = ConfigWriter::mergeMany('app', [
-    'locale' => 'fr',
-    'timezone' => 'Europe/Paris'
-]);
 
 ```
 
@@ -117,17 +100,17 @@ ConfigWriter::guard('app.providers*');
 
 ```
 
-## Disabling Function Rewrites
+## Enabling Function Rewrites
 
-Changes to all function calls (such as `env`) can be disabled by calling the `ignoreFunctionCalls` method before updating a configuration file:
+Changes to function calls (such as `env`) can are disabled by default. To enable them, you may call the `ignoreFunctionCalls` method with `false`:
 
 ```php
 <?php
 
 Stillat\Proteus\Support\Facades\ConfigWriter;
 
-// No env calls will updated here :)
-ConfigWriter::ignoreFunctionCalls()->writeMany('app', [
+// Calls to env, and other functions, will be updated.
+ConfigWriter::ignoreFunctionCalls(false)->writeMany('app', [
     'key' => 'new-value',
     'locale' => 'fr',
     'timezone' => 'Europe/Paris'
@@ -333,9 +316,15 @@ $updater = new ConfigUpdater();
 $updater->open('./path/to/config.php');
 $updater->update([
     'key' => 'new-key',
-    'new.deeply.nested.key' => [
-        'hello',
-        'world'
+    'new' => [
+        'deeply' => [
+            'nested' => [
+                'key' => [
+                    'hello',
+                    'world'
+                ]
+            ]        
+        ]
     ]
 ]);
 

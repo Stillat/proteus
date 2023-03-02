@@ -16,6 +16,6 @@ return [
         'nested' => [
             'type' => 1,
         ],
-    ]
+    ],
 
 ];

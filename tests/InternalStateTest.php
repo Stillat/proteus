@@ -1,5 +1,7 @@
 <?php
 
+namespace Stillat\Proteus\Tests;
+
 use PHPUnit\Framework\TestCase;
 use Stillat\Proteus\ConfigUpdater;
 

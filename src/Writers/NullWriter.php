@@ -18,8 +18,7 @@ class NullWriter implements ValueWriterContract
     /**
      * Writes the provided value.
      *
-     * @param mixed $value The value to write.
-     *
+     * @param  mixed  $value The value to write.
      * @return mixed
      */
     public function write($value)

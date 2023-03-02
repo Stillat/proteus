@@ -14,5 +14,5 @@ return [
             'handle' => 'contact_you',
             'consent_field' => null,
         ],
-    ]
+    ],
 ];

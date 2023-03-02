@@ -10,12 +10,19 @@ use PhpParser\Node\Scalar\String_;
 class FunctionWriter
 {
     const FUNC_LARAVEL_RESOURCE_PATH = 'resource_path';
+
     const FUNC_LARAVEL_APP_PATH = 'app_path';
+
     const FUNC_LARAVEL_BASE_PATH = 'base_path';
+
     const FUNC_LARAVEL_CONFIG_PATH = 'config_path';
+
     const FUNC_LARAVEL_DATABASE_PATH = 'database_path';
+
     const FUNC_LARAVEL_MIX_PATH = 'mix';
+
     const FUNC_LARAVEL_PUBLIC_PATH = 'public_path';
+
     const FUNC_LARAVEL_STORAGE_PATH = 'storage_path';
 
     protected function makeSimpleFunctionCall($name, $arg = null)

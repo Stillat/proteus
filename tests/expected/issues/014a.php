@@ -16,6 +16,11 @@ return [
                 'frequency' => 'daily',
                 'email_addresses' => 'helloworld@example.org',
             ],
+            [
+                'id' => 'a new thing!!!',
+                'frequency' => 'dailyasdfasdf',
+                'email_addresses' => 'hellasdfasdfasdfasdfoworld@example.org',
+            ],
         ],
 
         // Misc

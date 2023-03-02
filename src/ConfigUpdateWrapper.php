@@ -11,15 +11,23 @@ namespace Stillat\Proteus;
 class ConfigUpdateWrapper
 {
     const MUTATION_REPLACE = 'replace';
+
     const MUTATION_REMOVE = 'remove';
+
     const MUTATION_UPDATE = 'update';
+
     const MUTATION_REPLACE_STRUCTURE = 'replaceStructure';
 
     const KEY_MUTATION = 'mutation';
+
     const KEY_KEY = 'key';
+
     const KEY_NEW_KEY = 'newKey';
+
     const KEY_VALUE = 'value';
+
     const KEY_COMMENT = 'comment';
+
     const KEY_FORCE_NEWLINE = 'forcenl';
 
     /**
@@ -53,8 +61,8 @@ class ConfigUpdateWrapper
     /**
      * ConfigUpdaterWrapper constructor.
      *
-     * @param LaravelConfigWriter $writer    The writer instance.
-     * @param string              $namespace The configuration namespace.
+     * @param  LaravelConfigWriter  $writer    The writer instance.
+     * @param  string  $namespace The configuration namespace.
      */
     public function __construct(LaravelConfigWriter $writer, $namespace)
     {
@@ -65,8 +73,7 @@ class ConfigUpdateWrapper
     /**
      * Constructs an absolute namespaced configuration key.
      *
-     * @param string $relativeKey The relative key.
-     *
+     * @param  string  $relativeKey The relative key.
      * @return string
      */
     private function makeAbsolute($relativeKey)
@@ -77,9 +84,8 @@ class ConfigUpdateWrapper
     /**
      * Merges the provided values with the existing configuration values.
      *
-     * @param string $key   The configuration usage.
-     * @param array  $value The values to add.
-     *
+     * @param  string  $key   The configuration usage.
+     * @param  array  $value The values to add.
      * @return $this
      */
     public function merge($key, $value)
@@ -93,9 +99,8 @@ class ConfigUpdateWrapper
     /**
      * Replaces the existing value at the configuration key's location.
      *
-     * @param string $key   The configuration key.
-     * @param mixed  $value The new value.
-     *
+     * @param  string  $key   The configuration key.
+     * @param  mixed  $value The new value.
      * @return $this
      */
     public function replace($key, $value)
@@ -104,8 +109,8 @@ class ConfigUpdateWrapper
 
         $this->mutations[] = [
             self::KEY_MUTATION => self::MUTATION_REPLACE,
-            self::KEY_VALUE    => [
-                self::KEY_KEY   => $key,
+            self::KEY_VALUE => [
+                self::KEY_KEY => $key,
                 self::KEY_VALUE => $value,
             ],
         ];
@@ -116,12 +121,11 @@ class ConfigUpdateWrapper
     /**
      * Replaces an existing node structure.
      *
-     * @param string $key          The original key.
-     * @param string $newKey       The new key.
-     * @param mixed  $value        The value to insert.
-     * @param string $docBlock     The Laravel "block" comment.
-     * @param bool   $forceNewLine Whether or not to force a new line.
-     *
+     * @param  string  $key          The original key.
+     * @param  string  $newKey       The new key.
+     * @param  mixed  $value        The value to insert.
+     * @param  string  $docBlock     The Laravel "block" comment.
+     * @param  bool  $forceNewLine Whether or not to force a new line.
      * @return $this
      */
     public function replaceStructure($key, $newKey, $value, $docBlock, $forceNewLine = true)
@@ -129,11 +133,11 @@ class ConfigUpdateWrapper
         $this->knownKeys[] = $this->makeAbsolute($key);
 
         $this->mutations[] = [
-            self::KEY_MUTATION      => self::MUTATION_REPLACE_STRUCTURE,
-            self::KEY_KEY           => $key,
-            self::KEY_NEW_KEY       => $newKey,
-            self::KEY_VALUE         => $value,
-            self::KEY_COMMENT       => $docBlock,
+            self::KEY_MUTATION => self::MUTATION_REPLACE_STRUCTURE,
+            self::KEY_KEY => $key,
+            self::KEY_NEW_KEY => $newKey,
+            self::KEY_VALUE => $value,
+            self::KEY_COMMENT => $docBlock,
             self::KEY_FORCE_NEWLINE => $forceNewLine,
         ];
 
@@ -143,8 +147,7 @@ class ConfigUpdateWrapper
     /**
      * Removes the value at the configuration key's location, and removes the key.
      *
-     * @param string $key The configuration key.
-     *
+     * @param  string  $key The configuration key.
      * @return $this
      */
     public function remove($key)
@@ -153,7 +156,7 @@ class ConfigUpdateWrapper
 
         $this->mutations[] = [
             self::KEY_MUTATION => self::MUTATION_REMOVE,
-            self::KEY_VALUE    => $key,
+            self::KEY_VALUE => $key,
         ];
 
         return $this;
@@ -162,9 +165,8 @@ class ConfigUpdateWrapper
     /**
      * Updates the value at the configuration key's location.
      *
-     * @param string $key   The configuration key.
-     * @param mixed  $value The new value.
-     *
+     * @param  string  $key   The configuration key.
+     * @param  mixed  $value The new value.
      * @return $this
      */
     public function change($key, $value)
@@ -173,7 +175,7 @@ class ConfigUpdateWrapper
 
         $this->mutations[] = [
             self::KEY_MUTATION => self::MUTATION_UPDATE,
-            self::KEY_VALUE    => [
+            self::KEY_VALUE => [
                 $key => $value,
             ],
         ];
@@ -184,9 +186,8 @@ class ConfigUpdateWrapper
     /**
      * Updates a single entry, or multiple if a key/value pair supplied as the key, and no value is set.
      *
-     * @param array|string $key   The configuration key, or a key/value list of multiple changes.
-     * @param mixed|null   $value The new value.
-     *
+     * @param  array|string  $key   The configuration key, or a key/value list of multiple changes.
+     * @param  mixed|null  $value The new value.
      * @return $this
      */
     public function set($key, $value = null)
@@ -205,11 +206,11 @@ class ConfigUpdateWrapper
     /**
      * Attempts to persist the configuration changes to disk.
      *
+     * @return bool
+     *
      * @throws Exceptions\ConfigNotFoundException
      * @throws Exceptions\ConfigNotWriteableException
      * @throws Exceptions\GuardedConfigurationMutationException
-     *
-     * @return bool
      */
     public function save()
     {
@@ -234,11 +235,11 @@ class ConfigUpdateWrapper
     /**
      * Applies all queued changes and returns the modified configuration document.
      *
+     * @return string
+     *
      * @throws Exceptions\ConfigNotFoundException
      * @throws Exceptions\ConfigNotWriteableException
      * @throws Exceptions\GuardedConfigurationMutationException
-     *
-     * @return string
      */
     public function preview()
     {
@@ -275,12 +276,12 @@ class ConfigUpdateWrapper
     }
 
     /**
-     * @param ConfigUpdater $updater      The updater instance.
-     * @param string        $key          The original key.
-     * @param string        $newKey       The new key.
-     * @param mixed         $value        The value to insert.
-     * @param string        $docBlock     The Laravel "block" comment.
-     * @param bool          $forceNewLine Whether or not to force a new line.
+     * @param  ConfigUpdater  $updater      The updater instance.
+     * @param  string  $key          The original key.
+     * @param  string  $newKey       The new key.
+     * @param  mixed  $value        The value to insert.
+     * @param  string  $docBlock     The Laravel "block" comment.
+     * @param  bool  $forceNewLine Whether or not to force a new line.
      */
     private function doReplaceStructure($updater, $key, $newKey, $value, $docBlock, $forceNewLine = true)
     {
@@ -288,9 +289,9 @@ class ConfigUpdateWrapper
     }
 
     /**
-     * @param ConfigUpdater $updater  The updater instance.
-     * @param string        $key      The key to update.
-     * @param mixed         $newValue The value to insert.
+     * @param  ConfigUpdater  $updater  The updater instance.
+     * @param  string  $key      The key to update.
+     * @param  mixed  $newValue The value to insert.
      */
     private function doReplace($updater, $key, $newValue)
     {
@@ -298,8 +299,8 @@ class ConfigUpdateWrapper
     }
 
     /**
-     * @param ConfigUpdater $updater The updater instance.
-     * @param string        $key     The key to remove.
+     * @param  ConfigUpdater  $updater The updater instance.
+     * @param  string  $key     The key to remove.
      */
     private function doRemove($updater, $key)
     {
@@ -307,8 +308,8 @@ class ConfigUpdateWrapper
     }
 
     /**
-     * @param ConfigUpdater $updater The updater instance.
-     * @param array         $update  The key/value pair to update.
+     * @param  ConfigUpdater  $updater The updater instance.
+     * @param  array  $update  The key/value pair to update.
      */
     private function doUpdate($updater, $update)
     {

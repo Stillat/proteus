@@ -3,7 +3,7 @@
 return [
     'forms' => [
         [
-            'id' => 'new1',
+            'id' => 'id1',
             'form' => 'contact',
             'check_consent' => true,
             'consent_field' => 'newsletter',
@@ -14,23 +14,23 @@ return [
             ],
             'merge_fields' => [
                 [
-                    'id' => 'new2',
+                    'id' => 'id2',
                     'field_name' => 'first_name',
                     'tag' => 'FNAME',
                 ],
                 [
-                    'id' => 'new3',
+                    'id' => 'id3',
                     'field_name' => 'last_name',
                     'tag' => 'LNAME',
                 ],
                 [
-                    'id' => 'new4',
+                    'id' => 'id',
                     'field_name' => 'company',
                     'tag' => 'COMPANY',
                 ],
             ],
             'primary_email_field' => 'email',
-            'audience_id' => 'new5',
+            'audience_id' => 'aud1',
         ],
         [
             'id' => 'b-new1',

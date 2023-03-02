@@ -15,8 +15,7 @@ use Stillat\Proteus\Contracts\ValueWriterContract;
 class StringWriter implements ValueWriterContract
 {
     /**
-     * @param string $value The input value.
-     *
+     * @param  string  $value The input value.
      * @return String_
      */
     public function write($value)

@@ -1,6 +1,6 @@
 <?php
 
-require_once 'ProteusTestCase.php';
+namespace Stillat\Proteus\Tests;
 
 use Stillat\Proteus\ConfigUpdater;
 use Stillat\Proteus\Document\Transformer;
@@ -10,7 +10,6 @@ class PreserveArrayKeysTest extends ProteusTestCase
     public function testUsingArraysForKeyPreservationWorks()
     {
         $updater = new ConfigUpdater();
-        $updater->setIgnoreFunctions(true);
         $updater->open(__DIR__.'/configs/merge.php');
         $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/merge.php'));
         $updater->setPreserveKeys([
@@ -19,24 +18,24 @@ class PreserveArrayKeysTest extends ProteusTestCase
             ],
         ])->update([
             'stripe' => [
-                'leave'   => 'hello, there!',
+                'leave' => 'hello, there!',
                 'reports' => [
                     [
-                        'frequency'       => 'daily',
+                        'frequency' => 'daily',
                         'email_addresses' => 'entry1',
                     ],
                     [
-                        'frequency'       => 'daily',
+                        'frequency' => 'daily',
                         'email_addresses' => 'entry2',
                     ],
                     [
-                        'frequency'       => 'daily',
+                        'frequency' => 'daily',
                         'email_addresses' => 'entry3',
                     ],
                 ],
                 'test' => [
                     'what' => [
-                        'nested'  => 'value',
+                        'nested' => 'value',
                         'happens' => [
                             1, 2, 3, 'four', 'five', 5, 'six', 'seven' => [8],
                         ],

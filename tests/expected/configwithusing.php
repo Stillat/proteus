@@ -1,9 +1,8 @@
 <?php
 
-use Stillat\Proteus\ConfigUpdater;
-
 return [
 
-    'test' => 'updated-value'
+    'test' => 'updated-value',
+    'test_two' => 'another-value!', // Partner.
 
 ];

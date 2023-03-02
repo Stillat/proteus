@@ -18,6 +18,6 @@ return [
                 'these.keys' => 'should not get expanded',
             ],
         ],
-    ]
+    ],
 
 ];

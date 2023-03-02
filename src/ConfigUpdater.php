@@ -4,6 +4,7 @@ namespace Stillat\Proteus;
 
 use Exception;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Stillat\Proteus\Analyzers\ArrayAnalyzer;
 use Stillat\Proteus\Analyzers\ConfigAnalyzer;
 use Stillat\Proteus\Document\Transformer;
@@ -47,7 +48,7 @@ class ConfigUpdater
      *
      * @var bool
      */
-    private $ignoreFunctions = false;
+    private $ignoreFunctions = true;
 
     /**
      * A list of configuration keys that should be preserved.
@@ -55,6 +56,10 @@ class ConfigUpdater
      * @var array
      */
     private $preserveKeys = [];
+
+    private $replaceKeys = [];
+
+    private $allowRootRemoval = false;
 
     public function __construct()
     {
@@ -66,8 +71,7 @@ class ConfigUpdater
     /**
      * Sets whether function calls are ignored when updating the configuration.
      *
-     * @param bool $ignore
-     *
+     * @param  bool  $ignore
      * @return $this
      */
     public function setIgnoreFunctions($ignore)
@@ -82,8 +86,7 @@ class ConfigUpdater
     /**
      * Sets a list of configuration keys that should always be preserved.
      *
-     * @param array $keys
-     *
+     * @param  array  $keys
      * @return $this
      */
     public function setPreserveKeys($keys)
@@ -93,12 +96,18 @@ class ConfigUpdater
         return $this;
     }
 
+    public function setReplaceKeys($keys)
+    {
+        $this->replaceKeys = $this->flattenKeys($keys);
+
+        return $this;
+    }
+
     /**
      * Flattens deeply nested arrays using "dot" notation, while preserving root keys.
      *
-     * @param array  $array
-     * @param string $prefix
-     *
+     * @param  array  $array
+     * @param  string  $prefix
      * @return array
      */
     private function flattenKeys($array, $prefix = '')
@@ -124,8 +133,7 @@ class ConfigUpdater
     /**
      * Attempts to remove the key and its value from the configuration.
      *
-     * @param string $key The key to remove.
-     *
+     * @param  string  $key The key to remove.
      * @return bool
      */
     public function remove($key)
@@ -151,14 +159,14 @@ class ConfigUpdater
     /**
      * Opens the provided file and parses the configuration values.
      *
-     * @param string $filePath The file to open.
+     * @param  string  $filePath The file to open.
      *
      * @throws Exception
      * @throws ConfigNotFoundException
      */
     public function open($filePath)
     {
-        if (!file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             throw new ConfigNotFoundException("Configuration file does not exist: {$filePath}");
         }
 
@@ -172,8 +180,8 @@ class ConfigUpdater
     /**
      * Replaces a node's value with the provided new value.
      *
-     * @param string $key   The key to update.
-     * @param mixed  $value The value to replace.
+     * @param  string  $key   The key to update.
+     * @param  mixed  $value The value to replace.
      *
      * @throws Exception
      */
@@ -187,11 +195,11 @@ class ConfigUpdater
     /**
      * Replaces an existing node structure.
      *
-     * @param string $key          The original key.
-     * @param string $newKey       The new key.
-     * @param mixed  $value        The value to insert.
-     * @param string $docBlock     The Laravel "block" comment.
-     * @param bool   $forceNewLine Whether or not to force a new line.
+     * @param  string  $key          The original key.
+     * @param  string  $newKey       The new key.
+     * @param  mixed  $value        The value to insert.
+     * @param  string  $docBlock     The Laravel "block" comment.
+     * @param  bool  $forceNewLine Whether or not to force a new line.
      *
      * @throws Exception
      */
@@ -202,11 +210,51 @@ class ConfigUpdater
         }
     }
 
+    private function getStringKeys($array, $prefix = '')
+    {
+        if (strlen($prefix) > 0) {
+            $prefix = $prefix.'.';
+        }
+        $keys = [];
+
+        foreach ($array as $k => $v) {
+            if (is_string($k) && is_array($v)) {
+                $keys[] = $prefix.$k;
+
+                $keys = array_merge($keys, $this->getStringKeys($v, $prefix.$k));
+            } elseif (is_string($k)) {
+                $keys[] = $prefix.$k;
+            }
+        }
+
+        return $keys;
+    }
+
+    private function filterKeys($keys)
+    {
+        $filtered = [];
+
+        foreach ($keys as $k) {
+            if (Str::contains($k, '.')) {
+                $filtered[] = $k;
+            }
+        }
+
+        return $filtered;
+    }
+
+    public function allowRootRemoval($allow = true)
+    {
+        $this->allowRootRemoval = $allow;
+
+        return $this;
+    }
+
     /**
      * Attempts to apply the requested changes to the existing configuration values.
      *
-     * @param array $changes The changes to apply to the existing configuration.
-     * @param bool  $isMerge Indicates if merge or forced overwrite behavior should be used.
+     * @param  array  $changes The changes to apply to the existing configuration.
+     * @param  bool  $isMerge Indicates if merge or forced overwrite behavior should be used.
      *
      * @throws Exception
      */
@@ -218,9 +266,33 @@ class ConfigUpdater
             $isMerge = true;
         }
 
-        if (!empty($this->preserveKeys)) {
-            $currentConfig = $this->analyzer->getValues();
+        if ($this->ignoreFunctions && count($this->analyzer->getDiscoveredFunctionKeys()) > 0) {
+            $this->preserveKeys = array_merge($this->preserveKeys, $this->analyzer->getDiscoveredFunctionKeys());
+        }
 
+        $currentConfig = $this->analyzer->getValues();
+
+        $existingKeys = $this->getStringKeys($currentConfig);
+        $incomingKeys = $this->getStringKeys($changes);
+
+        if (count($incomingKeys) > 1) {
+            $incomingKeys = $this->filterKeys($incomingKeys);
+            $existingKeys = $this->filterKeys($existingKeys);
+        }
+
+        $autoPreserve = array_diff($existingKeys, $incomingKeys);
+
+        $hasCollision = false;
+
+        foreach ($autoPreserve as $k) {
+            if (Str::startsWith($k, $incomingKeys)) {
+                $hasCollision = true;
+            }
+        }
+
+        $this->replaceKeys = array_merge($this->replaceKeys, $incomingKeys);
+
+        if (! empty($this->preserveKeys)) {
             foreach ($this->preserveKeys as $keyToPreserve) {
                 if ($this->ignoreFunctions && $this->analyzer->containsFunctionCall($keyToPreserve)) {
                     continue;
@@ -232,17 +304,94 @@ class ConfigUpdater
 
         $changesToMake = $this->arrayAnalyzer->getChanges($changes);
 
+        if ($hasCollision) {
+            $changesToMake->updates = $incomingKeys;
+        }
+
+        $changesToMake->insertions = array_diff($changesToMake->insertions, $changesToMake->updates);
+
+        if (! $this->allowRootRemoval) {
+            $swapRoots = [];
+            $swapInsert = [];
+
+            if (count($existingKeys) > 0) {
+                foreach ($incomingKeys as $key) {
+                    if (! Str::contains($key, '.')) {
+                        continue;
+                    }
+
+                    $hasExistingParent = false;
+
+                    $parts = explode('.', $key);
+
+                    while (count($parts) >= 1) {
+                        $curCheck = implode('.', $parts);
+                        if (in_array($curCheck, $existingKeys)) {
+                            $hasExistingParent = true;
+                            break;
+                        }
+                        array_pop($parts);
+                    }
+
+                    if ($hasExistingParent) {
+                        continue;
+                    }
+
+                    $root = Str::before($key, '.');
+
+                    if (! in_array($key, $existingKeys)) {
+                        $swapRoots[] = $root;
+                        $swapInsert[] = $key;
+                    }
+                }
+            }
+
+            if (count($existingKeys) == 0) {
+                // And the other way around.
+                $shiftRoots = [];
+                $removeKeys = [];
+                foreach ($incomingKeys as $key) {
+                    $root = Str::before($key, '.');
+
+                    if (! in_array($root, $shiftRoots)) {
+                        $shiftRoots[] = $root;
+                    }
+                }
+
+                if (count($shiftRoots) > 0) {
+                    $changesToMake->updates = collect($changesToMake->updates)->filter(function ($key) use ($shiftRoots, &$removeKeys) {
+                        $isInvalid = ! Str::startsWith($key, $shiftRoots);
+
+                        if (! $isInvalid) {
+                            $removeKeys[] = $key;
+                        }
+
+                        return $isInvalid;
+                    })->values()->all();
+                }
+
+                $changesToMake->updates = array_diff($changesToMake->updates, $removeKeys);
+                $changesToMake->updates = array_merge($changesToMake->updates, $shiftRoots);
+            }
+
+            if (count($swapRoots) > 0) {
+                $changesToMake->updates = array_diff($changesToMake->updates, $swapRoots);
+                $changesToMake->insertions = array_merge($changesToMake->insertions, $swapInsert);
+            }
+        }
+
         foreach ($changesToMake->insertions as $insert) {
-            $valuesToInsert = TypeWriter::write($changes[$insert]);
+            $valuesToInsert = TypeWriter::write(Arr::get($changes, $insert, null));
 
             if ($this->analyzer->hasNode($insert)) {
-                $completeReplace = false;
+                /*$completeReplace = false;
 
                 if (is_array($changes[$insert]) && count($changes[$insert]) === 0) {
                     $completeReplace = true;
                 }
 
-                $this->analyzer->replaceNodeValue($insert, $valuesToInsert, $completeReplace);
+                $this->analyzer->replaceNodeValue($insert, $valuesToInsert, $completeReplace);*/
+                $this->analyzer->replaceNodeValue($insert, $valuesToInsert, true);
             } else {
                 if ($this->arrayAnalyzer->isCompound($insert)) {
                     $insertionPoint = $this->arrayAnalyzer->getInsertionPoint($insert);
@@ -250,14 +399,14 @@ class ConfigUpdater
                     if ($insertionPoint === null) {
                         $root = $this->arrayAnalyzer->getAbsoluteRoot($insert);
                         $components = $this->arrayAnalyzer->getCompoundWithoutRoot($insert);
-                        $structure = $this->arrayAnalyzer->getCompoundStructure($components, $changes[$insert]);
+                        $structure = $this->arrayAnalyzer->getCompoundStructure($components, Arr::get($changes, $insert, null));
                         $valuesToInsert = TypeWriter::write($structure);
 
                         $this->analyzer->insertValuesAtNode($root, $valuesToInsert);
                     } else {
                         $components = $this->arrayAnalyzer->getCompoundWithoutRoot($insert);
                         $newKeyValue = array_pop($components);
-                        $newVal = [$newKeyValue => $changes[$insert]];
+                        $newVal = [$newKeyValue => Arr::get($changes, $insert, null)];
 
                         array_pop($components);
                         $structure = $this->arrayAnalyzer->getCompoundStructure($components, $newVal);
@@ -274,16 +423,20 @@ class ConfigUpdater
         }
 
         foreach ($changesToMake->updates as $update) {
-            $constructedValue = TypeWriter::write($changes[$update]);
+            $constructedValue = TypeWriter::write(Arr::get($changes, $update, []));
 
             if ($this->analyzer->hasNode($update)) {
-                if ($this->analyzer->isNodeArray($update) && is_array($changes[$update]) === false) {
+                if ($this->analyzer->isNodeArray($update) && is_array(Arr::get($changes, $update, null)) === false) {
                     $this->analyzer->appendArrayItem($update, $constructedValue);
                 } else {
                     $completeReplace = true;
 
                     if ($isMerge) {
                         $completeReplace = false;
+                    }
+
+                    if (in_array($update, $this->replaceKeys)) {
+                        $completeReplace = true;
                     }
 
                     $this->analyzer->replaceNodeValue($update, $constructedValue, $completeReplace);
@@ -298,7 +451,7 @@ class ConfigUpdater
                     if ($depthCount === 0 && $insertPoint === null) {
                         // Most likely a replacement :)
                         $components = $this->arrayAnalyzer->getCompoundWithoutRoot($update);
-                        $structure = $this->arrayAnalyzer->getCompoundStructure($components, $changes[$update]);
+                        $structure = $this->arrayAnalyzer->getCompoundStructure($components, Arr::get($changes, $update, []));
                         // Rewrite our construction.
                         $constructedValue = TypeWriter::write($structure);
 
@@ -309,7 +462,7 @@ class ConfigUpdater
                 } else {
                     if ($this->arrayAnalyzer->isCompound($update)) {
                         $components = $this->arrayAnalyzer->getCompoundWithoutRoot($update);
-                        $compoundStruct = $this->arrayAnalyzer->getCompoundStructure($components, $changes[$update]);
+                        $compoundStruct = $this->arrayAnalyzer->getCompoundStructure($components, Arr::get($changes, $update, []));
 
                         $constructedValue = TypeWriter::write($compoundStruct);
 

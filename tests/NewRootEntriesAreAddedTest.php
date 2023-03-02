@@ -1,6 +1,6 @@
 <?php
 
-require_once 'ProteusTestCase.php';
+namespace Stillat\Proteus\Tests;
 
 class NewRootEntriesAreAddedTest extends ProteusTestCase
 {
@@ -18,13 +18,15 @@ class NewRootEntriesAreAddedTest extends ProteusTestCase
         );
     }
 
-    public function testThatNewKeysUsingDotNotationAreProperlyNested()
+    public function testThatNewSimpleKeysProperlyNested()
     {
         $this->assertChangeEquals(
             __DIR__.'/configs/app.php',
             __DIR__.'/expected/simpledotnotationkeyset.php',
             [
-                'new.key' => 'value',
+                'new' => [
+                    'key' => 'value',
+                ],
             ]
         );
     }
@@ -35,9 +37,15 @@ class NewRootEntriesAreAddedTest extends ProteusTestCase
             __DIR__.'/configs/app.php',
             __DIR__.'/expected/deeplynestedtest.php',
             [
-                'new.deeply.nested.key' => [
-                    'hello',
-                    'world',
+                'new' => [
+                    'deeply' => [
+                        'nested' => [
+                            'key' => [
+                                'hello',
+                                'world',
+                            ],
+                        ],
+                    ],
                 ],
             ]
         );
@@ -71,14 +79,16 @@ class NewRootEntriesAreAddedTest extends ProteusTestCase
             __DIR__.'/configs/issues/004.php',
             __DIR__.'/expected/issues/004.php',
             [
-                'forms.another_form' => [
-                    'name_field'       => 'name3',
-                    'first_name_field' => 'first_name',
-                    'last_name_field'  => 'last_name',
-                    'email_field'      => 'email3',
-                    'content_field'    => 'message',
-                    'handle'           => 'contact_you',
-                    'consent_field'    => null,
+                'forms' => [
+                    'another_form' => [
+                        'name_field' => 'name3',
+                        'first_name_field' => 'first_name',
+                        'last_name_field' => 'last_name',
+                        'email_field' => 'email3',
+                        'content_field' => 'message',
+                        'handle' => 'contact_you',
+                        'consent_field' => null,
+                    ],
                 ],
             ]
         );
@@ -92,20 +102,20 @@ class NewRootEntriesAreAddedTest extends ProteusTestCase
             [
                 'forms' => [
                     'contact_us' => [
-                        'name_field'       => 'name',
+                        'name_field' => 'name',
                         'first_name_field' => 'first_name',
-                        'last_name_field'  => 'last_name',
-                        'email_field'      => 'email',
-                        'content_field'    => 'message',
-                        'handle'           => 'contact_us',
+                        'last_name_field' => 'last_name',
+                        'email_field' => 'email',
+                        'content_field' => 'message',
+                        'handle' => 'contact_us',
                     ],
                     'contact_you' => [
-                        'name_field'       => 'name3',
+                        'name_field' => 'name3',
                         'first_name_field' => 'first_name',
-                        'last_name_field'  => 'last_name',
-                        'email_field'      => 'email3',
-                        'content_field'    => 'message',
-                        'handle'           => 'contact_you',
+                        'last_name_field' => 'last_name',
+                        'email_field' => 'email3',
+                        'content_field' => 'message',
+                        'handle' => 'contact_you',
                     ],
                 ],
             ]
@@ -120,20 +130,20 @@ class NewRootEntriesAreAddedTest extends ProteusTestCase
             [
                 'forms' => [
                     'contact_us' => [
-                        'name_field'       => 'name',
+                        'name_field' => 'name',
                         'first_name_field' => 'first_name',
-                        'last_name_field'  => 'last_name',
-                        'email_field'      => 'email',
-                        'content_field'    => 'message',
-                        'handle'           => 'contact_us',
+                        'last_name_field' => 'last_name',
+                        'email_field' => 'email',
+                        'content_field' => 'message',
+                        'handle' => 'contact_us',
                     ],
                     'contact_you' => [
-                        'name_field'       => 'name3',
+                        'name_field' => 'name3',
                         'first_name_field' => 'first_name',
-                        'last_name_field'  => 'last_name',
-                        'email_field'      => 'email3',
-                        'content_field'    => 'message',
-                        'handle'           => 'contact_you',
+                        'last_name_field' => 'last_name',
+                        'email_field' => 'email3',
+                        'content_field' => 'message',
+                        'handle' => 'contact_you',
                     ],
                 ],
             ]
@@ -147,12 +157,12 @@ class NewRootEntriesAreAddedTest extends ProteusTestCase
             __DIR__.'/expected/issues/001/addnew.php',
             [
                 'forms.another_form' => [
-                    'name_field'       => 'name4',
+                    'name_field' => 'name4',
                     'first_name_field' => 'first_name',
-                    'last_name_field'  => 'last_name',
-                    'email_field'      => 'email3',
-                    'content_field'    => 'message',
-                    'handle'           => 'contact_you',
+                    'last_name_field' => 'last_name',
+                    'email_field' => 'email3',
+                    'content_field' => 'message',
+                    'handle' => 'contact_you',
                 ],
             ]
         );
@@ -165,13 +175,13 @@ class NewRootEntriesAreAddedTest extends ProteusTestCase
             __DIR__.'/expected/issues/005.php',
             [
                 'forms' => [[
-                    'name_field'       => 'name3',
+                    'name_field' => 'name3',
                     'first_name_field' => 'first_name',
-                    'last_name_field'  => 'last_name',
-                    'email_field'      => 'email3',
-                    'content_field'    => 'message',
-                    'handle'           => 'contact_you',
-                    'consent_field'    => null,
+                    'last_name_field' => 'last_name',
+                    'email_field' => 'email3',
+                    'content_field' => 'message',
+                    'handle' => 'contact_you',
+                    'consent_field' => null,
                 ]],
             ]
         );
@@ -184,13 +194,13 @@ class NewRootEntriesAreAddedTest extends ProteusTestCase
             __DIR__.'/expected/issues/005-2.php',
             [
                 'forms' => [[
-                    'name_field'       => 'name3',
+                    'name_field' => 'name3',
                     'first_name_field' => 'first_name',
-                    'last_name_field'  => 'last_name',
-                    'email_field'      => 'email3',
-                    'content_field'    => 'message',
-                    'handle'           => 'contact_you',
-                    'consent_field'    => null,
+                    'last_name_field' => 'last_name',
+                    'email_field' => 'email3',
+                    'content_field' => 'message',
+                    'handle' => 'contact_you',
+                    'consent_field' => null,
                 ]],
             ]
         );

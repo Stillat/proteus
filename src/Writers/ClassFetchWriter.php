@@ -17,8 +17,7 @@ use Stillat\Proteus\Contracts\ValueWriterContract;
 class ClassFetchWriter implements ValueWriterContract
 {
     /**
-     * @param string $value The input value.
-     *
+     * @param  string  $value The input value.
      * @return ClassConstFetch
      */
     public function write($value)
