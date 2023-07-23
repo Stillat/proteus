@@ -341,4 +341,191 @@ EOT;
 
         $this->assertSame($expected, $updater->getDocument());
     }
+
+    public function testRootNonAssociativeArraysAreNotFiltered()
+    {
+        $updater = new ConfigUpdater();
+
+        $updater->open(__DIR__.'/configs/issues/023.php');
+
+        $updater->update([
+            'forms' => [
+                [
+                    'id' => 'OLYoYHBb',
+                    'check_consent' => true,
+                    'consent_field' => 'consent',
+                    'disable_opt_in' => false,
+                    'interests_field' => 'interests',
+                    'marking_permissions_field' => 'gdpr',
+                    'marketing_permissions_field_ids' => [
+                        [
+                            'id' => 'asfd',
+                            'field_name' => 'asdfasdf',
+                        ],
+                    ],
+                    'merge_fields' => [
+                        [
+                            'id' => 'DRoHyZ6k',
+                        ],
+                    ],
+                    'primary_email_field' => 'email',
+                ],
+            ],
+            'add_new_users' => true,
+            'users' => [
+                'id' => 'xLw04QS5',
+                'check_consent' => true,
+                'consent_field' => 'consent-update-test',
+                'disable_opt_in' => false,
+                'interests_field' => 'interests',
+                'marketing_permissions_field' => 'gdpr',
+                'primary_email_field' => 'email',
+            ],
+            'api_key' => null,
+        ], false);
+
+        $expected = <<<'EXP'
+<?php
+
+return [
+
+    'api_key' => env('MAILCHIMP_API_KEY'),
+
+    /*
+     * Set to `true` to add new user registrations to a Mailchimp audience.
+     */
+    'add_new_users' => true,
+
+    'users' => [
+        /*
+        * A Mailchimp Audience ID.
+        *
+        * @see https://mailchimp.com/help/find-audience-id/.
+        */
+        'audience_id' => null,
+
+        /*
+        * Set to `true` to require consent before subscribing someone
+        * Default: `true`
+        */
+        'check_consent' => true,
+
+        /*
+        * Field name used to check for consent.
+        * Default: 'consent'
+        */
+        'consent_field' => 'consent-update-test',
+
+        /*
+        * Disable Double Opt In. Not typically a best practice.
+        * Default: `false`
+        *
+        * @see https://mailchimp.com/help/single-opt-in-vs-double-opt-in/
+        */
+
+        'disable_opt_in' => false,
+
+        /*
+        * Field name used to collect ids of group "interests".
+        * Default: 'interests'
+        *
+        * @see https://mailchimp.com/help/how-to-use-groups-to-add-or-update-subscriber-preferences/
+        */
+        'interests_field' => 'interests',
+
+        /*
+        * Field name used to indicate marketing permissions.
+        * Default: `gdpr`
+        */
+        'marketing_permissions_field' => 'gdpr',
+
+        /*
+        * Fields used to store marketing permission ids.
+        * Run `php please mailchimp:permissions <form-handle>` to get the ids.
+        */
+        'marketing_permissions_field_ids' => [
+            // [
+            //     'field_name' => '',
+            //     'id' => '',
+            // ],
+        ],
+
+        /*
+        * Store information about your contacts with marge fields.
+        *
+        * @see https://mailchimp.com/help/manage-audience-signup-form-fields/
+        */
+        'merge_fields' => [
+            // [
+            //     /*
+            //     * The Mailchimp tag
+            //     */
+            //     'tag'=> null,
+
+            //     /*
+            //     * Blueprint field name to use for the merge field
+            //     */
+            //     'field_name' => null,
+            // ],
+        ],
+
+        /*
+        * Field that contains the primary email address
+        * Default: 'email'
+        */
+        'primary_email_field' => 'email',
+
+        /*
+        * Mailchimp Tag to assign to the contact.
+        * NOTE: `tag_field` takes precedence over `tag`
+        *
+        * @see https://mailchimp.com/help/getting-started-tags/
+        */
+        'tag' => null,
+
+        /*
+        * Field to indicate which Mailchimp Tag to use
+        *
+        * @see https://mailchimp.com/help/getting-started-tags/
+        */
+        'tag_field' => null,
+        'id' => 'xLw04QS5',
+    ],
+
+    /*
+     * The form submissions to add to your Mailchimp Audiences
+     */
+    'forms' => [
+        [
+            'id' => 'OLYoYHBb',
+            'check_consent' => true,
+            'consent_field' => 'consent',
+            'disable_opt_in' => false,
+            'interests_field' => 'interests',
+            'marking_permissions_field' => 'gdpr',
+            'marketing_permissions_field_ids' => [
+                [
+                    'id' => 'asfd',
+                    'field_name' => 'asdfasdf',
+                ],
+            ],
+            'merge_fields' => [
+                [
+                    'id' => 'DRoHyZ6k',
+                ],
+            ],
+            'primary_email_field' => 'email',
+        ],
+    ],
+
+    /*
+     * The listName to use when no listName has been specified in a method.
+     */
+    'defaultListName' => 'subscribers',
+];
+EXP;
+
+        $this->assertSame($expected, $updater->getDocument());
+    }
+
 }
