@@ -61,6 +61,8 @@ class ConfigUpdater
 
     private $allowRootRemoval = false;
 
+    private $existingConfig = [];
+
     public function __construct()
     {
         $this->transformer = new Transformer();
@@ -170,11 +172,11 @@ class ConfigUpdater
             throw new ConfigNotFoundException("Configuration file does not exist: {$filePath}");
         }
 
-        $existingConfigItems = require $filePath;
-        $this->arrayAnalyzer->analyze($existingConfigItems);
+        $this->existingConfig = require $filePath;
+        $this->arrayAnalyzer->analyze($this->existingConfig);
 
         $this->analyzer->open($filePath);
-        $this->analyzer->setValues($existingConfigItems);
+        $this->analyzer->setValues($this->existingConfig);
     }
 
     /**
@@ -230,13 +232,21 @@ class ConfigUpdater
         return $keys;
     }
 
-    private function filterKeys($keys)
+    private function filterKeys($keys, $preserveValues = false)
     {
         $filtered = [];
 
         foreach ($keys as $k) {
             if (Str::contains($k, '.')) {
                 $filtered[] = $k;
+            } else {
+                $existingValue = Arr::get($this->existingConfig, $k);
+
+                if ($preserveValues && is_array($existingValue) && ! Arr::isAssoc($existingValue)) {
+                    $filtered[] = $k;
+                } else if ($preserveValues && !is_array($existingValue)) {
+                    $filtered[] = $k;
+                }
             }
         }
 
@@ -276,7 +286,7 @@ class ConfigUpdater
         $incomingKeys = $this->getStringKeys($changes);
 
         if (count($incomingKeys) > 1) {
-            $incomingKeys = $this->filterKeys($incomingKeys);
+            $incomingKeys = $this->filterKeys($incomingKeys, true);
             $existingKeys = $this->filterKeys($existingKeys);
         }
 
