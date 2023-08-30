@@ -523,9 +523,9 @@ return [
      */
     'defaultListName' => 'subscribers',
 ];
+
 EXP;
 
         $this->assertSame($expected, $updater->getDocument());
     }
-
 }
