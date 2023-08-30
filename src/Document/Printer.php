@@ -30,7 +30,7 @@ class Printer extends Standard
     protected function pExpr_FuncCall(FuncCall $node)
     {
         return $this->pCallLhs($node->name)
-            .'('.$this->pCommaSeparated($node->args).')';
+            .'('.$this->pCommaSeparatedNoNl($node->args).')';
     }
 
     /**
@@ -274,6 +274,11 @@ class Printer extends Standard
         return $this->pImplode($nodes, ',');
     }
 
+    protected function pCommaSeparatedNoNl(array $nodes): string
+    {
+        return $this->pImplodeNoNl($nodes, ', ');
+    }
+
     protected function pExpr_ArrayItem(ArrayItem $node)
     {
         return parent::pExpr_ArrayItem($node);
@@ -309,5 +314,19 @@ class Printer extends Standard
         }
 
         return implode($glue.$this->nl, $pNodes);
+    }
+
+    protected function pImplodeNoNl(array $nodes, string $glue = ''): string
+    {
+        $pNodes = [];
+        foreach ($nodes as $node) {
+            if (null === $node) {
+                $pNodes[] = '';
+            } else {
+                $pNodes[] = $this->p($node);
+            }
+        }
+
+        return implode($glue, $pNodes);
     }
 }

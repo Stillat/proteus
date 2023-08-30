@@ -25,19 +25,19 @@ class FunctionWriter
 
     const FUNC_LARAVEL_STORAGE_PATH = 'storage_path';
 
-    protected function makeSimpleFunctionCall($name, $arg = null)
+    const FUNC_LARAVEL_ENV = 'env';
+
+    protected function makeSimpleFunctionCall(string $name, string|array $args): FuncCall
     {
-        $n = new Name($name);
-        $args = [];
+        return new FuncCall(
+            $this->convertToName($name),
+            $this->convertToArgs($args)
+        );
+    }
 
-        if ($arg !== null && mb_strlen($arg) > 0) {
-            $stringExp = new String_($arg);
-            $arg = new Arg($stringExp);
-
-            $args[] = $arg;
-        }
-
-        return new FuncCall($n, $args);
+    public function env(...$args)
+    {
+        return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_ENV, $args);
     }
 
     public function storagePath($path)
@@ -73,5 +73,18 @@ class FunctionWriter
     public function resourcePath($path)
     {
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_RESOURCE_PATH, $path);
+    }
+
+    private function convertToArgs($args)
+    {
+        return collect($args)
+            ->reject(fn ($arg) => $arg === null || mb_strlen($arg) === 0)
+            ->map(fn (string $arg) => new Arg(new String_($arg)))
+            ->all();
+    }
+
+    private function convertToName(string $name)
+    {
+        return new Name($name);
     }
 }
