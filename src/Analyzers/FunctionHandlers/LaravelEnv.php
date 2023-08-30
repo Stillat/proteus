@@ -26,13 +26,18 @@ class LaravelEnv implements FunctionHandlerContract
     {
         $argCount = count($expr->args);
 
-        if ($argCount === 2) {
-            $lastArgIndex = count($expr->args) - 1;
-            $expr->args[$lastArgIndex]->value = $referenceNode;
-        } elseif ($argCount === 1) {
-            $funcArg = new Arg($referenceNode);
+        if ($referenceNode instanceof FuncCall && $referenceNode->name->toString() === $expr->name->toString()) {
+            // Assign the incoming args to the existing call.
+            $expr->args = $referenceNode->args;
+        } else {
+            if ($argCount === 2) {
+                $lastArgIndex = count($expr->args) - 1;
+                $expr->args[$lastArgIndex]->value = $referenceNode;
+            } elseif ($argCount === 1) {
+                $funcArg = new Arg($referenceNode);
 
-            $expr->args[] = $funcArg;
+                $expr->args[] = $funcArg;
+            }
         }
 
         return $expr;

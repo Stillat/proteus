@@ -244,7 +244,7 @@ class ConfigUpdater
 
                 if ($preserveValues && is_array($existingValue) && ! Arr::isAssoc($existingValue)) {
                     $filtered[] = $k;
-                } else if ($preserveValues && !is_array($existingValue)) {
+                } elseif ($preserveValues && ! is_array($existingValue)) {
                     $filtered[] = $k;
                 }
             }
