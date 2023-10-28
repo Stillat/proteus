@@ -2,6 +2,7 @@
 
 namespace Stillat\Proteus\Analyzers;
 
+use Illuminate\Support\Str;
 use PhpParser\Comment;
 use PhpParser\Lexer\Emulative;
 use PhpParser\Node;
@@ -215,6 +216,15 @@ class ConfigAnalyzer
         $itemKey = $stringWriter->write($key);
 
         return new ArrayItem($node, $itemKey);
+    }
+
+    public function getNode($key)
+    {
+        if (! array_key_exists($key, $this->nodeMapping)) {
+            return null;
+        }
+
+        return $this->nodeMapping[$key];
     }
 
     /**
@@ -441,6 +451,24 @@ class ConfigAnalyzer
     public function containsFunctionCall($key)
     {
         if (! $this->hasNode($key) || ! $this->nodeMapping[$key] instanceof ArrayItem) {
+            if (Str::endsWith($key, '.')) {
+                $key = substr($key, 0, -1);
+
+                if (array_key_exists($key, $this->nodeMapping)) {
+                    $node = $this->nodeMapping[$key];
+
+                    if (! $node instanceof ArrayItem || ! $node->value instanceof Array_) {
+                        return false;
+                    }
+
+                    foreach ($node->value->items as $item) {
+                        if ($item->key instanceof FuncCall || $item->value instanceof FuncCall) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
             return false;
         }
 
