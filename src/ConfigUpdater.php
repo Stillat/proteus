@@ -5,6 +5,10 @@ namespace Stillat\Proteus;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Scalar\String_;
 use Stillat\Proteus\Analyzers\ArrayAnalyzer;
 use Stillat\Proteus\Analyzers\ConfigAnalyzer;
 use Stillat\Proteus\Document\Transformer;
@@ -260,6 +264,21 @@ class ConfigUpdater
         return $this;
     }
 
+    protected function findKeyInArray(Array_ $item, $key)
+    {
+        foreach ($item->items as $tItem) {
+            if (! $tItem->key instanceof String_) {
+                continue;
+            }
+
+            if ($tItem->key->value == $key) {
+                return $tItem;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Attempts to apply the requested changes to the existing configuration values.
      *
@@ -307,13 +326,23 @@ class ConfigUpdater
                 if ($this->ignoreFunctions && $this->analyzer->containsFunctionCall($keyToPreserve)) {
                     continue;
                 }
+
                 unset($changes[$keyToPreserve]);
                 Arr::set($changes, $keyToPreserve, Arr::get($currentConfig, $keyToPreserve));
             }
         }
 
-        $changesToMake = $this->arrayAnalyzer->getChanges($changes);
+        $potentiallyHiddenFunctionCalls = [];
 
+        if ($this->ignoreFunctions) {
+            foreach ($incomingKeys as $incomingKey) {
+                if ($this->analyzer->containsFunctionCall($incomingKey)) {
+                    $potentiallyHiddenFunctionCalls[] = $incomingKey;
+                }
+            }
+        }
+
+        $changesToMake = $this->arrayAnalyzer->getChanges($changes);
         if ($hasCollision) {
             $changesToMake->updates = $incomingKeys;
         }
@@ -390,6 +419,16 @@ class ConfigUpdater
             }
         }
 
+        $functionRoots = [];
+
+        foreach ($potentiallyHiddenFunctionCalls as $hiddenFunctionCall) {
+            if (! Str::contains($hiddenFunctionCall, '.')) {
+                continue;
+            }
+
+            $functionRoots[] = Str::before($hiddenFunctionCall, '.');
+        }
+
         foreach ($changesToMake->insertions as $insert) {
             $valuesToInsert = TypeWriter::write(Arr::get($changes, $insert, null));
 
@@ -401,6 +440,44 @@ class ConfigUpdater
                 }
 
                 $this->analyzer->replaceNodeValue($insert, $valuesToInsert, $completeReplace);*/
+
+                if ($this->ignoreFunctions && $this->analyzer->isNodeArray($insert)) {
+                    $originalNode = $this->analyzer->getNode($insert);
+
+                    if ($originalNode instanceof ArrayItem && $originalNode->value instanceof Array_) {
+                        // Locate the array.
+                        $array = $valuesToInsert;
+
+                        if ($array instanceof ArrayItem && $array->value instanceof Array_) {
+                            $array = $array->value;
+                        }
+
+                        foreach ($array->items as $tArrayItem) {
+                            if (! $tArrayItem->key instanceof String_) {
+                                continue;
+                            }
+
+                            $checkKey = $insert.'.'.$tArrayItem->key->value;
+
+                            if (! in_array($checkKey, $potentiallyHiddenFunctionCalls)) {
+                                continue;
+                            }
+
+                            $originalArrayItem = $this->findKeyInArray($originalNode->value, $tArrayItem->key->value);
+
+                            if ($originalArrayItem == null) {
+                                continue;
+                            }
+
+                            if (! $originalArrayItem->value instanceof FuncCall) {
+                                continue;
+                            }
+
+                            $tArrayItem->value = $originalArrayItem->value;
+                        }
+                    }
+                }
+
                 $this->analyzer->replaceNodeValue($insert, $valuesToInsert, true);
             } else {
                 if ($this->arrayAnalyzer->isCompound($insert)) {
@@ -436,6 +513,43 @@ class ConfigUpdater
             $constructedValue = TypeWriter::write(Arr::get($changes, $update, []));
 
             if ($this->analyzer->hasNode($update)) {
+                if ($this->ignoreFunctions && $this->analyzer->isNodeArray($update)) {
+                    $originalNode = $this->analyzer->getNode($update);
+
+                    if ($originalNode instanceof ArrayItem && $originalNode->value instanceof Array_) {
+                        // Locate the array.
+                        $array = $constructedValue;
+
+                        if ($array instanceof ArrayItem && $array->value instanceof Array_) {
+                            $array = $array->value;
+                        }
+
+                        foreach ($array->items as $tArrayItem) {
+                            if (! $tArrayItem->key instanceof String_) {
+                                continue;
+                            }
+
+                            $checkKey = $update.'.'.$tArrayItem->key->value;
+
+                            if (! in_array($checkKey, $potentiallyHiddenFunctionCalls)) {
+                                continue;
+                            }
+
+                            $originalArrayItem = $this->findKeyInArray($originalNode->value, $tArrayItem->key->value);
+
+                            if ($originalArrayItem == null) {
+                                continue;
+                            }
+
+                            if (! $originalArrayItem->value instanceof FuncCall) {
+                                continue;
+                            }
+
+                            $tArrayItem->value = $originalArrayItem->value;
+                        }
+                    }
+                }
+
                 if ($this->analyzer->isNodeArray($update) && is_array(Arr::get($changes, $update, null)) === false) {
                     $this->analyzer->appendArrayItem($update, $constructedValue);
                 } else {

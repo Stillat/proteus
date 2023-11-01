@@ -39,4 +39,26 @@ class IgnoreFunctionsWriteManyPreserveTest extends ProteusTestCase
 
         $this->assertEquals($expected, $doc);
     }
+
+    public function testFunctionsAreRestoredWhenUsingSetAndPartialKeys()
+    {
+        $updater = new ConfigUpdater();
+        $updater->open(__DIR__.'/configs/filesystems.php');
+
+        $expected = Transformer::normalizeLineEndings(file_get_contents(__DIR__.'/expected/filesystems.php'));
+        $updater->setIgnoreFunctions(true);
+
+        $updater->update([
+            'disks.just_some_random_thing' => [
+                'driver' => 'magic',
+                'root' => 'i shouldnt be saved',
+                'url' => 'urls can be tricky sometimes',
+                'visibility' => 'is it there if we dont look at it?',
+            ],
+        ]);
+
+        $result = Transformer::normalizeLineEndings($updater->getDocument());
+
+        $this->assertSame($expected, $result);
+    }
 }
