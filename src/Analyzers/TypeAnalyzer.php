@@ -2,6 +2,7 @@
 
 namespace Stillat\Proteus\Analyzers;
 
+use Closure;
 use Exception;
 
 /**
@@ -60,6 +61,8 @@ class TypeAnalyzer
             return Types::TYPE_ARRAY;
         } elseif (is_bool($value)) {
             return Types::TYPE_BOOL;
+        } elseif ($value instanceof Closure) {
+            return Types::TYPE_CLOSURE;
         }
 
         throw new Exception('Support type: '.gettype($value));
