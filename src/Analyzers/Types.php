@@ -22,4 +22,6 @@ class Types
     const TYPE_SPECIAL_NULL = 4;
 
     const TYPE_BOOL = 5;
+
+    const TYPE_CLOSURE = 6;
 }
