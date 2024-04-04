@@ -15,7 +15,8 @@ jobs:
         testbench: [8.*, 9.*]
         os: [ubuntu-latest]
 
-    name: ${{ matrix.php }} - ${{ matrix.laravel }}
+
+    name: ${{ matrix.php }} - ${{ matrix.laravel }} - ${{ matrix.testbench }}
 
     steps:
       - name: Checkout code
