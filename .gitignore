@@ -9,3 +9,4 @@ Thumbs.db
 .phpunit.result.cache
 config.php
 index.php
+.phpunit.cache
