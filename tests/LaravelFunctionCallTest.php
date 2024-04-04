@@ -45,4 +45,36 @@ class LaravelFunctionCallTest extends ProteusTestCase
             ]
         );
     }
+
+    public function testWritingNewClosuresOrArrowFunctions()
+    {
+        $f = new FunctionWriter();
+
+        $this->assertChangeEquals(
+            __DIR__.'/configs/existingcall.php',
+            __DIR__.'/expected/closurecalls.php',
+            [
+                'new2' => $f->closure(function ($content) {
+                    return mb_strtolower($content);
+                }),
+                'new3' => $f->closure(fn ($content) => mb_strtolower($content)),
+            ]
+        );
+    }
+
+    public function testUpdatingAnExistingClosure()
+    {
+        $f = new FunctionWriter();
+
+        $this->assertChangeEquals(
+            __DIR__.'/configs/existing_closure_call.php',
+            __DIR__.'/expected/update_closures.php',
+            [
+                'new2' => $f->closure(function ($content) {
+                    return mb_strtolower($content);
+                }),
+                'new3' => $f->closure(fn ($content2) => mb_strtolower($content2)),
+            ]
+        );
+    }
 }

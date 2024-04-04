@@ -2,6 +2,7 @@
 
 namespace Stillat\Proteus\Writers;
 
+use Closure;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
@@ -73,6 +74,11 @@ class FunctionWriter
     public function resourcePath($path)
     {
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_RESOURCE_PATH, $path);
+    }
+
+    public function closure(Closure $closure)
+    {
+        return $closure;
     }
 
     private function convertToArgs($args)
