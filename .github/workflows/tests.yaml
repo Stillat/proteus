@@ -12,11 +12,9 @@ jobs:
       matrix:
         php: [8.2, 8.3]
         laravel: [10.*, 11.*]
-        testbench: [8.*, 9.*]
         os: [ubuntu-latest]
 
-
-    name: ${{ matrix.php }} - ${{ matrix.laravel }} - ${{ matrix.testbench }}
+    name: ${{ matrix.php }} - ${{ matrix.laravel }}
 
     steps:
       - name: Checkout code
@@ -30,7 +28,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer install --no-interaction
 
       - name: Run PHPUnit
