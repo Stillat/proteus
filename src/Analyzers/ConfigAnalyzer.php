@@ -4,7 +4,6 @@ namespace Stillat\Proteus\Analyzers;
 
 use Illuminate\Support\Str;
 use PhpParser\Comment;
-use PhpParser\Lexer\Emulative;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -13,6 +12,7 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\CloningVisitor;
 use PhpParser\Parser\Php7;
+use PhpParser\ParserFactory;
 use Stillat\Proteus\Analyzers\FunctionHandlers\LaravelEnv;
 use Stillat\Proteus\Analyzers\FunctionHandlers\SimpleFunctionHandler;
 use Stillat\Proteus\Document\Printer;
@@ -50,13 +50,6 @@ class ConfigAnalyzer
      * @var Php7
      */
     private $parser = null;
-
-    /**
-     * The PHP lexer instance.
-     *
-     * @var Emulative
-     */
-    private $lexer = null;
 
     /**
      * The original statements, to help preserve formatting.
@@ -135,15 +128,7 @@ class ConfigAnalyzer
         $this->functionHandler->addHandler('public_path', new SimpleFunctionHandler());
         $this->functionHandler->addHandler('storage_path', new SimpleFunctionHandler());
 
-        $this->lexer = new Emulative([
-            'usedAttributes' => [
-                'comments',
-                'startLine', 'endLine',
-                'startTokenPos', 'endTokenPos',
-            ],
-        ]);
-
-        $this->parser = new Php7($this->lexer);
+        $this->parser = (new ParserFactory())->createForNewestSupportedVersion();
     }
 
     /**
@@ -651,7 +636,7 @@ class ConfigAnalyzer
         $traverser = new NodeTraverser();
         $traverser->addVisitor(new CloningVisitor());
         $this->oldStmts = $this->parser->parse($this->contents);
-        $this->oldTokens = $this->lexer->getTokens();
+        $this->oldTokens = $this->parser->getTokens();
         $traverser->addVisitor(new CreateParentVisitor());
         $parentStatements = $traverser->traverse($this->oldStmts);
         $refTraverser = new NodeTraverser();

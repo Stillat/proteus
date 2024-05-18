@@ -22,12 +22,12 @@ use PhpParser\PrettyPrinter\Standard;
  */
 class Printer extends Standard
 {
-    protected function pExpr_Array(Array_ $node)
+    protected function pExpr_Array(Array_ $node): string
     {
         return '['.$this->pMaybeMultiline($node->items, true).']';
     }
 
-    protected function pExpr_FuncCall(FuncCall $node)
+    protected function pExpr_FuncCall(FuncCall $node): string
     {
         return $this->pCallLhs($node->name)
             .'('.$this->pCommaSeparatedNoNl($node->args).')';
@@ -44,17 +44,19 @@ class Printer extends Standard
      *
      * @throws Exception
      */
-    protected function p(Node $node, $parentFormatPreserved = false): string
+    protected function p(
+        Node $node, int $precedence = self::MAX_PRECEDENCE, int $lhsPrecedence = self::MAX_PRECEDENCE,
+        bool $parentFormatPreserved = false): string
     {
         // No orig tokens means this is a normal pretty print without preservation of formatting
-        if (! $this->origTokens) {
-            return $this->{'p'.$node->getType()}($node);
+        if (!$this->origTokens) {
+            return $this->{'p' . $node->getType()}($node, $precedence, $lhsPrecedence);
         }
 
-        /** @var Node $origNode */
+        /** @var Node|null $origNode */
         $origNode = $node->getAttribute('origNode');
         if (null === $origNode) {
-            return $this->pFallback($node);
+            return $this->pFallback($node, $precedence, $lhsPrecedence);
         }
 
         $class = \get_class($node);
@@ -65,17 +67,19 @@ class Printer extends Standard
         \assert($startPos >= 0 && $endPos >= 0);
 
         $fallbackNode = $node;
-        if ($node instanceof New_ && $node->class instanceof Class_) {
+        if ($node instanceof Expr\New_ && $node->class instanceof Stmt\Class_) {
             // Normalize node structure of anonymous classes
+            assert($origNode instanceof Expr\New_);
             $node = PrintableNewAnonClassNode::fromNewNode($node);
             $origNode = PrintableNewAnonClassNode::fromNewNode($origNode);
+            $class = PrintableNewAnonClassNode::class;
         }
 
         // InlineHTML node does not contain closing and opening PHP tags. If the parent formatting
         // is not preserved, then we need to use the fallback code to make sure the tags are
         // printed.
-        if ($node instanceof InlineHTML && ! $parentFormatPreserved) {
-            return $this->pFallback($fallbackNode);
+        if ($node instanceof Stmt\InlineHTML && !$parentFormatPreserved) {
+            return $this->pFallback($fallbackNode, $precedence, $lhsPrecedence);
         }
 
         $indentAdjustment = $this->indentLevel - $this->origTokens->getIndentationBefore($startPos);
@@ -84,14 +88,13 @@ class Printer extends Standard
         $fixupInfo = $this->fixupMap[$class] ?? null;
 
         $result = '';
-
         $pos = $startPos;
         foreach ($node->getSubNodeNames() as $subNodeName) {
             $subNode = $node->$subNodeName;
             $origSubNode = $origNode->$subNodeName;
 
-            if ((! $subNode instanceof Node && $subNode !== null)
-                || (! $origSubNode instanceof Node && $origSubNode !== null)
+            if ((!$subNode instanceof Node && $subNode !== null)
+                || (!$origSubNode instanceof Node && $origSubNode !== null)
             ) {
                 if ($subNode === $origSubNode) {
                     // Unchanged, can reuse old code
@@ -101,41 +104,27 @@ class Printer extends Standard
                 if (is_array($subNode) && is_array($origSubNode)) {
                     // Array subnode changed, we might be able to reconstruct it
                     $listResult = $this->pArray(
-                        $subNode,
-                        $origSubNode,
-                        $pos,
-                        $indentAdjustment,
-                        $type,
-                        $subNodeName,
+                        $subNode, $origSubNode, $pos, $indentAdjustment, $class, $subNodeName,
                         $fixupInfo[$subNodeName] ?? null
                     );
                     if (null === $listResult) {
-                        return $this->pFallback($fallbackNode);
+                        return $this->pFallback($fallbackNode, $precedence, $lhsPrecedence);
                     }
 
                     $result .= $listResult;
-
                     continue;
                 }
 
-                if (is_int($subNode) && is_int($origSubNode)) {
-                    // Check if this is a modifier change
-                    $key = $type.'->'.$subNodeName;
-                    if (! isset($this->modifierChangeMap[$key])) {
-                        return $this->pFallback($fallbackNode);
-                    }
-
-                    $findToken = $this->modifierChangeMap[$key];
-                    $result .= $this->pModifiers($subNode);
-                    $pos = $this->origTokens->findRight($pos, $findToken);
-
-                    continue;
+                // Check if this is a modifier change
+                $key = $class . '->' . $subNodeName;
+                if (!isset($this->modifierChangeMap[$key])) {
+                    return $this->pFallback($fallbackNode, $precedence, $lhsPrecedence);
                 }
 
-                // If a non-node, non-array subnode changed, we don't be able to do a partial
-                // reconstructions, as we don't have enough offset information. Pretty print the
-                // whole node instead.
-                return $this->pFallback($fallbackNode);
+                [$printFn, $findToken] = $this->modifierChangeMap[$key];
+                $result .= $this->$printFn($subNode);
+                $pos = $this->origTokens->findRight($pos, $findToken);
+                continue;
             }
 
             $extraLeft = '';
@@ -151,15 +140,15 @@ class Printer extends Standard
                 }
 
                 // A node has been inserted, check if we have insertion information for it
-                $key = $type.'->'.$subNodeName;
-                if (! isset($this->insertionMap[$key])) {
-                    return $this->pFallback($fallbackNode);
+                $key = $type . '->' . $subNodeName;
+                if (!isset($this->insertionMap[$key])) {
+                    return $this->pFallback($fallbackNode, $precedence, $lhsPrecedence);
                 }
 
-                [$findToken, $beforeToken, $extraLeft, $extraRight] = $this->insertionMap[$key];
+                list($findToken, $beforeToken, $extraLeft, $extraRight) = $this->insertionMap[$key];
                 if (null !== $findToken) {
                     $subStartPos = $this->origTokens->findRight($pos, $findToken)
-                        + (int) ! $beforeToken;
+                        + (int) !$beforeToken;
                 } else {
                     $subStartPos = $pos;
                 }
@@ -173,9 +162,9 @@ class Printer extends Standard
 
             if (null === $subNode) {
                 // A node has been removed, check if we have removal information for it
-                $key = $type.'->'.$subNodeName;
-                if (! isset($this->removalMap[$key])) {
-                    return $this->pFallback($fallbackNode);
+                $key = $type . '->' . $subNodeName;
+                if (!isset($this->removalMap[$key])) {
+                    return $this->pFallback($fallbackNode, $precedence, $lhsPrecedence);
                 }
 
                 // Adjust positions to account for additional tokens that must be skipped
@@ -205,7 +194,7 @@ class Printer extends Standard
                     $fixup = $fixupInfo[$subNodeName];
                     $res = $this->pFixup($fixup, $subNode, $class, $subStartPos, $subEndPos);
                 } else {
-                    $res = $this->p($subNode, true);
+                    $res = $this->p($subNode, self::MAX_PRECEDENCE, self::MAX_PRECEDENCE, true);
                 }
 
                 $this->safeAppend($result, $res);
@@ -218,7 +207,6 @@ class Printer extends Standard
         }
 
         $result .= $this->origTokens->getTokenCode($pos, $endPos + 1, $indentAdjustment);
-
         return $result;
     }
 
@@ -258,7 +246,7 @@ class Printer extends Standard
         return $result;
     }
 
-    protected function pMaybeMultiline(array $nodes, bool $trailingComma = false)
+    protected function pMaybeMultiline(array $nodes, bool $trailingComma = false): string
     {
         return $this->pCommaSeparatedMultiline($nodes, $trailingComma).$this->nl;
     }
@@ -284,7 +272,7 @@ class Printer extends Standard
         return parent::pExpr_ArrayItem($node);
     }
 
-    protected function hasNodeWithComments(array $nodes)
+    protected function hasNodeWithComments(array $nodes): bool
     {
         foreach ($nodes as $node) {
             if ($node && $node->getComments()) {
