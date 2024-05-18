@@ -60,7 +60,7 @@ class FunctionHandler
     private function getFunctionName(Expr $expr)
     {
         if ($expr instanceof FuncCall) {
-            return $expr->name->parts[0];
+            return $expr->name->getParts()[0];
         }
 
         return null;
