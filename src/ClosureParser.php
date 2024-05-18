@@ -8,21 +8,15 @@ use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Parser\Php7;
+use PhpParser\ParserFactory;
 
 class ClosureParser
 {
     public function parse($code)
     {
         $code = '<?php return '.$code.';';
-        $lexer = new Emulative([
-            'usedAttributes' => [
-                'comments',
-                'startLine', 'endLine',
-                'startTokenPos', 'endTokenPos',
-            ],
-        ]);
 
-        $parser = new Php7($lexer);
+        $parser = (new ParserFactory())->createForNewestSupportedVersion();
 
         $stmts = $parser->parse($code);
 
