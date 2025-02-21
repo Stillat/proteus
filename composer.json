@@ -34,5 +34,6 @@
         "Stillat\\Proteus\\WriterServiceProvider"
       ]
     }
-  }
+  },
+  "minimum-stability": "dev"
 }
