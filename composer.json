@@ -21,11 +21,11 @@
   },
   "require": {
     "nikic/php-parser": "^5",
-    "laravel/framework": "^10.0 || ^11.0"
+    "laravel/framework": "^10.0 || ^11.0 || ^12.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^10 || ^11.0",
-    "orchestra/testbench": "^8.0 || ^9.0",
+    "orchestra/testbench": "^8.0 || ^9.0 || ^10.0",
     "laravel/pint": "^1.6"
   },
   "extra": {
@@ -34,5 +34,6 @@
         "Stillat\\Proteus\\WriterServiceProvider"
       ]
     }
-  }
+  },
+  "minimum-stability": "dev"
 }
