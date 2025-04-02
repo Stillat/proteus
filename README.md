@@ -162,7 +162,7 @@ use Stillat\Proteus\Support\Facades\ConfigWriter;
 $document = ConfigWriter::edit('app')
     ->set([
         'locale' => 'fr',
-        'timezone' => 'Europe/Paris'  
+        'timezone' => 'Europe/Paris'
     ])->preview();
 ```
 
@@ -176,7 +176,7 @@ use Stillat\Proteus\Support\Facades\ConfigWriter;
 ConfigWriter::edit('app')
     ->set([
         'locale' => 'fr',
-        'timezone' => 'Europe/Paris'  
+        'timezone' => 'Europe/Paris'
     ])->save();
 ```
 
@@ -237,7 +237,7 @@ use Stillat\Proteus\Support\Facades\ConfigWriter;
 ConfigWriter::edit('app')
     ->set([
         'locale' => 'fr',
-        'timezone' => 'Europe/Paris'  
+        'timezone' => 'Europe/Paris'
     ])->merge('providers', [
         SomeProvider::class,
         SomeOtherProvider::class
@@ -295,6 +295,19 @@ ConfigWriter::write('custom.path', ConfigWriter::f()->publicPath('relative'));
 ConfigWriter::write('custom.path', ConfigWriter::f()->resourcePath('relative'));
 ```
 
+You may also call other **globally registered** functions:
+
+```php
+<?php
+use Stillat\Proteus\Support\Facades\ConfigWriter;
+
+function my_custom_function($paramOne, $paramTwo) {
+    ...
+}
+
+ConfigWriter::write('custom.path', ConfigWriter::f()->makeSimpleFunctionCall('my_custom_function', [$one, $two]));
+```
+
 ## Advanced Usage
 
 Given the following input configuration file:
@@ -323,7 +336,7 @@ $updater->update([
                     'hello',
                     'world'
                 ]
-            ]        
+            ]
         ]
     ]
 ]);
