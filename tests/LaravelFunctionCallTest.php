@@ -46,6 +46,22 @@ class LaravelFunctionCallTest extends ProteusTestCase
         );
     }
 
+    public function testCustomCallsCanBeWritten()
+    {
+        $f = new FunctionWriter();
+
+        $this->assertChangeEquals(
+            __DIR__.'/configs/empty.php',
+            __DIR__.'/expected/newenv.php',
+            [
+                'thing' => $f->makeSimpleFunctionCall('env', ['APP_NAME', 'Laravel']),
+                'thing2' => $f->makeSimpleFunctionCall('env', 'Something'),
+            ]
+        );
+    }
+
+
+
     public function testWritingNewClosuresOrArrowFunctions()
     {
         $f = new FunctionWriter();

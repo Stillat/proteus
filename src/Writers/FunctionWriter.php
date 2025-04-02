@@ -28,7 +28,7 @@ class FunctionWriter
 
     const FUNC_LARAVEL_ENV = 'env';
 
-    protected function makeSimpleFunctionCall(string $name, string|array $args): FuncCall
+    public function makeSimpleFunctionCall(string $name, string|array $args): FuncCall
     {
         return new FuncCall(
             $this->convertToName($name),
