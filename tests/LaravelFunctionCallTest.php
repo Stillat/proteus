@@ -60,8 +60,6 @@ class LaravelFunctionCallTest extends ProteusTestCase
         );
     }
 
-
-
     public function testWritingNewClosuresOrArrowFunctions()
     {
         $f = new FunctionWriter();
