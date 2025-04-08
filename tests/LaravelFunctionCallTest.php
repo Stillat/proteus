@@ -60,6 +60,21 @@ class LaravelFunctionCallTest extends ProteusTestCase
         );
     }
 
+    public function testTypesAreMaintained()
+    {
+        $f = new FunctionWriter;
+
+        $this->assertChangeEquals(
+            __DIR__.'/configs/empty.php',
+            __DIR__.'/expected/typesenv.php',
+            [
+                'int_type' => $f->env('INTEGER_TYPE', 5),
+                'double_type' => $f->env('DOUBLE_TYPE', 5.0),
+                'string_type' => $f->env('STRING_TYPE', '5'),
+            ]
+        );
+    }
+
     public function testWritingNewClosuresOrArrowFunctions()
     {
         $f = new FunctionWriter();
