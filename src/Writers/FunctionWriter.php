@@ -107,7 +107,7 @@ class FunctionWriter
 
     private function arg(mixed $arg): Arg
     {
-        $scalarClass = $this->getScalarClass($arg);
+        $scalarClass = $this->getScalarClass(gettype($arg));
 
         return new Arg(new $scalarClass($arg));
     }
