@@ -96,7 +96,7 @@ class FunctionWriter
         return new Name($name);
     }
 
-    private function getScalarClass(string $type): string
+    private function scalarClass(string $type): string
     {
         return match ($type) {
             'integer' => Int_::class,
@@ -107,7 +107,7 @@ class FunctionWriter
 
     private function arg(mixed $arg): Arg
     {
-        $scalarClass = $this->getScalarClass(gettype($arg));
+        $scalarClass = $this->scalarClass(gettype($arg));
 
         return new Arg(new $scalarClass($arg));
     }
