@@ -13,6 +13,8 @@ use Stillat\Proteus\Writers\FunctionWriter;
  */
 class WriterServiceProvider extends ServiceProvider
 {
+    //
+
     public function register()
     {
         $this->app->singleton(FunctionWriter::class, function () {
