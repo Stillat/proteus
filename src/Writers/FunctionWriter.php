@@ -6,6 +6,8 @@ use Closure;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\Float_;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 
 class FunctionWriter
@@ -85,12 +87,28 @@ class FunctionWriter
     {
         return collect($args)
             ->reject(fn ($arg) => $arg === null || mb_strlen($arg) === 0)
-            ->map(fn (string $arg) => new Arg(new String_($arg)))
+            ->map(fn (mixed $arg) => $this->arg($arg))
             ->all();
     }
 
     private function convertToName(string $name)
     {
         return new Name($name);
+    }
+
+    private function scalarClass(string $type): string
+    {
+        return match ($type) {
+            'integer' => Int_::class,
+            'double' => Float_::class,
+            default => String_::class,
+        };
+    }
+
+    private function arg(mixed $arg): Arg
+    {
+        $scalarClass = $this->scalarClass(gettype($arg));
+
+        return new Arg(new $scalarClass($arg));
     }
 }
