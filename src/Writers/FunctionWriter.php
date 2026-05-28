@@ -4,6 +4,7 @@ namespace Stillat\Proteus\Writers;
 
 use Closure;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Float_;
@@ -86,7 +87,7 @@ class FunctionWriter
     private function convertToArgs($args)
     {
         return collect($args)
-            ->reject(fn ($arg) => $arg === null || mb_strlen($arg) === 0)
+            ->reject(fn ($arg) => $arg === null || (is_string($arg) && mb_strlen($arg) === 0))
             ->map(fn (mixed $arg) => $this->arg($arg))
             ->all();
     }
@@ -107,6 +108,10 @@ class FunctionWriter
 
     private function arg(mixed $arg): Arg
     {
+        if (is_bool($arg)) {
+            return new Arg(new ConstFetch(new Name($arg ? 'true' : 'false')));
+        }
+
         $scalarClass = $this->scalarClass(gettype($arg));
 
         return new Arg(new $scalarClass($arg));

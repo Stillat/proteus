@@ -71,6 +71,8 @@ class LaravelFunctionCallTest extends ProteusTestCase
                 'int_type' => $f->env('INTEGER_TYPE', 5),
                 'double_type' => $f->env('DOUBLE_TYPE', 5.0),
                 'string_type' => $f->env('STRING_TYPE', '5'),
+                'bool_true' => $f->env('BOOL_TRUE', true),
+                'bool_false' => $f->env('BOOL_FALSE', false),
             ]
         );
     }
