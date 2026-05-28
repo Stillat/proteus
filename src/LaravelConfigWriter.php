@@ -432,6 +432,7 @@ class LaravelConfigWriter implements ConfigWriterContract
         }
 
         $configUpdater = new ConfigUpdater();
+        $configUpdater->setIgnoreFunctions($this->ignoreFunctions);
         $configUpdater->open($file);
 
         return $configUpdater;
