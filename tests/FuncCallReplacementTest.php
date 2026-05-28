@@ -36,6 +36,29 @@ class FuncCallReplacementTest extends ProteusTestCase
      * ConfigWriter::ignoreFunctionCalls(false) actually takes effect when
      * going through the edit()->set()->save() path.
      */
+    /**
+     * Confirms that issue #29 is NOT closed by PR #39.
+     *
+     * With ignoreFunctions=true (default, used by writeMany), plain values cannot replace
+     * existing FuncCall values — the FuncCall is preserved. Closing issue #29 would require
+     * a dedicated API change (e.g. using replace() instead of update()).
+     */
+    public function testIssue29FuncCallValuesAreStillPreservedWhenPassingPlainValues(): void
+    {
+        $updater = new ConfigUpdater(); // ignoreFunctions=true by default — same path as writeMany
+        $updater->open(__DIR__.'/configs/issue29.php');
+        $updater->update([
+            'enabled' => true,
+            'route' => 'my-cp',
+            'start_page' => 'collections/pages',
+        ]);
+
+        $expected = Transformer::normalizeLineEndings(
+            file_get_contents(__DIR__.'/expected/issue29.php')
+        );
+        $this->assertEquals($expected, $updater->getDocument());
+    }
+
     public function testGetUpdaterPassesIgnoreFunctionsToConfigUpdater(): void
     {
         // Copy the fixture before constructing LaravelConfigWriter — it scans configPath() on construction.
