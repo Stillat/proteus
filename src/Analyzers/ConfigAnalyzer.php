@@ -363,6 +363,12 @@ class ConfigAnalyzer
 
                 return;
             } elseif ($currentNode->value instanceof FuncCall) {
+                if ($node instanceof FuncCall) {
+                    $currentNode->value = $node;
+
+                    return;
+                }
+
                 if ($this->shouldProceedWithFunctionRewrite($key, $currentCheckValue)) {
                     $this->functionHandler->handle($currentNode->value, $currentNode, $node, $key);
                 }
