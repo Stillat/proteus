@@ -313,6 +313,52 @@ class LaravelConfigWriter implements ConfigWriterContract
     }
 
     /**
+     * Replaces multiple configuration values, overwriting existing values including function calls.
+     *
+     * Unlike writeMany(), which preserves function calls (e.g. env()) by default, replaceMany()
+     * performs a direct node swap for each key regardless of the existing value type.
+     *
+     * @param  string  $configNamespace The configuration namespace.
+     * @param  array  $values          The key/value pairs to replace.
+     * @return bool
+     *
+     * @throws ConfigNotFoundException
+     * @throws ConfigNotWriteableException
+     * @throws GuardedConfigurationMutationException
+     */
+    public function replaceMany(string $configNamespace, array $values): bool
+    {
+        $wrapper = $this->edit($configNamespace);
+
+        foreach ($values as $key => $value) {
+            $wrapper->replace($key, $value);
+        }
+
+        return $wrapper->save();
+    }
+
+    /**
+     * Applies many replacements to a source configuration document and returns the modified document without writing.
+     *
+     * @param  string  $configNamespace The root configuration namespace.
+     * @param  array  $values          The key/value mapping of all replacements.
+     * @return string
+     *
+     * @throws ConfigNotFoundException
+     * @throws GuardedConfigurationMutationException
+     */
+    public function previewReplaceMany(string $configNamespace, array $values): string
+    {
+        $wrapper = $this->edit($configNamespace);
+
+        foreach ($values as $key => $value) {
+            $wrapper->replace($key, $value);
+        }
+
+        return $wrapper->preview();
+    }
+
+    /**
      * Checks all requested changes against any restricted configuration levels.
      *
      * @param  string  $namespace The configuration namespace.

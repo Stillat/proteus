@@ -85,4 +85,22 @@ interface ConfigWriterContract
      * @return string
      */
     public function previewMany($configNamespace, array $values);
+
+    /**
+     * Replaces multiple configuration values in a namespace, overwriting existing values including function calls.
+     *
+     * @param  string  $configNamespace The configuration namespace.
+     * @param  array  $values          The key/value pairs to replace.
+     * @return bool
+     */
+    public function replaceMany(string $configNamespace, array $values): bool;
+
+    /**
+     * Applies many replacements to a source configuration document and returns the modified document without writing.
+     *
+     * @param  string  $configNamespace The root configuration namespace.
+     * @param  array  $values          The key/value mapping of all replacements.
+     * @return string
+     */
+    public function previewReplaceMany(string $configNamespace, array $values): string;
 }
