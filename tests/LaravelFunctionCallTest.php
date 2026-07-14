@@ -77,6 +77,19 @@ class LaravelFunctionCallTest extends ProteusTestCase
         );
     }
 
+    public function testCastIntCanBeWritten()
+    {
+        $f = new FunctionWriter();
+
+        $this->assertChangeEquals(
+            __DIR__.'/configs/empty.php',
+            __DIR__.'/expected/castint.php',
+            [
+                'thing' => $f->castInt($f->env('KEY', 20)),
+            ]
+        );
+    }
+
     public function testWritingNewClosuresOrArrowFunctions()
     {
         $f = new FunctionWriter();

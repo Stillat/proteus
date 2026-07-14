@@ -4,6 +4,8 @@ namespace Stillat\Proteus\Writers;
 
 use Closure;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Cast\Int_ as IntCast;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
@@ -82,6 +84,11 @@ class FunctionWriter
     public function closure(Closure $closure)
     {
         return $closure;
+    }
+
+    public function castInt(Expr $expr): IntCast
+    {
+        return new IntCast($expr);
     }
 
     private function convertToArgs($args)
