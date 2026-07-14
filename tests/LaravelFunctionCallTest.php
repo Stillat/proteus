@@ -77,6 +77,45 @@ class LaravelFunctionCallTest extends ProteusTestCase
         );
     }
 
+    public function testEmptyStringDefaultsArePreserved()
+    {
+        $f = new FunctionWriter();
+
+        $this->assertChangeEquals(
+            __DIR__.'/configs/empty.php',
+            __DIR__.'/expected/emptystringenv.php',
+            [
+                'thing' => $f->env('SOME_PATH', ''),
+            ]
+        );
+    }
+
+    public function testPathHelpersSupportNoArguments()
+    {
+        $f = new FunctionWriter();
+
+        $this->assertChangeEquals(
+            __DIR__.'/configs/empty.php',
+            __DIR__.'/expected/bareresourcepath.php',
+            [
+                'thing' => $f->resourcePath(),
+            ]
+        );
+    }
+
+    public function testFunctionCallsCanBeNestedAsArguments()
+    {
+        $f = new FunctionWriter();
+
+        $this->assertChangeEquals(
+            __DIR__.'/configs/empty.php',
+            __DIR__.'/expected/nestedfunctioncall.php',
+            [
+                'thing' => $f->env('CONTENT_PATH', $f->basePath('content')),
+            ]
+        );
+    }
+
     public function testWritingNewClosuresOrArrowFunctions()
     {
         $f = new FunctionWriter();
