@@ -5,10 +5,10 @@ namespace Stillat\Proteus\Writers;
 use Closure;
 use Exception;
 use Laravel\SerializableClosure\Support\ReflectionClosure;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\Cast\Int_;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Scalar\String_;
 use Stillat\Proteus\Analyzers\TypeAnalyzer;
 use Stillat\Proteus\Analyzers\Types;
@@ -40,7 +40,7 @@ class TypeWriter
             return $closureParser->parse($serialized->getCode());
         }
 
-        if ($value instanceof FuncCall) {
+        if ($value instanceof Expr) {
             return $value;
         }
 
