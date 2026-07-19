@@ -4,6 +4,7 @@ namespace Stillat\Proteus\Writers;
 
 use Closure;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
@@ -31,7 +32,7 @@ class FunctionWriter
 
     const FUNC_LARAVEL_ENV = 'env';
 
-    public function makeSimpleFunctionCall(string $name, string|array $args): FuncCall
+    public function makeSimpleFunctionCall(string $name, mixed $args): FuncCall
     {
         return new FuncCall(
             $this->convertToName($name),
@@ -44,37 +45,37 @@ class FunctionWriter
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_ENV, $args);
     }
 
-    public function storagePath($path)
+    public function storagePath($path = null)
     {
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_STORAGE_PATH, $path);
     }
 
-    public function publicPath($path)
+    public function publicPath($path = null)
     {
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_PUBLIC_PATH, $path);
     }
 
-    public function appPath($path)
+    public function appPath($path = null)
     {
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_APP_PATH, $path);
     }
 
-    public function basePath($path)
+    public function basePath($path = null)
     {
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_BASE_PATH, $path);
     }
 
-    public function configPath($path)
+    public function configPath($path = null)
     {
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_CONFIG_PATH, $path);
     }
 
-    public function databasePath($path)
+    public function databasePath($path = null)
     {
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_DATABASE_PATH, $path);
     }
 
-    public function resourcePath($path)
+    public function resourcePath($path = null)
     {
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_RESOURCE_PATH, $path);
     }
@@ -87,7 +88,7 @@ class FunctionWriter
     private function convertToArgs($args)
     {
         return collect($args)
-            ->reject(fn ($arg) => $arg === null || (is_string($arg) && mb_strlen($arg) === 0))
+            ->reject(fn ($arg) => $arg === null)
             ->map(fn (mixed $arg) => $this->arg($arg))
             ->all();
     }
@@ -108,6 +109,10 @@ class FunctionWriter
 
     private function arg(mixed $arg): Arg
     {
+        if ($arg instanceof Expr) {
+            return new Arg($arg);
+        }
+
         if (is_bool($arg)) {
             return new Arg(new ConstFetch(new Name($arg ? 'true' : 'false')));
         }
