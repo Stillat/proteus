@@ -91,10 +91,22 @@ class LaravelConfigWriter implements ConfigWriterContract
     {
         $this->app = $app;
         $this->configRepo = $configRepo;
-        $this->files = $this->getConfigurationFiles($this->app);
         $this->functionWriter = new FunctionWriter();
+        $this->indexConfigurationFiles();
+    }
 
-        // Produces a sorted mapping.
+    /**
+     * Indexes configuration filenames.
+     *
+     * The index is built when the writer is constructed. A lookup that misses
+     * indexes again, so a file created later (a published mail.php, for
+     * example) is found. Without that, save() returns false and writes nothing.
+     */
+    protected function indexConfigurationFiles()
+    {
+        $this->files = $this->getConfigurationFiles($this->app);
+
+        // Longer namespaces match first, so app matches before a shorter prefix.
         $this->configNamespaces = array_keys($this->files);
 
         uasort($this->configNamespaces, function ($a, $b) {
@@ -170,6 +182,21 @@ class LaravelConfigWriter implements ConfigWriterContract
      */
     public function getFile($key)
     {
+        if ($match = $this->locateFile($key)) {
+            return $match;
+        }
+
+        $this->indexConfigurationFiles();
+
+        return $this->locateFile($key);
+    }
+
+    /**
+     * @param  string  $key The configuration key.
+     * @return array|null
+     */
+    private function locateFile($key)
+    {
         foreach ($this->configNamespaces as $configNamespace) {
             if (Str::startsWith($key, $configNamespace)) {
                 return [
@@ -201,6 +228,12 @@ class LaravelConfigWriter implements ConfigWriterContract
      */
     public function hasConfig($key)
     {
+        if (array_key_exists($key, $this->files)) {
+            return true;
+        }
+
+        $this->indexConfigurationFiles();
+
         return array_key_exists($key, $this->files);
     }
 
