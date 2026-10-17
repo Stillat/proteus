@@ -66,6 +66,11 @@ class FunctionWriter
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_BASE_PATH, $path);
     }
 
+    public function basename(Expr|string|null $path = null): FuncCall
+    {
+        return $this->makeSimpleFunctionCall('basename', [$path]);
+    }
+
     public function configPath($path = null)
     {
         return $this->makeSimpleFunctionCall(self::FUNC_LARAVEL_CONFIG_PATH, $path);

@@ -103,6 +103,19 @@ class LaravelFunctionCallTest extends ProteusTestCase
         );
     }
 
+    public function testBasenameCanWrapAPathCall()
+    {
+        $f = new FunctionWriter();
+
+        $this->assertChangeEquals(
+            __DIR__.'/configs/empty.php',
+            __DIR__.'/expected/basename.php',
+            [
+                'thing' => $f->basename($f->basePath()),
+            ]
+        );
+    }
+
     public function testFunctionCallsCanBeNestedAsArguments()
     {
         $f = new FunctionWriter();
