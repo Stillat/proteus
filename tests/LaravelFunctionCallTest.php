@@ -116,6 +116,31 @@ class LaravelFunctionCallTest extends ProteusTestCase
         );
     }
 
+    public function testConcatCanJoinAStringAndAFunctionCall()
+    {
+        $f = new FunctionWriter();
+
+        $this->assertChangeEquals(
+            __DIR__.'/configs/empty.php',
+            __DIR__.'/expected/concatstringleft.php',
+            [
+                'thing' => $f->concat('stache_', $f->makeSimpleFunctionCall('basename', [
+                    $f->basePath(),
+                ])),
+            ]
+        );
+
+        $this->assertChangeEquals(
+            __DIR__.'/configs/empty.php',
+            __DIR__.'/expected/concatstringright.php',
+            [
+                'thing' => $f->concat($f->makeSimpleFunctionCall('basename', [
+                    $f->basePath(),
+                ]), '_'),
+            ]
+        );
+    }
+
     public function testCastIntCanBeWritten()
     {
         $f = new FunctionWriter();

@@ -5,6 +5,7 @@ namespace Stillat\Proteus\Writers;
 use Closure;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\BinaryOp\Concat;
 use PhpParser\Node\Expr\Cast\Int_ as IntCast;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -91,6 +92,11 @@ class FunctionWriter
         return new IntCast($expr);
     }
 
+    public function concat(Expr|string $left, Expr|string $right): Concat
+    {
+        return new Concat($this->operand($left), $this->operand($right));
+    }
+
     private function convertToArgs($args)
     {
         return collect($args)
@@ -111,6 +117,11 @@ class FunctionWriter
             'double' => Float_::class,
             default => String_::class,
         };
+    }
+
+    private function operand(Expr|string $value): Expr
+    {
+        return $value instanceof Expr ? $value : new String_($value);
     }
 
     private function arg(mixed $arg): Arg
