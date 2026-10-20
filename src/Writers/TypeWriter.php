@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Cast\Bool_;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Scalar\String_;
+use ReflectionClass;
 use Stillat\Proteus\Analyzers\TypeAnalyzer;
 use Stillat\Proteus\Analyzers\Types;
 use Stillat\Proteus\ClosureParser;
@@ -55,7 +56,8 @@ class TypeWriter
 
             return $doubleWriter->write($value);
         } elseif ($type === Types::TYPE_STRING) {
-            if (class_exists($value)) {
+            // class_exists() is case-insensitive; only rewrite an exact class-name match.
+            if (class_exists($value) && (new ReflectionClass($value))->getName() === ltrim($value, '\\')) {
                 $classWriter = new ClassFetchWriter();
 
                 return $classWriter->write($value);
